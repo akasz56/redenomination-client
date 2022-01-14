@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
 import './Home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { loginParticipant } from '../utils/Auth';
 
 export default function Home() {
     const [token, setToken] = useState("");
@@ -12,7 +13,9 @@ export default function Home() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('A token was submitted: ' + token);
+        loginParticipant(token, () => {
+            window.location.href = "/";
+        });
     }
 
     return (
@@ -21,7 +24,7 @@ export default function Home() {
             <Form className="mt-3" onSubmit={handleSubmit}>
                 <Form.Group controlId="login">
                     <Form.Label>Masukkan token partisipan anda disini</Form.Label>
-                    <Form.Control type="text" placeholder="Token" value={token} onChange={e => setToken(e.target.value)} />
+                    <Form.Control type="text" placeholder="Token" autoComplete="off" value={token} onChange={e => setToken(e.target.value)} />
                 </Form.Group>
                 <Button className="mt-3 float-end" variant="primary" type="submit">Submit</Button>
             </Form>
