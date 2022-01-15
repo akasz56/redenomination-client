@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
-import { loginAdmin } from '../utils/Auth';
+import { loginAsAdmin } from '../utils/Auth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Login() {
@@ -12,7 +12,7 @@ export default function Login() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        loginAdmin(password, () => {
+        loginAsAdmin(password, () => {
             window.location.href = "/";
         });
     }

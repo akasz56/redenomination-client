@@ -1,52 +1,66 @@
+import { connectAsAdmin, connectAsParticipant } from "../adapters/Authentication";
+
+//------------------------------------------ CheckAuth
 export function myRole() {
-    const jwt = JSON.parse(localStorage.getItem('login'));
+    const jwt = JSON.parse(localStorage.getItem('auth'));
     if (jwt) { return jwt.role; }
 }
 export function isAdmin() { return myRole() === "admin"; }
 export function isParticipant() { return myRole() === "participant"; }
-export function isAuth() { return (isAdmin() || isParticipant()); }
+export function isAuth() { return isAdmin() || isParticipant(); }
 
-export function loginAdmin(password, next) {
+
+//------------------------------------------ Logins
+export async function loginAsAdmin(password, next) {
     if (isAuth()) {
         alert(`Anda sudah login sebagai ${myRole()}`)
-        next();
         return;
     }
 
-    if (password === "admin") {
-        localStorage.setItem('login', JSON.stringify({
+    const result = await connectAsAdmin(password);
+    if (result.status === 200) {
+        localStorage.setItem('auth', JSON.stringify({
             login: true,
             role: "admin",
-            token: "Bearer yes"
+            token: "Bearer " + result.data.jwtToken
         }));
         next();
         return;
-    } else {
+    } else if (result.status === 401) {
         alert("Wrong password");
+        return;
+    } else {
+        alert("Something Happened");
+        return;
     }
 }
 
-export function loginParticipant(token, next) {
+export async function loginParticipant(token, next) {
     if (isAuth()) {
         alert(`Anda sudah login sebagai ${myRole()}`)
-        next();
         return;
     }
 
-    if (token.toUpperCase() === "TOKEN") {
-        localStorage.setItem('login', JSON.stringify({
+    const result = await connectAsParticipant(token);
+    if (result.status === 200) {
+        localStorage.setItem('auth', JSON.stringify({
             login: true,
             role: "participant",
             token: "Bearer yes"
         }));
         next();
         return;
-    } else {
+    } else if (result.status === 401) {
         alert("Invalid Token");
+        return;
+    } else {
+        alert("Something Happened");
+        return;
     }
 }
 
+//------------------------------------------ Logouts
 export function logout(next) {
-    localStorage.removeItem('login');
+    localStorage.removeItem('auth');
     next()
 }
