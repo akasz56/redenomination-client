@@ -1,13 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./utils/ProtectedRoute";
+import ParticipantsRoutes from "./routes/ParticipantsRoutes";
+import AdminRoutes from "./routes/AdminRoutes";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Admin from "./pages/Admin";
-import Participants from "./pages/Participants";
-
+import Admin from "./pages/admin/Admin";
+import Participants from "./pages/participants/Participants";
 
 export default function App() {
   return (
@@ -19,12 +19,12 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="/login" element={<Login />} />
 
-          <Route element={<ProtectedRoute auth="admin" />}>
-            <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<AdminRoutes />} >
+            <Route index element={<Admin />} />
           </Route>
 
-          <Route element={<ProtectedRoute auth="participant" />}>
-            <Route path="/participant" element={<Participants />} />
+          <Route path="/participants" element={<ParticipantsRoutes />} >
+            <Route index element={<Participants />} />
           </Route>
         </Route>
 
