@@ -16,11 +16,11 @@ export default function Header() {
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>
                 <Navbar.Brand>
-                    <Link to="/" className="fw-bold" style={{ color: "#ffffff", textDecoration: "none" }}>Redenomination Project</Link>
+                    <Link to="/" style={{ color: "#ffffff", textDecoration: "none" }}>Redenomination Project</Link>
                 </Navbar.Brand>
                 {isAuth() ?
                     (isAdmin() ?
-                        <Link to='/admin' className="btn btn-outline-light"><i className='bx bxs-dashboard' /> Dashboard</Link>
+                        <Link to='/simulations' className="btn btn-outline-light"><i className='bx bxs-dashboard' /> Panel Admin</Link>
                         :
                         <Button variant="danger" onClick={handlerClick}>Log Out</Button>
                     )
