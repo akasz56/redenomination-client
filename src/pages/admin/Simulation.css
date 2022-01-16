@@ -1,0 +1,35 @@
+.header {
+    position: relative;
+}
+
+.header p {
+    line-height: 1;
+}
+
+.sessions {
+    position: relative;
+}
+
+.sessions div {
+    margin: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .header .date {
+        position: absolute;
+        bottom: 25%;
+        right: 0;
+    }
+
+    .sessions div {
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem 3rem;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem 1.5rem;
+    }
+}

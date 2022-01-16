@@ -7,12 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Admin.css'
 
 export default function Admin() {
-    const [simuData, setSimuData] = useState(null);
+    const [simulations, setSimulations] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Admin Page";
-        readAllSimulations().then((value) => setSimuData(value))
+        readAllSimulations().then((value) => setSimulations(value))
     }, []);
 
     function addBtnHandler(event) {
@@ -32,34 +32,55 @@ export default function Admin() {
         }
     }
 
-    return (
-        <Container>
-            <div className="mt-5 header">
-                <span className="fs-1">History Simulasi</span>
-                <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
-            </div>
+    if (simulations)
+        return (
+            <Container>
+                <div className="mt-5 header">
+                    <span className="fs-1">History Simulasi</span>
+                    <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
+                </div>
 
-            <Table responsive hover className="mt-3">
-                <thead>
-                    <tr>
-                        <th width='50'>No</th>
-                        <th width='60%'>Jenis Simulasi</th>
-                        <th>Tanggal Dibuat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {simuData ?
-                        (simuData.map((res, index) => (
-                            <tr key={index} className='simulations' onClick={event => rowHandler(event, index)}>
-                                <td className='number'>{res.simulationID}</td>
+                <Table responsive hover className="mt-3">
+                    <thead>
+                        <tr>
+                            <th width='50'>No</th>
+                            <th width='60%'>Jenis Simulasi</th>
+                            <th>Tanggal Dibuat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {simulations.map((simulation, i) => (
+                            <tr key={i} className='simulations' onClick={event => rowHandler(event, simulation.simulationID)}>
+                                <td className='number'>{simulation.simulationID}</td>
                                 <td>
-                                    <h3>{res.simulationType}</h3>
-                                    <span>{res.goodsType}, {res.inflationType}</span>
+                                    <h3>{simulation.simulationType}</h3>
+                                    <span>{simulation.goodsType}, {simulation.inflationType}</span>
                                 </td>
-                                <td>{res.date}</td>
+                                <td>{simulation.date}</td>
                             </tr>
-                        )))
-                        :
+                        ))}
+                    </tbody>
+                </Table>
+                <Button variant="danger" onClick={logoutBtnHandler}>Log Out</Button>
+            </Container>
+        )
+    else
+        return (
+            <Container>
+                <div className="mt-5 header">
+                    <span className="fs-1">History Simulasi</span>
+                    <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
+                </div>
+
+                <Table responsive hover className="mt-3">
+                    <thead>
+                        <tr>
+                            <th width='50'>No</th>
+                            <th width='60%'>Jenis Simulasi</th>
+                            <th>Tanggal Dibuat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <tr className='simulations'>
                             <td className='number'>0</td>
                             <td>
@@ -68,10 +89,9 @@ export default function Admin() {
                             </td>
                             <td>Date</td>
                         </tr>
-                    }
-                </tbody>
-            </Table>
-            <Button variant="danger" onClick={logoutBtnHandler}>Log Out</Button>
-        </Container>
-    )
+                    </tbody>
+                </Table>
+                <Button variant="danger" onClick={logoutBtnHandler}>Log Out</Button>
+            </Container>
+        )
 }

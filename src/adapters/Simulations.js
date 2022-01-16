@@ -25,13 +25,8 @@ const simulations = [
 ];
 
 const simulation = {
-    simulationID: 1,
     token: "1DA080122",
-    simulationType: "Double Auction",
-    goodsType: "Barang Elastis",
-    inflationType: "Inflasi Tinggi",
     timer: "8 menit",
-    date: "Jumat, 8 Jan 2022",
     sessions: [
         {
             sessionID: 1,
@@ -41,12 +36,12 @@ const simulation = {
         {
             sessionID: 2,
             sessionType: "Ulangan Kedua",
-            date: "Jumat, 8 Jan 2022",
+            date: "Jumat, 9 Jan 2022",
         },
         {
             sessionID: 3,
             sessionType: "Ulangan Ketiga",
-            date: "Jumat, 8 Jan 2022",
+            date: "Jumat, 10 Jan 2022",
         }
     ]
 }
@@ -69,7 +64,7 @@ export async function readAllSimulations() {
 }
 
 export async function readSimulation(id) {
-    return simulation;
+    return Object.assign(simulations[id - 1], simulation);
     // return await fetch(serverURL + "simulations/" + id)
     //     .then(response => response.json());
 }
