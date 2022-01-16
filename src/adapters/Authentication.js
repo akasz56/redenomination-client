@@ -1,10 +1,4 @@
 import serverURL from "./serverURL";
-
-// const offlineResponse = {
-//     status: 200,
-//     data: { jwtToken: "yes" }
-// }
-
 // IpB_b3rc4nd4
 
 export async function connectAsAdmin(password) {
@@ -19,7 +13,6 @@ export async function connectAsAdmin(password) {
                 "password": password
             })
     }).then(response => response.json());
-    // return offlineResponse;
 }
 
 export async function connectAsParticipant(token) {
@@ -34,5 +27,4 @@ export async function connectAsParticipant(token) {
                 "token": token
             })
     }).then(response => response.json());
-    // return offlineResponse;
 }
