@@ -27,7 +27,7 @@ export default function Simulation() {
                     </div>
                     <div className='col-md-6 text-end'>
                         <div>{data.timeCreated}</div>
-                        <Link to='' className="btn btn-outline-dark py-1">edit</Link>
+                        <Link to='./edit' className="btn btn-outline-dark py-1">edit</Link>
                     </div>
                 </section>
 
