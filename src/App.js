@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Admin from "./pages/admin/Admin";
 import Participants from "./pages/participants/Participants";
 import Simulation from "./pages/admin/Simulation";
+import Error404 from './pages/errors/Error404';
 
 export default function App() {
   return (
@@ -23,13 +24,15 @@ export default function App() {
 
           <Route path="simulations" element={<AdminRoutes />} >
             <Route index element={<Admin />} />
-            <Route path=":id(\\d+)" element={<Simulation />} />
+            <Route path=":id" element={<Simulation />} />
           </Route>
 
           <Route path="participants" element={<ParticipantsRoutes />} >
             <Route index element={<Participants />} />
           </Route>
         </Route>
+
+        <Route path="*" element={<Error404 />} />
 
       </Routes>
       <Footer />
@@ -40,20 +43,20 @@ export default function App() {
 
 function AdminRoutes() {
   return (
-    <AdminProvider>
-      <ProtectedRoute auth='admin'>
+    <ProtectedRoute auth='admin'>
+      <AdminProvider>
         <Outlet />
-      </ProtectedRoute>
-    </AdminProvider>
+      </AdminProvider>
+    </ProtectedRoute>
   );
 }
 
 function ParticipantsRoutes() {
   return (
-    <ParticipantsProvider>
-      <ProtectedRoute auth='participant'>
+    <ProtectedRoute auth='participant'>
+      <ParticipantsProvider>
         <Outlet />
-      </ProtectedRoute>
-    </ParticipantsProvider>
+      </ParticipantsProvider>
+    </ProtectedRoute>
   );
 }
