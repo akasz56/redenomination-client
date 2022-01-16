@@ -1,5 +1,5 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
-import ProtectedRoute from "./utils/ProtectedRoute";
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { isAdmin, myRole } from "./utils/Auth";
 import { ParticipantsProvider } from './contexts/ParticipantsContext';
 import { AdminProvider } from './contexts/AdminContext';
 import Header from "./components/Header";
@@ -53,6 +53,13 @@ export default function App() {
   )
 }
 
+function ProtectedRoute(props) {
+  if (isAdmin() || props.auth === myRole()) {
+    return <Outlet />;
+  } else {
+    return <Navigate to='/' />;
+  }
+}
 
 function AdminRoutes() {
   return (
