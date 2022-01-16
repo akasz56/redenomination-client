@@ -1,6 +1,5 @@
 # Doing
 
-- SimulationCreate
 - SimulationEdit
 - SimulationSummary
 - SessionSummary

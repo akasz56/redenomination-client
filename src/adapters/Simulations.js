@@ -2,6 +2,8 @@ import serverURL from "./serverURL";
 import { getSimulation, getSession } from "./jsonFormats";
 
 export async function createSimulation(body) {
+    console.log(body);
+    return;
     // return await fetch(serverURL + "simulations/", {
     //     method: "POST",
     //     headers: {
