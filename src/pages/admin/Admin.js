@@ -56,7 +56,7 @@ export default function Admin() {
                                     <h3>{simulation.simulationType}</h3>
                                     <span>{simulation.goodsType}, {simulation.inflationType}</span>
                                 </td>
-                                <td>{simulation.date}</td>
+                                <td>{simulation.timeCreated}</td>
                             </tr>
                         ))}
                     </tbody>
