@@ -1,14 +1,14 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const adminContext = createContext({});
 const { Provider, Consumer } = adminContext;
 
 function AdminProvider({ children, ...props }) {
-    const [admin, setAdmin] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [simulation, setSimulation] = useState({});
+    const [session, setSession] = useState({});
 
     return (
-        <Provider value={{ admin, loading }} {...props}>
+        <Provider value={{ simulation, setSimulation, session, setSession }} {...props}>
             {children}
         </Provider>
     );
