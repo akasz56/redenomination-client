@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { readSimulation } from '../../adapters/Simulations'
-import { Container, Image } from 'react-bootstrap'
+import { readSimulation } from '../../../adapters/Simulations'
+import Summary from '../../../components/Summary';
+import { Container } from 'react-bootstrap'
 import './Simulation.css'
 
 export default function Simulation() {
@@ -19,23 +20,22 @@ export default function Simulation() {
     if (data)
         return (
             <Container>
-
-                <section className="header mt-5">
-                    <div>
+                <section className="header mt-5 row">
+                    <div className='col-md-6'>
                         <h1>{data.simulationType}</h1>
-                        <p>
-                            Token Partisipan:&nbsp;
-                            <span className='fw-bold text-primary'>{data.token}</span>
-                        </p>
+                        <div>Token Partisipan: <span className='fw-bold text-primary'>{data.token}</span></div>
                     </div>
-                    <div className='date fs-5'>{data.date}</div>
+                    <div className='col-md-6 text-end'>
+                        <div>{data.timeCreated}</div>
+                        <Link to='' className="btn btn-outline-dark py-1">edit</Link>
+                    </div>
                 </section>
 
-                <section className='sessions my-5'>
+                <section className='sessions my-4'>
                     {data.sessions.map((session, index) => (
                         <div key={index}>
                             <span className='fw-bold'>{session.sessionType}</span>
-                            <span>{session.date}</span>
+                            <span>{session.timeCreated}</span>
                             <Link to={'./sessions/' + session.sessionID}>rincian ulangan...</Link>
                         </div>
                     ))}
@@ -51,24 +51,23 @@ export default function Simulation() {
 
                 <section className='summary mt-5'>
                     <h1>Ringkasan Simulasi</h1>
-                    <Link to={'#'}>rincian simulasi...</Link>
+                    <Link to={'./summary'}>rincian simulasi...</Link>
                     <Summary
                         title="Rata-Rata Jumlah transaksi"
                         src="https://via.placeholder.com/400x360"
-                        download="#"
+                        download=""
                     />
                     <Summary
                         title="Rata-rata Harga kesepakatan"
                         src="https://via.placeholder.com/400x360"
-                        download="#"
+                        download=""
                     />
                     <Summary
                         title="Log Tawar-Menawar"
                         src="https://via.placeholder.com/400x360"
-                        download="#"
+                        download=""
                     />
                 </section>
-
             </Container>
         )
     else
@@ -79,14 +78,4 @@ export default function Simulation() {
                 </div>
             </section>
         )
-}
-
-function Summary(props) {
-    return (
-        <div className='mt-4 d-flex flex-column'>
-            <span className='text-center fs-4'>{props.title}</span>
-            <Image className='mx-auto' src={props.src}></Image>
-            <a className='text-end' href={props.download}>download rincian...</a>
-        </div>
-    )
 }

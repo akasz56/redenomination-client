@@ -11,16 +11,10 @@
 }
 
 .sessions div {
-    margin: 1rem 0;
+    margin: 2rem 0;
 }
 
 @media (min-width: 768px) {
-    .header .date {
-        position: absolute;
-        bottom: 25%;
-        right: 0;
-    }
-
     .sessions div {
         display: flex;
         justify-content: space-between;

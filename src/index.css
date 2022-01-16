@@ -20,3 +20,8 @@ code {
   display: flex;
   flex-direction: column;
 }
+
+.required::after {
+  color: red;
+  content: " *";
+}
