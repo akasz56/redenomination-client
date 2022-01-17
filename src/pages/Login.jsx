@@ -13,7 +13,7 @@ export default function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
         loginAsAdmin(password, () => {
-            window.location.href = "/";
+            window.location.href = "/admin";
         });
     }
 
