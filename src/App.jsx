@@ -30,8 +30,11 @@ export default function App() {
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='admin' />}>
-				<Route path="simulations">
+				<Route path="admin">
 					<Route index element={<Admin />} />
+				</Route>
+				<Route path="simulations">
+					<Route index element={<Navigate to='/admin' />} />
 					<Route path="create" element={<SimulationCreate />} />
 					<Route path=":id">
 						<Route index element={<Simulation />} />
@@ -39,9 +42,12 @@ export default function App() {
 						<Route path="summary" element={<SimulationSummary />} />
 					</Route>
 				</Route>
-				<Route path="sessions/:id">
-					<Route index element={<Session />} />
-					<Route path="summary" element={<SessionSummary />} />
+				<Route path="sessions">
+					<Route index element={<Navigate to='/admin' />} />
+					<Route path=":id">
+						<Route index element={<Session />} />
+						<Route path="summary" element={<SessionSummary />} />
+					</Route>
 				</Route>
 			</Route>
 
