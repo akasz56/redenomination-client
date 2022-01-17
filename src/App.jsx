@@ -1,7 +1,7 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
-import ProtectedRoute from "./utils/ProtectedRoute";
-import { ParticipantsProvider } from './contexts/ParticipantsContext';
-import { AdminProvider } from './contexts/AdminContext';
+import { Routes, Route } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
+import { myRole } from "./utils/Auth";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -17,59 +17,48 @@ import Participants from "./pages/participants/Participants";
 import Error404 from './pages/errors/Error404';
 
 export default function App() {
-  return (
-    <>
-      <Header />
-      <Routes>
+	return (<>
+		<Header />
+		<Routes>
 
-        <Route path="/">
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
+			<Route path="/">
+				<Route index element={<Home />} />
+				<Route path="login" element={<Login />} />
+			</Route>
 
-          <Route path="simulations" element={<AdminRoutes />} >
-            <Route index element={<Admin />} />
-            <Route path="create" element={<SimulationCreate />} />
-            <Route path=":id">
-              <Route index element={<Simulation />} />
-              <Route path="edit" element={<SimulationEdit />} />
-              <Route path="summary" element={<SimulationSummary />} />
-              <Route path="sessions/:id">
-                <Route index element={<Session />} />
-                <Route path="summary" element={<SessionSummary />} />
-              </Route>
-            </Route>
-          </Route>
+			<Route path="/" element={<ProtectedRoute for='admin' />}>
+				<Route path="/simulations">
+					<Route index element={<Admin />} />
+					<Route path="create" element={<SimulationCreate />} />
+					<Route path=":id">
+						<Route index element={<Simulation />} />
+						<Route path="edit" element={<SimulationEdit />} />
+						<Route path="summary" element={<SimulationSummary />} />
+					</Route>
+				</Route>
+				<Route path="/sessions/:id">
+					<Route index element={<Session />} />
+					<Route path="summary" element={<SessionSummary />} />
+				</Route>
+			</Route>
 
-          <Route path="participants" element={<ParticipantsRoutes />} >
-            <Route index element={<Participants />} />
-          </Route>
-        </Route>
+			<Route path="/" element={<ProtectedRoute for='participant' />}>
+				<Route path="/participants">
+					<Route index element={<Participants />} />
+				</Route>
+			</Route>
 
-        <Route path="*" element={<Error404 />} />
+			<Route path="*" element={<Error404 />} />
 
-      </Routes>
-      <Footer />
-    </>
-  )
+		</Routes>
+		<Footer />
+	</>)
 }
 
-
-function AdminRoutes() {
-  return (
-    <ProtectedRoute auth='admin'>
-      <AdminProvider>
-        <Outlet />
-      </AdminProvider>
-    </ProtectedRoute>
-  );
-}
-
-function ParticipantsRoutes() {
-  return (
-    <ProtectedRoute auth='participant'>
-      <ParticipantsProvider>
-        <Outlet />
-      </ParticipantsProvider>
-    </ProtectedRoute>
-  );
+function ProtectedRoute(props) {
+	if (props.for === myRole()) {
+		return <Outlet />;
+	} else {
+		return <Navigate to='/' />;
+	}
 }

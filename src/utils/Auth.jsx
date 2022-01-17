@@ -47,6 +47,7 @@ export async function loginParticipant(token, next) {
             login: true,
             role: "participant",
             token: "Bearer yes"
+            // token: "Bearer " + result.data.jwtToken
         }));
         next();
         return;
