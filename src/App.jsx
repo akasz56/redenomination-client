@@ -2,8 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Outlet, Navigate } from 'react-router-dom';
 import { myRole } from "./utils/Auth";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import { Header, Footer } from "./components/Layouts";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Admin from "./pages/admin/Admin";
@@ -13,8 +12,11 @@ import SimulationCreate from "./pages/admin/Simulation/Create";
 import SimulationEdit from "./pages/admin/Simulation/Edit";
 import Session from "./pages/admin/Session/Session";
 import SessionSummary from "./pages/admin/Session/Summary";
-import Participants from "./pages/participants/Participants";
+import Ready from "./pages/participants/Ready";
 import Error404 from './pages/errors/Error404';
+import PostedOffer from './pages/participants/PostedOffer';
+import DoubleAuction from './pages/participants/DoubleAuction';
+import Decentralized from './pages/participants/Decentralized';
 
 export default function App() {
 	return (<>
@@ -24,10 +26,11 @@ export default function App() {
 			<Route path="/">
 				<Route index element={<Home />} />
 				<Route path="login" element={<Login />} />
+				<Route path="participant-test" element={<Test />} />
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='admin' />}>
-				<Route path="/simulations">
+				<Route path="simulations">
 					<Route index element={<Admin />} />
 					<Route path="create" element={<SimulationCreate />} />
 					<Route path=":id">
@@ -36,16 +39,17 @@ export default function App() {
 						<Route path="summary" element={<SimulationSummary />} />
 					</Route>
 				</Route>
-				<Route path="/sessions/:id">
+				<Route path="sessions/:id">
 					<Route index element={<Session />} />
 					<Route path="summary" element={<SessionSummary />} />
 				</Route>
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='participant' />}>
-				<Route path="/participants">
-					<Route index element={<Participants />} />
-				</Route>
+				<Route path="ready" element={<Ready />} />
+				<Route path="Posted-offer" element={<PostedOffer />} />
+				<Route path="double-auction" element={<DoubleAuction />} />
+				<Route path="decentralized" element={<Decentralized />} />
 			</Route>
 
 			<Route path="*" element={<Error404 />} />
@@ -61,4 +65,13 @@ function ProtectedRoute(props) {
 	} else {
 		return <Navigate to='/' />;
 	}
+}
+
+function Test() {
+	localStorage.setItem('auth', JSON.stringify({
+		login: true,
+		role: "participant",
+		token: "Bearer yes"
+	}))
+	window.location.href = "/";
 }

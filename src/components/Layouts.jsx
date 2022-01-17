@@ -1,10 +1,11 @@
-import { Navbar, Container, Button } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react'
 import { Link } from 'react-router-dom';
+import { Navbar, Container, Button } from 'react-bootstrap'
 import { logout, isAdmin, isAuth } from '../utils/Auth';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Layouts.css';
 
-
-export default function Header() {
+export function Header() {
     const handlerClick = (event) => {
         event.preventDefault();
         logout(() => {
@@ -29,5 +30,14 @@ export default function Header() {
                 }
             </Container>
         </Navbar >
+    )
+}
+
+export function Footer() {
+    return (
+        <footer className='footer'>
+            <hr />
+            <p className='text-center text-muted fw-bold'>© 2022 Codepanda.id</p>
+        </footer>
     )
 }
