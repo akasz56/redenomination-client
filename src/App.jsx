@@ -16,9 +16,9 @@ import Session from "./pages/admin/Session/Session";
 import SessionSummary from "./pages/admin/Session/Summary";
 
 import Ready from "./pages/participants/Ready";
-import PostedOffer from './pages/participants/PostedOffer';
-import DoubleAuction from './pages/participants/DoubleAuction';
-import Decentralized from './pages/participants/Decentralized';
+import PostedOffer from './pages/participants/buyer/PostedOffer';
+import DoubleAuction from './pages/participants/buyer/DoubleAuction';
+import Decentralized from './pages/participants/buyer/Decentralized';
 
 import Error404 from './pages/errors/Error404';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -58,7 +58,7 @@ export default function App() {
 
 			<Route path="/" element={<ProtectedRoute for='participant' />}>
 				<Route path="ready" element={<Ready />} />
-				<Route path="Posted-offer" element={<PostedOffer />} />
+				<Route path="posted-offer" element={<PostedOffer />} />
 				<Route path="double-auction" element={<DoubleAuction />} />
 				<Route path="decentralized" element={<Decentralized />} />
 			</Route>

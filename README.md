@@ -2,7 +2,12 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- SimulationEdit
+- logout navbar => keluar
+- buyer double auction
+- buyer decentralized
+
+# Doing
+
 - SimulationSummary
 - SessionSummary
 
