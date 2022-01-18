@@ -2,7 +2,7 @@ import serverURL from "./serverURL";
 // IpB_b3rc4nd4
 
 export async function connectAsAdmin(password) {
-    return await fetch(serverURL + "api/sessions/admins", {
+    return await fetch(serverURL + "sessions/admins", {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -16,7 +16,7 @@ export async function connectAsAdmin(password) {
 }
 
 export async function connectAsParticipant(token) {
-    return await fetch(serverURL + "api/sessions/tokens", {
+    return await fetch(serverURL + "sessions/tokens", {
         method: "POST",
         headers: {
             "Accept": "application/json",
