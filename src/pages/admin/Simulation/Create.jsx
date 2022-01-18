@@ -17,7 +17,7 @@ export default function Create() {
 
     function submitForm(e) {
         e.preventDefault();
-        createSimulation({ ...formData, buyer: unitValues, seller: unitCosts });
+        createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
     }
 
     return (
@@ -112,20 +112,24 @@ export default function Create() {
                 <div className="col-md-6">
                     <p className="fw-bold text-center">Unit Cost</p>
                     {Array.from({ length: formData.participantNumber / 2 }).map((_, i) => (
-                        <Form.Group key={i + 1} controlId={"penjual " + (i + 1)} className="d-flex justify-content-evenly mb-3">
+                        <Form.Group key={i + 1} controlId={"penjual" + (i + 1)} className="d-flex justify-content-evenly mb-3">
                             <Form.Label>Penjual {i + 1}:</Form.Label>
                             <Form.Control type="number" style={{ width: "6em", display: "inline" }}
-                                onChange={(e) => { setUnitValues({ ...unitValues, ["unitValue"]: e.target.value }) }} />
+                                onChange={(e) => {
+                                    setUnitValues({ ...unitValues, ["penjual" + (i + 1)]: e.target.value });
+                                }} />
                         </Form.Group>
                     ))}
                 </div>
                 <div className="col-md-6">
                     <p className="fw-bold text-center">Unit Value</p>
                     {Array.from({ length: formData.participantNumber / 2 }).map((_, i) => (
-                        <Form.Group key={i + 1} controlId={"pembeli " + (i + 1)} className="d-flex justify-content-evenly mb-3">
+                        <Form.Group key={i + 1} controlId={"pembeli" + (i + 1)} className="d-flex justify-content-evenly mb-3">
                             <Form.Label>Pembeli {i + 1}:</Form.Label>
                             <Form.Control type="number" style={{ width: "6em", display: "inline" }}
-                                onChange={(e) => { setUnitCosts({ ...unitCosts, ["unitCost"]: e.target.value }) }} />
+                                onChange={(e) => {
+                                    setUnitCosts({ ...unitCosts, ["pembeli" + (i + 1)]: e.target.value });
+                                }} />
                         </Form.Group>
                     ))}
                 </div>
