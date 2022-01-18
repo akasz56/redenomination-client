@@ -1,5 +1,5 @@
 import serverURL from "./serverURL";
-import { getSimulation, getSession } from "./jsonFormats";
+import { getSimulation, getUnitCostValue } from "./jsonFormats";
 
 export async function createSimulation(body) {
     console.log(body);
@@ -43,6 +43,13 @@ export async function updateSimulation(id, body) {
 }
 
 export async function deleteSimulation(id) {
+    // return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
+    //     .then(response => response.json());
+}
+
+
+export async function readUnitCostValue(id) {
+    return getUnitCostValue;
     // return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
     //     .then(response => response.json());
 }
