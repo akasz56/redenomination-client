@@ -1,11 +1,11 @@
 // ---------------------------------------------------- Phase
-const postPhase = {
+export const postPhase = {
     sessionID: 1,
     phaseType: "phaseType",
     timer: "timer",
 }
 
-const getPhase = {
+export const getPhase = {
     phaseID: 1,
     sessionID: 1,
     phaseType: "phaseType",
@@ -15,7 +15,7 @@ const getPhase = {
 }
 
 // ---------------------------------------------------- Session
-const postSession = {
+export const postSession = {
     simulationID: 1,
     sessionType: "sessionType",
     timer: "timer",
@@ -23,7 +23,7 @@ const postSession = {
     timeLastRun: "timeLastRun"
 }
 
-const getSession = {
+export const getSession = {
     sessionID: 1,
     simulationID: 1,
     sessionType: "sessionType",
@@ -36,36 +36,36 @@ const getSession = {
 }
 
 // ---------------------------------------------------- Simulation
-const postSimulation = {
-    simulationType: "simulationType",
-    goodsType: "goodsType",
-    goodsName: "goodsName",
-    goodsPic: "goodsPic",
-    inflationType: "inflationType",
-    participantNumber: "participantNumber",
-    timer: "timer",
-    seller: [
-        { unitCost: "unitCost" },
-        { unitCost: "unitCost" },
-        { unitCost: "unitCost" },
-    ],
-    buyer: [
-        { unitValue: "unitValue" },
-        { unitValue: "unitValue" },
-        { unitValue: "unitValue" },
-    ]
+export const postSimulation = {
+    simulationType: "Posted Offer",
+    goodsType: "Non-Elastis (Beras)",
+    goodsName: '',
+    goodsPic: '',
+    inflationType: "Inflasi Rendah",
+    participantNumber: 20,
+    timer: 2,
+    unitCost: {
+        penjual1: "unitCost",
+        penjual2: "unitCost",
+        penjual3: "unitCost",
+    },
+    unitValue: {
+        pembeli1: "unitValue",
+        pembeli2: "unitValue",
+        pembeli3: "unitValue",
+    }
 }
 
-const getSimulation = {
+export const getSimulation = {
     simulationID: 1,
     token: "token",
-    simulationType: "simulationType",
-    goodsType: "goodsType",
-    goodsName: "goodsName",
-    goodsPic: "goodsPic",
-    inflationType: "inflationType",
-    participantNumber: "participantNumber",
-    timer: "timer",
+    simulationType: "Posted Offer",
+    goodsType: "Non-Elastis (Beras)",
+    goodsName: 'asd',
+    goodsPic: '',
+    inflationType: "Inflasi Rendah",
+    participantNumber: 20,
+    timer: 2,
     timeCreated: "timeCreated",
     sessions: [getSession,
         getSession,
@@ -75,8 +75,21 @@ const getSimulation = {
     }
 }
 
+export const getUnitCostValue = {
+    unitCost: {
+        penjual1: 1000,
+        penjual2: 2000,
+        penjual3: 3000,
+    },
+    unitValue: {
+        pembeli1: 4000,
+        pembeli2: 5000,
+        pembeli3: 6000,
+    }
+}
+
 // ---------------------------------------------------- Bargain
-const postBargain = {
+export const postBargain = {
     phaseID: 1,
     buyerID: 1,
     sellerID: 1,
@@ -84,7 +97,7 @@ const postBargain = {
     postedBy: "postedBy"
 }
 
-const getBargain = {
+export const getBargain = {
     bargainID: 1,
     phaseID: 1,
     buyerID: 1,
@@ -95,13 +108,13 @@ const getBargain = {
 }
 
 // ---------------------------------------------------- Transaction
-const postTransaction = {
+export const postTransaction = {
     buyerID: 1,
     sellerID: 1,
     price: "price",
 }
 
-const getTransaction = {
+export const getTransaction = {
     TransactionID: 1,
     buyerID: 1,
     sellerID: 1,
@@ -110,12 +123,12 @@ const getTransaction = {
 }
 
 // ---------------------------------------------------- Seller
-const postSeller = {
+export const postSeller = {
     simulationID: 1,
     loginToken: "loginToken",
     unitCost: "unitCost"
 }
-const getSeller = {
+export const getSeller = {
     sellerID: 1,
     simulationID: 1,
     loginToken: "loginToken",
@@ -123,32 +136,14 @@ const getSeller = {
 }
 
 // ---------------------------------------------------- Buyer
-const postBuyer = {
+export const postBuyer = {
     simulationID: 1,
     loginToken: "loginToken",
     unitValue: "unitValue"
 }
-const getBuyer = {
+export const getBuyer = {
     buyerID: 1,
     simulationID: 1,
     loginToken: "loginToken",
     unitValue: "unitValue"
 }
-
-
-export {
-    postSimulation,
-    getSimulation,
-    postSession,
-    getSession,
-    postPhase,
-    getPhase,
-    postBargain,
-    getBargain,
-    postTransaction,
-    getTransaction,
-    postSeller,
-    getSeller,
-    postBuyer,
-    getBuyer
-};
