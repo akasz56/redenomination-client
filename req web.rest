@@ -1,5 +1,4 @@
 GET https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
-
 ###
 POST https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
 Content-Type: application/json
@@ -31,7 +30,9 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8000/api/simulations/
+GET https://carbide-bongo-338115.et.r.appspot.com/api/sessions/
+###
+POST https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
 Content-Type: application/json
 
 {
