@@ -11,7 +11,7 @@ export default function Home() {
         document.title = "Redenomination Project App";
     }, []);
 
-    const handleSubmit = (event) => {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         if (myRole()) {
@@ -30,7 +30,7 @@ export default function Home() {
             window.location.href = "/";
         } else if (res.status === 401) {
             alert("Token tidak valid");
-            setPassword("");
+            setToken("");
         } else {
             console.log(res);
             alert("Terdapat kesalahan");

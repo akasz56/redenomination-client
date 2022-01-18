@@ -10,7 +10,7 @@ export default function Login() {
         document.title = "Login as Admin";
     }, []);
 
-    const handleSubmit = (event) => {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         if (myRole()) {
