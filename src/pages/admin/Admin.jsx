@@ -19,18 +19,18 @@ export default function Admin() {
         })
     }, []);
 
-    function addBtnHandler(event) {
-        event.preventDefault();
+    function addBtnHandler(e) {
+        e.preventDefault();
         navigate('/simulations/create');
     }
 
-    function rowHandler(event, id) {
-        event.preventDefault();
+    function rowHandler(e, id) {
+        e.preventDefault();
         navigate('/simulations/' + id);
     }
 
-    function logoutBtnHandler(event) {
-        event.preventDefault();
+    function logoutBtnHandler(e) {
+        e.preventDefault();
         if (window.confirm("Yakin ingin keluar?")) {
             localStorage.removeItem('auth');
             window.location.href = "/"
@@ -55,7 +55,7 @@ export default function Admin() {
                 <tbody>
                     {simulations ?
                         simulations.map((simulation, i) => (
-                            <tr key={i} className='simulations' onClick={event => rowHandler(event, simulation.id)}>
+                            <tr key={i} className='simulations' onClick={e => rowHandler(e, simulation.id)}>
                                 <td className='number'>{i + 1}</td>
                                 <td>
                                     <h3>{capitalize(simulation.simulationType)}</h3>

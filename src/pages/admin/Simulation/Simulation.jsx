@@ -55,6 +55,7 @@ export default function Simulation() {
     async function confirmDelete(e) {
         e.preventDefault();
         setModalDelete(prev => !prev);
+
         if (e.target.elements.confirm.value === capitalize(dataGet.simulationType)) {
             const res = await deleteSimulation(dataGet.id)
             if (res.status === 200) {

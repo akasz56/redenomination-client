@@ -11,8 +11,8 @@ export default function Home() {
         document.title = "Redenomination Project App";
     }, []);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
+    async function handleSubmit(e) {
+        e.preventDefault();
 
         if (myRole()) {
             alert(`Anda sudah login sebagai ${myRole()}`)

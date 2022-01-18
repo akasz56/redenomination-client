@@ -10,8 +10,8 @@ export default function Login() {
         document.title = "Login as Admin";
     }, []);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
+    async function handleSubmit(e) {
+        e.preventDefault();
 
         if (myRole()) {
             alert(`Anda sudah login sebagai ${myRole()}`)

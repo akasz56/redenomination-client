@@ -4,8 +4,8 @@ import { myRole } from '../Utils';
 import './Layouts.css';
 
 export function Header() {
-    const handlerClick = (event) => {
-        event.preventDefault();
+    function handlerClick(e) {
+        e.preventDefault();
         localStorage.removeItem('auth');
         window.location.href = "/";
     }
