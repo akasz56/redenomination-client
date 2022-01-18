@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { readSession } from '../../../adapters/Sessions';
 import Summary from '../../../components/Summary';
 import { Container } from 'react-bootstrap'
+import LoadingComponent from '../../../components/Loading';
 
 export default function Session() {
     const [data, setData] = useState(null);
@@ -53,11 +54,5 @@ export default function Session() {
             </Container>
         )
     else
-        return (
-            <section className="parent">
-                <div className="child">
-                    <h1>Tidak ada Data</h1>
-                </div>
-            </section>
-        )
+        return (<LoadingComponent className='child' />)
 }

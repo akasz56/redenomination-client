@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../utils/Auth';
 import { readAllSimulations } from '../../adapters/Simulations';
 import { Container, Button, Table } from 'react-bootstrap'
+import LoadingComponent from '../../components/Loading';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import './Admin.css'
@@ -71,7 +72,7 @@ export default function Admin() {
                             </tr>
                         ))
                         :
-                        <tr><td colSpan={3}><h1 className='my-5 text-center'>Tidak ada Data</h1></td></tr>
+                        <tr><td colSpan={3}><LoadingComponent className="mx-auto my-5" /></td></tr>
                     }
                 </tbody>
             </Table>

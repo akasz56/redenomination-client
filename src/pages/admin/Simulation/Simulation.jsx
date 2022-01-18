@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { readSimulation } from '../../../adapters/Simulations'
 import Summary from '../../../components/Summary';
-import { Container, Image } from 'react-bootstrap'
+import { Container, Image } from 'react-bootstrap';
+import LoadingComponent from '../../../components/Loading';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import './Simulation.css'
@@ -84,11 +85,6 @@ export default function Simulation() {
             </Container>
         )
     else
-        return (
-            <section className="parent">
-                <div className="child">
-                    <h1>Tidak ada Data</h1>
-                </div>
-            </section>
-        )
+        return (<LoadingComponent className='child' />)
+
 }
