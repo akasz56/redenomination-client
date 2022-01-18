@@ -1,4 +1,4 @@
-import { useEffect, useState, createElement } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { readSimulation, readUnitCostValue } from '../../../adapters/Simulations';
@@ -51,8 +51,8 @@ export default function Edit() {
                         <Form.Select
                             value={loading ? "" : data.goodsType}
                             onChange={(e) => { setData({ ...data, goodsType: e.target.value }) }}>
-                            <option value={"Non-Elastis (Beras)"}>Non-Elastis (Beras)</option>
-                            <option value={"Elastis (Mobil)"}>Elastis (Mobil)</option>
+                            <option value={"Non-Elastis"}>Non-Elastis</option>
+                            <option value={"Elastis"}>Elastis</option>
                         </Form.Select>
                     </Form.Group>
                 </div>
@@ -94,12 +94,12 @@ export default function Edit() {
                     <Form.Group controlId="">
                         <Form.Label>Jumlah participant</Form.Label>
                         <br />
-                        <Form.Control type="number" max={100} style={{ width: "5em", display: "inline" }}
+                        <Form.Control type="number" max={100} min={2} step={2} style={{ width: "5em", display: "inline" }}
                             defaultValue={loading ? "" : data.participantNumber}
                             onChange={(e) => { setData({ ...data, participantNumber: e.target.value }) }}
                         />
                         {loading ? '' :
-                            data.participantNumber % 2 == 0 ?
+                            data.participantNumber % 2 === 0 ?
                                 <>
                                     &nbsp;Maka, <span className='fw-bold'>{data.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{data.participantNumber / 2} Pembeli</span>
                                 </>
