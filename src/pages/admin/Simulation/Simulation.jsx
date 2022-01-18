@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
 import { createSession } from '../../../adapters/Sessions'
-import { capitalize } from '../../../utils/utils';
+import { capitalize } from '../../../Utils';
 import Summary from '../../../components/Summary';
 import { Button, Container, Form, Image, Modal } from 'react-bootstrap';
 import LoadingComponent from '../../../components/Loading';

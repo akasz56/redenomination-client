@@ -1,15 +1,13 @@
-import React from 'react'
 import { Link } from 'react-router-dom';
 import { Navbar, Container, Button, Nav } from 'react-bootstrap'
-import { logout, isAdmin, isAuth } from '../utils/Auth';
+import { myRole } from '../Utils';
 import './Layouts.css';
 
 export function Header() {
     const handlerClick = (event) => {
         event.preventDefault();
-        logout(() => {
-            window.location.href = "/";
-        });
+        localStorage.removeItem('auth');
+        window.location.href = "/";
     }
 
     return (
@@ -23,8 +21,8 @@ export function Header() {
                     <Nav className="mt-2 me-auto"></Nav>
                     <Nav>
                         <div>
-                            {isAuth() ?
-                                (isAdmin() ?
+                            {myRole() ?
+                                (myRole() === "admin" ?
                                     <Link to='/simulations' className="btn btn-outline-light"><i className='bx bxs-dashboard' /> Panel Admin</Link>
                                     :
                                     <Button variant="danger" onClick={handlerClick}>Log Out</Button>

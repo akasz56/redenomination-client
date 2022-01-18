@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
-import { loginParticipant } from '../utils/Auth';
+import { myRole } from '../Utils';
+import { connectAsParticipant } from "../adapters/Authentication";
 import './Home.css';
 
 export default function Home() {
@@ -12,9 +13,28 @@ export default function Home() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        loginParticipant(token, () => {
+
+        if (myRole()) {
+            alert(`Anda sudah login sebagai ${myRole()}`)
             window.location.href = "/";
-        });
+        }
+
+        const res = await connectAsParticipant(token);
+        if (res.status === 200) {
+            localStorage.setItem('auth', JSON.stringify({
+                login: true,
+                role: "participant",
+                token: "Bearer yes"
+                // token: "Bearer " + res.data.jwtToken
+            }));
+            window.location.href = "/";
+        } else if (res.status === 401) {
+            alert("Token tidak valid");
+            setPassword("");
+        } else {
+            console.log(res);
+            alert("Terdapat kesalahan");
+        }
     }
 
     return (

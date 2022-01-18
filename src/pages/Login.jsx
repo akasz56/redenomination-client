@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
-import { loginAsAdmin } from '../utils/Auth';
+import { connectAsAdmin } from "../adapters/Authentication";
+import { myRole } from '../Utils';
 
 export default function Login() {
     const [password, setPassword] = useState("");
@@ -11,9 +12,27 @@ export default function Login() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        loginAsAdmin(password, () => {
+
+        if (myRole()) {
+            alert(`Anda sudah login sebagai ${myRole()}`)
             window.location.href = "/admin";
-        });
+        }
+
+        const res = await connectAsAdmin(password);
+        if (res.status === 200) {
+            localStorage.setItem('auth', JSON.stringify({
+                login: true,
+                role: "admin",
+                token: "Bearer " + res.data.jwtToken
+            }));
+            window.location.href = "/admin";
+        } else if (res.status === 401) {
+            alert("Password Salah");
+            setPassword("");
+        } else {
+            console.log(res);
+            alert("Terdapat kesalahan");
+        }
     }
 
     return (

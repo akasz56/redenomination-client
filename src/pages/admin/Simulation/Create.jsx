@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { createSimulation } from '../../../adapters/Simulations';
 import UnitInput from '../../../components/UnitInput';

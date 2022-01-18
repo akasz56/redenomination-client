@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Outlet, Navigate } from 'react-router-dom';
-import { myRole } from "./utils/Auth";
+import { myRole } from '../Utils';
 
 import { Header, Footer } from "./components/Layouts";
 import Home from "./pages/Home";

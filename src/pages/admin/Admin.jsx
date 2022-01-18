@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../utils/Auth';
-import { capitalize } from '../../utils/utils';
+import { capitalize } from '../../Utils';
 import { readAllSimulations } from '../../adapters/Simulations';
 import { Container, Button, Table } from 'react-bootstrap'
 import LoadingComponent from '../../components/Loading';
@@ -33,7 +32,8 @@ export default function Admin() {
     function logoutBtnHandler(event) {
         event.preventDefault();
         if (window.confirm("Yakin ingin keluar?")) {
-            logout(() => window.location.href = "/");
+            localStorage.removeItem('auth');
+            window.location.href = "/"
         }
     }
 
