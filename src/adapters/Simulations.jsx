@@ -48,8 +48,8 @@ export async function updateSimulation(id, body) {
 }
 
 export async function deleteSimulation(id) {
-    // return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
-    //     .then(response => response.json());
+    return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
+        .then(response => response.json());
 }
 
 

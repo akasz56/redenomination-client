@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { readSimulation } from '../../../adapters/Simulations'
+import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
 import { createSession } from '../../../adapters/Sessions'
 import { capitalize } from '../../../utils/utils';
 import Summary from '../../../components/Summary';
@@ -14,7 +14,8 @@ import './Simulation.css'
 export default function Simulation() {
     const [data, setData] = useState(null);
     const [formData, setFormData] = useState({});
-    const [showModal, setShowModal] = useState(false);
+    const [showFormModal, setShowFormModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     let urlParams = useParams();
 
     useEffect(() => {
@@ -27,11 +28,14 @@ export default function Simulation() {
                 "timer": value.data.timer
             });
             document.title = "Simulation " + value.data.id;
+        }).catch((err) => {
+            window.alert("Simulasi Tidak ditemukan");
+            window.location.href = "/admin";
         })
     }, [urlParams.id]);
 
     function showCreateSessionForm(e) {
-        setShowModal(prev => !prev);
+        setShowFormModal(prev => !prev);
     }
 
     async function submitCreateSession(e) {
@@ -44,6 +48,25 @@ export default function Simulation() {
             alert("Terjadi Kesalahan, mohon coba lagi")
             console.log(res);
         }
+    }
+
+    function showDeleteSessionForm(e) {
+        setShowDeleteModal(prev => !prev);
+    }
+
+    async function confirmDelete(e) {
+        e.preventDefault();
+        setShowDeleteModal(prev => !prev);
+        if (e.target.elements.confirm.value === capitalize(data.simulationType)) {
+            const res = await deleteSimulation(data.id)
+            if (res.status === 200) {
+                window.location.href = "/admin";
+            } else {
+                alert("Terjadi Kesalahan, mohon coba lagi")
+                console.log(res);
+            }
+        }
+        else { alert("Simulasi gagal dihapus"); }
     }
 
     if (data)
@@ -108,7 +131,13 @@ export default function Simulation() {
                     />
                 </section>
 
-                <Modal show={showModal} onHide={showCreateSessionForm}>
+                <hr />
+                <section className='my-5'>
+                    <h1>Danger Zone</h1>
+                    <Button variant="danger" className='mt-3' onClick={showDeleteSessionForm} >Delete Simulation</Button>
+                </section>
+
+                <Modal show={showFormModal} onHide={showCreateSessionForm}>
                     <form onSubmit={submitCreateSession}>
                         <Modal.Header closeButton>
                             <Modal.Title>Tambah Ulangan Simulasi</Modal.Title>
@@ -138,6 +167,24 @@ export default function Simulation() {
                             <Button variant="primary" type="submit">
                                 Save Changes
                             </Button>
+                        </Modal.Footer>
+                    </form>
+                </Modal>
+
+                <Modal show={showDeleteModal} onHide={showDeleteSessionForm} centered>
+                    <form onSubmit={confirmDelete}>
+                        <Modal.Header closeButton>
+                            <Modal.Title id="contained-modal-title-vcenter">Konfirmasi Hapus Simulasi</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form.Group controlId="confirm">
+                                <p>Aksi ini <strong>tidak dapat dibatalkan</strong>. Ketik ulang Tipe Simulasi untuk mengkonfirmasi anda benar-benar ingin menghapus.</p>
+                                <Form.Control required placeholder={capitalize(data.simulationType)} name="confirm" />
+                            </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant='secondary' onClick={showDeleteSessionForm}>Batalkan</Button>
+                            <Button variant='danger' type="submit">Konfirmasi Hapus</Button>
                         </Modal.Footer>
                     </form>
                 </Modal>
