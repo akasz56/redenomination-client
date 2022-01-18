@@ -15,7 +15,8 @@ export async function createSession(body) {
 }
 
 export async function readSession(id) {
-    return getSession;
+    return await fetch(serverURL + "sessions/" + id)
+        .then(response => response.json());
 }
 
 export async function updateSession(id, body) { }

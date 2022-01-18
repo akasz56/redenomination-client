@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { readSession } from '../../../adapters/Sessions';
-import Summary from '../../../components/Summary';
 import { Container } from 'react-bootstrap'
+import { readSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
+import Summary from '../../../components/Summary';
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 
 export default function Session() {
     const [data, setData] = useState(null);
@@ -12,25 +14,32 @@ export default function Session() {
     useEffect(() => {
         document.title = "No Data";
         readSession(urlParams.id).then((value) => {
-            setData(value);
-            document.title = value.sessionID + " " + value.sessionType;
+            setData(value.data);
+            console.log(value.data);
+            document.title = "Session " + value.data.id;
         })
     }, [urlParams.id]);
+
+    function runSession() {
+        if (window.confirm("Jalankan sesi sekarang?")) {
+            console.log("yes")
+        }
+    }
 
     if (data)
         return (
             <Container>
                 <section className="header mt-5 row">
-                    <div className="col-6">
+                    <div className="col-9">
                         <h1>{data.sessionType}</h1>
-                        <p>SimulationID: {data.simulationID}</p>
+                        <p>SimulationID: {data.id}</p>
                     </div>
-                    <div className="col-6 text-end">
-                        <div>{data.timeCreated}</div>
-                        <Link to='#' className="btn btn-primary">Jalankan Sesi</Link>
+                    <div className="col-3 text-end">
+                        <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
                     </div>
                 </section>
                 <hr />
+                <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>
 
                 <section className='summary mt-5'>
                     <h1>Ringkasan Simulasi</h1>
