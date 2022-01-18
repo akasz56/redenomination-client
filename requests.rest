@@ -1,0 +1,61 @@
+GET https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
+
+###
+POST https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
+Content-Type: application/json
+
+{
+    "simulationType": "double action",
+    "goodsType": "Elastis",
+    "goodsName": "laptop",
+    "goodsPic": "https://via.placeholder.com/800x600",
+    "inflationType": "Inflasi Tinggi",
+    "participantNumber": 4,
+    "timer": 5,
+    "seller": [
+        {
+            "unitCost": 1000
+        },
+        {
+            "unitCost": 2000
+        }
+    ],
+    "buyer": [
+        {
+            "unitValue": 3000
+        },
+        {
+            "unitValue": 4000
+        }
+    ]
+}
+
+###
+POST http://localhost:8000/api/simulations/
+Content-Type: application/json
+
+{
+    "simulationType": "double action",
+    "goodsType": "Elastis",
+    "goodsName": "laptop",
+    "goodsPic": "https://via.placeholder.com/800x600",
+    "inflationType": "Inflasi Tinggi",
+    "participantNumber": 4,
+    "timer": 5,
+    "seller": [
+        {
+            "unitCost": 1000
+        },
+        {
+            "unitCost": 2000
+        }
+    ],
+    "buyer": [
+        {
+            "unitValue": 3000
+        },
+        {
+            "unitValue": 4000
+        }
+    ]
+}

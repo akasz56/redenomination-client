@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../utils/Auth';
 import { readAllSimulations } from '../../adapters/Simulations';
 import { Container, Button, Table } from 'react-bootstrap'
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 import './Admin.css'
 
 export default function Admin() {
@@ -11,7 +13,9 @@ export default function Admin() {
 
     useEffect(() => {
         document.title = "Admin Page";
-        readAllSimulations().then((value) => setSimulations(value))
+        readAllSimulations().then((value) => {
+            setSimulations(value.data);
+        })
     }, []);
 
     function addBtnHandler(event) {
@@ -29,6 +33,14 @@ export default function Admin() {
         if (window.confirm("Yakin ingin keluar?")) {
             logout(() => window.location.href = "/");
         }
+    }
+
+    function capitalize(string) {
+        const words = string.split(" ");
+        for (let i = 0; i < words.length; i++) {
+            words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+        }
+        return words.join(" ")
     }
 
     return (
@@ -49,13 +61,13 @@ export default function Admin() {
                 <tbody>
                     {simulations ?
                         simulations.map((simulation, i) => (
-                            <tr key={i} className='simulations' onClick={event => rowHandler(event, simulation.simulationID)}>
+                            <tr key={i} className='simulations' onClick={event => rowHandler(event, simulation.id)}>
                                 <td className='number'>{i + 1}</td>
                                 <td>
-                                    <h3>{simulation.simulationType}</h3>
+                                    <h3>{capitalize(simulation.simulationType)}</h3>
                                     <span>{simulation.goodsType}, {simulation.inflationType}</span>
                                 </td>
-                                <td>{simulation.timeCreated}</td>
+                                <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                             </tr>
                         ))
                         :

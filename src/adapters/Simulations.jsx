@@ -2,27 +2,34 @@ import serverURL from "./serverURL";
 import { getSimulation, getUnitCostValue } from "./jsonFormats";
 
 export async function createSimulation(body) {
+    body.simulationType = body.simulationType.toLowerCase()
+    body.participantNumber = parseInt(body.participantNumber)
+    body.timer = parseInt(body.timer)
+
+    body.buyer = Object.keys(body.unitValue).map((key) => { return { "unitValue": parseInt(body.unitValue[key]) } });
+    body.buyer = body.buyer.splice(0, body.participantNumber / 2);
+    delete body.unitValue
+
+    body.seller = Object.keys(body.unitCost).map((key) => { return { "unitCost": parseInt(body.unitCost[key]) } });
+    body.seller = body.seller.splice(0, body.participantNumber / 2);
+    delete body.unitCost
+
+    body.goodsPic = "https://via.placeholder.com/800x600";
+
     console.log(body);
-    return;
-    // return await fetch(serverURL + "simulations/", {
-    //     method: "POST",
-    //     headers: {
-    //         "Accept": "application/json",
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(body)
-    // }).then(response => response.json());
+    return await fetch(serverURL + "simulations/", {
+        method: "POST",
+        headers: {
+            'Accept': "application/json",
+            'ContentType': "application/json"
+        },
+        body: body
+    }).then(response => response.json());
 }
 
 export async function readAllSimulations() {
-    return [
-        getSimulation,
-        getSimulation,
-        getSimulation,
-        getSimulation
-    ];
-    // return await fetch(serverURL + "simulations/")
-    //     .then(response => response.json());
+    return await fetch(serverURL + "simulations/")
+        .then(response => response.json());
 }
 
 export async function readSimulation(id) {
@@ -36,7 +43,7 @@ export async function updateSimulation(id, body) {
     //     method: "PUT",
     //     headers: {
     //         "Accept": "application/json",
-    //         "Content-Type": "application/json"
+    //         "Content-Type: "application/json"
     //     },
     //     body: JSON.stringify(body)
     // }).then(response => response.json());
