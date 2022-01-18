@@ -64,7 +64,7 @@ export const getSimulation = {
     goodsName: 'asd',
     goodsPic: '',
     inflationType: "Inflasi Rendah",
-    participantNumber: 20,
+    participantNumber: 10,
     timer: 2,
     timeCreated: "timeCreated",
     sessions: [getSession,

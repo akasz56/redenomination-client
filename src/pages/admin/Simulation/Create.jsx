@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { createSimulation } from '../../../adapters/Simulations';
+import UnitInput from '../../../components/UnitInput';
 
 export default function Create() {
     const [unitValues, setUnitValues] = useState({});
@@ -82,7 +83,7 @@ export default function Create() {
                     <Form.Group controlId="">
                         <Form.Label>Jumlah participant</Form.Label>
                         <br />
-                        <Form.Control type="number" style={{ width: "5em", display: "inline" }}
+                        <Form.Control type="number" max={100} style={{ width: "5em", display: "inline" }}
                             defaultValue={formData.participantNumber}
                             onChange={(e) => { setFormData({ ...formData, participantNumber: e.target.value }) }} />
                         {formData.participantNumber % 2 == 0 ?
@@ -112,25 +113,17 @@ export default function Create() {
                 <div className="col-md-6">
                     <p className="fw-bold text-center">Unit Cost</p>
                     {Array.from({ length: formData.participantNumber / 2 }).map((_, i) => (
-                        <Form.Group key={i + 1} controlId={"penjual" + (i + 1)} className="d-flex justify-content-evenly mb-3">
-                            <Form.Label>Penjual {i + 1}:</Form.Label>
-                            <Form.Control type="number" style={{ width: "6em", display: "inline" }}
-                                onChange={(e) => {
-                                    setUnitValues({ ...unitValues, ["penjual" + (i + 1)]: e.target.value });
-                                }} />
-                        </Form.Group>
+                        <UnitInput key={i + 1} id={i + 1} role="pembeli" onChange={(e) => {
+                            setUnitCosts({ ...unitCosts, ["pembeli" + (i + 1)]: e.target.value });
+                        }} />
                     ))}
                 </div>
                 <div className="col-md-6">
                     <p className="fw-bold text-center">Unit Value</p>
                     {Array.from({ length: formData.participantNumber / 2 }).map((_, i) => (
-                        <Form.Group key={i + 1} controlId={"pembeli" + (i + 1)} className="d-flex justify-content-evenly mb-3">
-                            <Form.Label>Pembeli {i + 1}:</Form.Label>
-                            <Form.Control type="number" style={{ width: "6em", display: "inline" }}
-                                onChange={(e) => {
-                                    setUnitCosts({ ...unitCosts, ["pembeli" + (i + 1)]: e.target.value });
-                                }} />
-                        </Form.Group>
+                        <UnitInput key={i + 1} id={i + 1} role="penjual" onChange={(e) => {
+                            setUnitValues({ ...unitValues, ["penjual" + (i + 1)]: e.target.value });
+                        }} />
                     ))}
                 </div>
             </section>

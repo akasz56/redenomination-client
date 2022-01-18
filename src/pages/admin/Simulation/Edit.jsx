@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import { useEffect, useState, createElement } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import { readSimulation, readUnitCostValue } from '../../../adapters/Simulations';
+import UnitInput from '../../../components/UnitInput';
 
 export default function Edit() {
-    const [unitValues, setUnitValues] = useState({});
-    const [unitCosts, setUnitCosts] = useState({});
-    const [formData, setFormData] = useState({
-        simulationType: "Posted Offer",
-        goodsType: "Non-Elastis (Beras)",
-        goodsName: '',
-        goodsPic: '',
-        inflationType: "Inflasi Rendah",
-        participantNumber: 20,
-        timer: 2,
-    });
+    const [loading, setLoading] = useState(true);
+    const [unitValues, setUnitValues] = useState(null);
+    const [unitCosts, setUnitCosts] = useState(null);
+    const [data, setData] = useState(null);
+    const urlParams = useParams();
+
+
+    useEffect(() => {
+        document.title = "No Data";
+        readSimulation(urlParams.id).then((value) => {
+            setData(value);
+            document.title = "Edit " + value.simulationID + " " + value.simulationType;
+            readUnitCostValue(urlParams.id).then((value) => {
+                setUnitValues(value.unitValue);
+                setUnitCosts(value.unitCost);
+                setLoading(false);
+            })
+        })
+    }, [urlParams.id]);
 
     function submitForm(e) {
         e.preventDefault();
@@ -25,8 +36,8 @@ export default function Edit() {
             <Form.Group controlId='type' className="mb-3">
                 <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
                 <Form.Select
-                    value={formData.simulationType}
-                    onChange={(e) => { setFormData({ ...formData, simulationType: e.target.value }) }}>
+                    value={loading ? "" : data.simulationType}
+                    onChange={(e) => { setData({ ...data, simulationType: e.target.value }) }}>
                     <option value="Posted Offer">Posted Offer</option>
                     <option value="Double Auction">Double Auction</option>
                     <option value="Desentralisasi">Desentralisasi</option>
@@ -38,8 +49,8 @@ export default function Edit() {
                     <Form.Group controlId="">
                         <Form.Label className='required'>Jenis barang</Form.Label>
                         <Form.Select
-                            value={formData.goodsType}
-                            onChange={(e) => { setFormData({ ...formData, goodsType: e.target.value }) }}>
+                            value={loading ? "" : data.goodsType}
+                            onChange={(e) => { setData({ ...data, goodsType: e.target.value }) }}>
                             <option value={"Non-Elastis (Beras)"}>Non-Elastis (Beras)</option>
                             <option value={"Elastis (Mobil)"}>Elastis (Mobil)</option>
                         </Form.Select>
@@ -49,8 +60,8 @@ export default function Edit() {
                     <Form.Group controlId="">
                         <Form.Label className='required'>Jenis inflasi</Form.Label>
                         <Form.Select
-                            value={formData.inflationType}
-                            onChange={(e) => { setFormData({ ...formData, inflationType: e.target.value }) }}>
+                            value={loading ? "" : data.inflationType}
+                            onChange={(e) => { setData({ ...data, inflationType: e.target.value }) }}>
                             <option value={"Inflasi Rendah"}>Inflasi Rendah</option>
                             <option value={"Inflasi Tinggi"}>Inflasi Tinggi</option>
                         </Form.Select>
@@ -62,15 +73,18 @@ export default function Edit() {
                 <div className="col-md-6">
                     <Form.Group controlId="">
                         <Form.Label>Nama barang</Form.Label>
-                        <Form.Control type="text" placeholder="contoh: Mobil"
-                            onChange={(e) => { setFormData({ ...formData, goodsName: e.target.value }) }} />
+                        <Form.Control type="text"
+                            defaultValue={loading ? "" : data.goodsName}
+                            onChange={(e) => { setData({ ...data, goodsName: e.target.value }) }}
+                        />
                     </Form.Group>
                 </div>
                 <div className="col-md-6">
                     <Form.Group controlId="formFile" className="mb-3">
                         <Form.Label>Illustrasi Barang</Form.Label>
                         <Form.Control type="file" accept="image/*"
-                            onChange={(e) => { setFormData({ ...formData, goodsPic: e.target.value }) }} />
+                            onChange={(e) => { setData({ ...data, goodsPic: e.target.value }) }}
+                        />
                     </Form.Group>
                 </div>
             </section>
@@ -80,17 +94,19 @@ export default function Edit() {
                     <Form.Group controlId="">
                         <Form.Label>Jumlah participant</Form.Label>
                         <br />
-                        <Form.Control type="number" style={{ width: "5em", display: "inline" }}
-                            defaultValue={formData.participantNumber}
-                            onChange={(e) => { setFormData({ ...formData, participantNumber: e.target.value }) }} />
-                        {formData.participantNumber % 2 == 0 ?
-                            <>
-                                &nbsp;Maka, <span className='fw-bold'>{formData.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{formData.participantNumber / 2} Pembeli</span>
-                            </>
-                            :
-                            <span style={{ color: "red", fontWeight: "bold" }}>
-                                &nbsp;Jumlah participant Ganjil!
-                            </span>
+                        <Form.Control type="number" max={100} style={{ width: "5em", display: "inline" }}
+                            defaultValue={loading ? "" : data.participantNumber}
+                            onChange={(e) => { setData({ ...data, participantNumber: e.target.value }) }}
+                        />
+                        {loading ? '' :
+                            data.participantNumber % 2 == 0 ?
+                                <>
+                                    &nbsp;Maka, <span className='fw-bold'>{data.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{data.participantNumber / 2} Pembeli</span>
+                                </>
+                                :
+                                <span style={{ color: "red", fontWeight: "bold" }}>
+                                    &nbsp;Jumlah participant Ganjil!
+                                </span>
                         }
                     </Form.Group>
                 </div>
@@ -99,8 +115,9 @@ export default function Edit() {
                         <Form.Label>Timer</Form.Label>
                         <br />
                         <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
-                            defaultValue={formData.timer}
-                            onChange={(e) => { setFormData({ ...formData, timer: e.target.value }) }} />
+                            defaultValue={loading ? "" : data.timer}
+                            onChange={(e) => { setData({ ...data, timer: e.target.value }) }}
+                        />
                         &nbsp;Menit
                     </Form.Group>
                 </div>
@@ -109,23 +126,27 @@ export default function Edit() {
             <section className="row mt-5">
                 <div className="col-md-6">
                     <p className="fw-bold text-center">Unit Cost</p>
-                    {Array.from({ length: formData.participantNumber / 2 }).map((_, i) => (
-                        <Form.Group key={i + 1} controlId={"penjual " + (i + 1)} className="d-flex justify-content-evenly mb-3">
-                            <Form.Label>Penjual {i + 1}:</Form.Label>
-                            <Form.Control type="number" style={{ width: "6em", display: "inline" }}
-                                onChange={(e) => { setUnitValues({ ...unitValues, ["unitValue"]: e.target.value }) }} />
-                        </Form.Group>
-                    ))}
+                    {loading ? ''
+                        :
+                        Array.from({ length: data.participantNumber / 2 }).map((_, i) => (
+                            <UnitInput key={i + 1} id={i + 1} role="penjual"
+                                defaultValue={unitCosts["penjual" + (i + 1)]}
+                                onChange={(e) => {
+                                    setUnitCosts({ ...unitCosts, ["penjual" + (i + 1)]: e.target.value });
+                                }} />
+                        ))}
                 </div>
                 <div className="col-md-6">
                     <p className="fw-bold text-center">Unit Value</p>
-                    {Array.from({ length: formData.participantNumber / 2 }).map((_, i) => (
-                        <Form.Group key={i + 1} controlId={"pembeli " + (i + 1)} className="d-flex justify-content-evenly mb-3">
-                            <Form.Label>Pembeli {i + 1}:</Form.Label>
-                            <Form.Control type="number" style={{ width: "6em", display: "inline" }}
-                                onChange={(e) => { setUnitCosts({ ...unitCosts, ["unitCost"]: e.target.value }) }} />
-                        </Form.Group>
-                    ))}
+                    {loading ? ''
+                        :
+                        Array.from({ length: data.participantNumber / 2 }).map((_, i) => (
+                            <UnitInput key={i + 1} id={i + 1} role="pembeli"
+                                defaultValue={unitValues["pembeli" + (i + 1)]}
+                                onChange={(e) => {
+                                    setUnitValues({ ...unitValues, ["pembeli" + (i + 1)]: e.target.value });
+                                }} />
+                        ))}
                 </div>
             </section>
 
