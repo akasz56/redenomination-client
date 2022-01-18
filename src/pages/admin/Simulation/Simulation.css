@@ -14,16 +14,28 @@
     margin: 2rem 0;
 }
 
+.info {
+    margin: auto;
+    width: 70%;
+}
+
+.info-image {
+    margin: auto;
+    margin-top: 1.5rem;
+    min-width: 360px;
+    width: 45%;
+}
+
 @media (min-width: 768px) {
     .sessions div {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         margin: 1rem 3rem;
     }
 
     .info {
         display: flex;
-        justify-content: space-between;
-        margin: 2rem 1.5rem;
+        justify-content: space-around;
+        width: initial;
     }
 }

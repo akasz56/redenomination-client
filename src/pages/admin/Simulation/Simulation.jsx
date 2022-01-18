@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { readSimulation } from '../../../adapters/Simulations'
 import Summary from '../../../components/Summary';
-import { Container } from 'react-bootstrap'
+import { Container, Image } from 'react-bootstrap'
 import './Simulation.css'
 
 export default function Simulation() {
@@ -21,11 +21,11 @@ export default function Simulation() {
         return (
             <Container>
                 <section className="header mt-5 row">
-                    <div className='col-md-6'>
+                    <div className='col-6'>
                         <h1>{data.simulationType}</h1>
                         <div>Token Partisipan: <span className='fw-bold text-primary'>{data.token}</span></div>
                     </div>
-                    <div className='col-md-6 text-end'>
+                    <div className='col-6 text-end'>
                         <div>{data.timeCreated}</div>
                         <Link to='./edit' className="btn btn-outline-dark py-1">edit</Link>
                     </div>
@@ -43,10 +43,17 @@ export default function Simulation() {
 
                 <hr />
                 <section className='info'>
-                    <div>Jenis Barang : <span className='fw-bold'>{data.goodsType}</span></div>
+                    <div>Jenis Barang : <span className='fw-bold'>{data.goodsType} {data.goodsName ? ('(' + data.goodsName + ')') : ''}</span></div>
                     <div>Jenis Inflasi : <span className='fw-bold'>{data.inflationType}</span></div>
-                    <div>Timer : <span className='fw-bold'>{data.timer}</span></div>
+                    <div>Timer : <span className='fw-bold'>{data.timer} menit</span></div>
                 </section>
+                {data.goodsPic ?
+                    <section className='info-image'>
+                        <Image src={data.goodsPic} fluid></Image>
+                    </section>
+                    :
+                    ''
+                }
                 <hr />
 
                 <section className='summary mt-5'>
