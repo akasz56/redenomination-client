@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
-import './Home.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { loginParticipant } from '../utils/Auth';
+import './Home.css';
 
 export default function Home() {
     const [token, setToken] = useState("");

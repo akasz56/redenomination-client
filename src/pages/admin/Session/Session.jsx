@@ -20,12 +20,13 @@ export default function Session() {
         return (
             <Container>
                 <section className="header mt-5 row">
-                    <div className="col-md-6">
+                    <div className="col-6">
                         <h1>{data.sessionType}</h1>
                         <p>SimulationID: {data.simulationID}</p>
                     </div>
-                    <div className="col-md-6 text-end">
+                    <div className="col-6 text-end">
                         <div>{data.timeCreated}</div>
+                        <Link to='#' className="btn btn-primary">Jalankan Sesi</Link>
                     </div>
                 </section>
                 <hr />

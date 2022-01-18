@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../utils/Auth';
 import { readAllSimulations } from '../../adapters/Simulations';
 import { Container, Button, Table } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './Admin.css'
 
 export default function Admin() {

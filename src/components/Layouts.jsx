@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { Navbar, Container, Button, Nav } from 'react-bootstrap'
 import { logout, isAdmin, isAuth } from '../utils/Auth';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './Layouts.css';
 
 export function Header() {

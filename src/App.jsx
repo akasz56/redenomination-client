@@ -17,6 +17,7 @@ import Error404 from './pages/errors/Error404';
 import PostedOffer from './pages/participants/PostedOffer';
 import DoubleAuction from './pages/participants/DoubleAuction';
 import Decentralized from './pages/participants/Decentralized';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {
 	return (<>

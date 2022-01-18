@@ -36,7 +36,7 @@ export default function Simulation() {
                         <div key={index}>
                             <span className='fw-bold'>{session.sessionType}</span>
                             <span>{session.timeCreated}</span>
-                            <Link to={'./sessions/' + session.sessionID}>rincian ulangan...</Link>
+                            <Link to={'/sessions/' + session.sessionID}>rincian ulangan...</Link>
                         </div>
                     ))}
                 </section>
