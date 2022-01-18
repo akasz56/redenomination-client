@@ -1,5 +1,5 @@
 import serverURL from "./serverURL";
-import { getSimulation, getUnitCostValue } from "./jsonFormats";
+import { getUnitCostValue } from "./jsonFormats";
 
 export async function createSimulation(body) {
     body.simulationType = body.simulationType.toLowerCase()
@@ -16,14 +16,13 @@ export async function createSimulation(body) {
 
     body.goodsPic = "https://via.placeholder.com/800x600";
 
-    console.log(body);
     return await fetch(serverURL + "simulations/", {
         method: "POST",
         headers: {
             'Accept': "application/json",
-            'ContentType': "application/json"
+            'Content-Type': "application/json"
         },
-        body: body
+        body: JSON.stringify(body)
     }).then(response => response.json());
 }
 
@@ -33,9 +32,8 @@ export async function readAllSimulations() {
 }
 
 export async function readSimulation(id) {
-    return getSimulation;
-    // return await fetch(serverURL + "simulations/" + id)
-    //     .then(response => response.json());
+    return await fetch(serverURL + "simulations/" + id)
+        .then(response => response.json());
 }
 
 export async function updateSimulation(id, body) {

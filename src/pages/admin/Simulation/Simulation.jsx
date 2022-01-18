@@ -3,7 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { readSimulation } from '../../../adapters/Simulations'
 import Summary from '../../../components/Summary';
 import { Container, Image } from 'react-bootstrap'
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 import './Simulation.css'
+
 
 export default function Simulation() {
     const [data, setData] = useState(null);
@@ -12,8 +15,8 @@ export default function Simulation() {
     useEffect(() => {
         document.title = "No Data";
         readSimulation(urlParams.id).then((value) => {
-            setData(value);
-            document.title = value.simulationID + " " + value.simulationType;
+            setData(value.data);
+            document.title = value.data.id + " " + value.data.simulationType;
         })
     }, [urlParams.id]);
 
@@ -26,7 +29,9 @@ export default function Simulation() {
                         <div>Token Partisipan: <span className='fw-bold text-primary'>{data.token}</span></div>
                     </div>
                     <div className='col-6 text-end'>
-                        <div>{data.timeCreated}</div>
+                        <div>
+                            {dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                        </div>
                         <Link to='./edit' className="btn btn-outline-dark py-1">edit</Link>
                     </div>
                 </section>
@@ -39,6 +44,7 @@ export default function Simulation() {
                             <Link to={'/sessions/' + session.sessionID}>rincian ulangan...</Link>
                         </div>
                     ))}
+                    <Link to='create-session' id="passed" className="btn btn-primary mx-auto">+ Tambah ulangan</Link>
                 </section>
 
                 <hr />

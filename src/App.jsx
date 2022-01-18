@@ -6,17 +6,21 @@ import { Header, Footer } from "./components/Layouts";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Admin from "./pages/admin/Admin";
+
 import Simulation from "./pages/admin/Simulation/Simulation";
 import SimulationSummary from "./pages/admin/Simulation/Summary";
 import SimulationCreate from "./pages/admin/Simulation/Create";
 import SimulationEdit from "./pages/admin/Simulation/Edit";
+
 import Session from "./pages/admin/Session/Session";
 import SessionSummary from "./pages/admin/Session/Summary";
+
 import Ready from "./pages/participants/Ready";
-import Error404 from './pages/errors/Error404';
 import PostedOffer from './pages/participants/PostedOffer';
 import DoubleAuction from './pages/participants/DoubleAuction';
 import Decentralized from './pages/participants/Decentralized';
+
+import Error404 from './pages/errors/Error404';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {

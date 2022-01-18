@@ -20,15 +20,15 @@ export default function Create() {
         document.title = "Create new Simulation";
     })
 
-    function submitForm(e) {
+    async function submitForm(e) {
         e.preventDefault();
-        const res = createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
-        if (res.status === 200) {
-            console.log(res);
+        const res = await createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
+        if (res.status === 201) {
+            window.location.href = "/admin";
         } else {
+            alert("Terjadi Kesalahan, mohon coba lagi")
             console.log(res);
         }
-        // window.location.href = "/admin";
     }
 
     return (
@@ -42,7 +42,7 @@ export default function Create() {
                         value={formData.simulationType}
                         onChange={(e) => { setFormData({ ...formData, simulationType: e.target.value }) }}>
                         <option value="Posted Offer">Posted Offer</option>
-                        <option value="Double Action">Double Auction</option>
+                        <option value="Double Auction">Double Auction</option>
                         <option value="Desentralisasi">Desentralisasi</option>
                     </Form.Select>
                 </Form.Group>
