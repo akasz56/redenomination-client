@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../utils/Auth';
+import { capitalize } from '../../utils/utils';
 import { readAllSimulations } from '../../adapters/Simulations';
 import { Container, Button, Table } from 'react-bootstrap'
 import LoadingComponent from '../../components/Loading';
@@ -34,14 +35,6 @@ export default function Admin() {
         if (window.confirm("Yakin ingin keluar?")) {
             logout(() => window.location.href = "/");
         }
-    }
-
-    function capitalize(string) {
-        const words = string.split(" ");
-        for (let i = 0; i < words.length; i++) {
-            words[i] = words[i][0].toUpperCase() + words[i].substr(1);
-        }
-        return words.join(" ")
     }
 
     return (
