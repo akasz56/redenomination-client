@@ -1,5 +1,4 @@
 import serverURL from "./serverURL";
-import { getSession } from "./jsonFormats";
 
 export async function createSession(body) {
     body.timer = parseInt(body.timer)

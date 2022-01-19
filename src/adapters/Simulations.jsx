@@ -1,5 +1,4 @@
 import serverURL from "./serverURL";
-import { getUnitCostValue } from "./jsonFormats";
 
 export async function createSimulation(body) {
     body.simulationType = body.simulationType.toLowerCase()
@@ -54,7 +53,6 @@ export async function deleteSimulation(id) {
 
 
 export async function readUnitCostValue(id) {
-    return getUnitCostValue;
     // return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
     //     .then(response => response.json());
 }

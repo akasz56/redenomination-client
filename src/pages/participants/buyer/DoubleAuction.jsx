@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
+import Label from '../../../components/Label'
 
 export default function DoubleAuction() {
 
@@ -10,7 +11,7 @@ export default function DoubleAuction() {
     function submitHandler() { }
 
     return (
-        <Container className=' text-center d-flex flex-column'>
+        <Container className='text-center d-flex flex-column'>
 
             <section className='row my-5 py-5'>
                 <div className="col-md-6">
@@ -24,19 +25,19 @@ export default function DoubleAuction() {
             </section>
 
             <Form onSubmit={submitHandler} className='mb-5'>
-                <Form.Group controlId="asd">
+                <Form.Group controlId="inputHarga">
                     <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
                     <Form.Control type="number" required />
                 </Form.Group>
                 <Button type="submit" className='mt-3 py-3 px-5 fs-4'>Tetapkan</Button>
             </Form>
 
-            <div className='my-5 mx-auto p-3 rounded shadow'>
-                <p className='fw-bolder'>Pre-Redenominasi</p>
-                <p>Jenis Barang: Elastis (Mobil)</p>
-                <p>Jenis Inflasi: Tinggi</p>
-            </div>
-
+            <Label
+                className="my-5 mx-auto"
+                phase="Pre-Redenominasi"
+                goods="Elastis (Mobil)"
+                inflation="Tinggi"
+            />
         </Container>
     )
 }
