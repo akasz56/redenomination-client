@@ -1,4 +1,5 @@
 import serverURL from "./serverURL";
+import { myToken } from '../Utils';
 
 export async function createSimulation(body) {
     body.simulationType = body.simulationType.toLowerCase()
@@ -19,20 +20,27 @@ export async function createSimulation(body) {
         method: "POST",
         headers: {
             'Accept': "application/json",
-            'Content-Type': "application/json"
+            'Content-Type': "application/json",
+            'Authorization': myToken()
         },
         body: JSON.stringify(body)
     }).then(response => response.json());
 }
 
 export async function readAllSimulations() {
-    return await fetch(serverURL + "simulations/")
-        .then(response => response.json());
+    return await fetch(serverURL + "simulations/", {
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
 }
 
 export async function readSimulation(id) {
-    return await fetch(serverURL + "simulations/" + id)
-        .then(response => response.json());
+    return await fetch(serverURL + "simulations/" + id, {
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
 }
 
 export async function updateSimulation(id, body) {
@@ -40,19 +48,20 @@ export async function updateSimulation(id, body) {
     //     method: "PUT",
     //     headers: {
     //         "Accept": "application/json",
-    //         "Content-Type: "application/json"
+    //         "Content-Type: "application/json",
+    // 'Authorization': myToken()
     //     },
     //     body: JSON.stringify(body)
     // }).then(response => response.json());
 }
 
 export async function deleteSimulation(id) {
-    return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
-        .then(response => response.json());
+    return await fetch(serverURL + "simulations/" + id, {
+        method: "DELETE",
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
 }
 
-
-export async function readUnitCostValue(id) {
-    // return await fetch(serverURL + "simulations/" + id, { method: "DELETE" })
-    //     .then(response => response.json());
-}
+export async function readUnitCostValue(id) { }
