@@ -1,4 +1,5 @@
 GET https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NDI2MDI3NTh9.YTU54HqEbc00xSZGhAH_flkXDTD1U4B7IjxPVxx9TcU
 ###
 POST https://carbide-bongo-338115.et.r.appspot.com/api/simulations/
 Content-Type: application/json
