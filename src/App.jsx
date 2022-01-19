@@ -1,5 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { myRole } from './Utils';
 
 import { Header, Footer } from "./components/Layouts";
@@ -15,13 +14,13 @@ import SimulationEdit from "./pages/admin/Simulation/Edit";
 import Session from "./pages/admin/Session/Session";
 import SessionSummary from "./pages/admin/Session/Summary";
 
+import Participants from './pages/participants/Participants';
 import PostedOffer from './pages/participants/buyer/PostedOffer';
 import DoubleAuction from './pages/participants/buyer/DoubleAuction';
 import Decentralized from './pages/participants/buyer/Decentralized';
 
 import Error404 from './pages/errors/Error404';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Participants from './pages/participants/Participants';
 
 export default function App() {
 	return (<>

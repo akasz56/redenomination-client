@@ -9,14 +9,13 @@ export default function Card(props) {
 
     const role = props.role ? props.role : "Title 0";
 
-    const elseProps = Object.keys(props).
-        filter((key) => (
-            !key.includes('onBtnClick') &&
-            !key.includes('variant') &&
-            !key.includes('role') &&
-            !key.includes('className') &&
-            !key.includes('children'))).
-        reduce((cur, key) => { return Object.assign(cur, { [key]: props[key] }) }, {});
+    const elseProps = Object.keys(props).filter((key) => (
+        !key.includes('onBtnClick') &&
+        !key.includes('variant') &&
+        !key.includes('role') &&
+        !key.includes('className') &&
+        !key.includes('children')))
+        .reduce((cur, key) => { return Object.assign(cur, { [key]: props[key] }) }, {});
 
     return (
         <div className={"simulation-card " + props.className} {...elseProps}>

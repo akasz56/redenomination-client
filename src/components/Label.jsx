@@ -9,13 +9,12 @@ export default function Label(props) {
         </>)
     }
 
-    const elseProps = Object.keys(props).
-        filter((key) => (
-            !key.includes('className') &&
-            !key.includes('phase') &&
-            !key.includes('goods') &&
-            !key.includes('inflation'))).
-        reduce((cur, key) => { return Object.assign(cur, { [key]: props[key] }) }, {});
+    const elseProps = Object.keys(props).filter((key) => (
+        !key.includes('className') &&
+        !key.includes('phase') &&
+        !key.includes('goods') &&
+        !key.includes('inflation')))
+        .reduce((cur, key) => { return Object.assign(cur, { [key]: props[key] }) }, {});
 
     return (
         <div className={props.className + " p-3 rounded shadow"} {...elseProps}>
