@@ -1,7 +1,7 @@
 // unit value unit cost belum selesai
 import { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 import { readSession } from '../../../adapters/Sessions';
 import { readSimulation } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
@@ -17,7 +17,7 @@ export default function Summary() {
         readSession(id)
             .then((value) => {
                 setData(value.data);
-                document.title = "Ringkasan Session " + value.data.id;
+                document.title = "Ringkasan Ulangan " + value.data.id;
                 readSimulation(value.data.simulation.id)
                     .then((res) => { setData({ ...value.data, simulation: res.data }); })
                     .catch(catchErr)
@@ -26,7 +26,7 @@ export default function Summary() {
     }, []);
 
     function catchErr() {
-        window.alert("Simulasi Tidak ditemukan");
+        window.alert("Ulangan tidak ditemukan");
         window.history.back();
     }
 
@@ -39,7 +39,7 @@ export default function Summary() {
         return (
             <Container>
                 <section className='mt-5'>
-                    <h1>Ringkasan Sesi</h1>
+                    <h1>Ringkasan Ulangan</h1>
                     <p>SessionID: <Link to={'/sessions/' + data.id}>{data.id}</Link></p>
                 </section>
 

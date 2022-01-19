@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { io } from 'socket.io-client';
 import { Container, Button } from 'react-bootstrap'
+import { capitalize } from '../../Utils';
 import "./Ready.css";
 
-export default function Ready() {
+const socket = io.connect("http://localhost:5000/");
+
+export default function Ready({ data }) {
     const [ready, setReady] = useState(false)
+
+    useEffect(() => {
+    })
 
     function btnHandler(e) {
         e.preventDefault()
-        setReady((prev) => !prev);
+        const changeStatus = !ready;
+        setReady(changeStatus);
+        socket.emit('ready', changeStatus ? 'ready' : 'notready');
     }
 
     const btnClasses = 'btn-ready fs-3 px-5 py-3';
@@ -19,10 +28,12 @@ export default function Ready() {
             </section>
 
             <section className='mt-3'>
-                <p>dalam simulasi “Kajian pengaruh Redenominasi dalam Sistem transaksi <span className='fw-bold'>Posted Offer</span>”</p>
+                <p>dalam simulasi “Kajian pengaruh Redenominasi dalam
+                    Sistem transaksi <span className='fw-bold'>{capitalize(data.simulationType)}</span>”
+                </p>
                 <div>
-                    <p>Jenis Barang: <span className='fw-bold'>Elastis (Mobil)</span></p>
-                    <p>Jenis Inflasi: <span className='fw-bold'>Inflasi Tinggi</span></p>
+                    <p>Jenis Barang: <span className='fw-bold'>{data.goodsType} {(data.goodsName) ? ('(' + capitalize(data.goodsName)) + ')' : ''}</span></p>
+                    <p>Jenis Inflasi: <span className='fw-bold'>{data.inflationType}</span></p>
                 </div>
             </section>
 

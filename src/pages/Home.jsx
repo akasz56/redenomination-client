@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
-import { myRole } from '../Utils';
 import { connectAsParticipant } from "../adapters/Authentication";
+import { myRole } from '../Utils';
 import './Home.css';
 
 export default function Home() {
@@ -29,8 +29,8 @@ export default function Home() {
             }));
             window.location.href = "/";
         } else if (res.status === 401) {
-            alert("Token tidak valid");
             setToken("");
+            alert("Token tidak valid");
         } else {
             console.log(res);
             alert("Terdapat kesalahan");
@@ -45,7 +45,7 @@ export default function Home() {
                     <Form.Label>Masukkan token partisipan anda disini</Form.Label>
                     <Form.Control type="text" placeholder="Token" autoComplete="off" value={token} onChange={e => setToken(e.target.value)} />
                 </Form.Group>
-                <Button className="mt-3 float-end" variant="primary" type="submit">Submit</Button>
+                <Button className="mt-3 float-end" variant="primary" type="submit">Masuk</Button>
             </Form>
         </Container >
     )

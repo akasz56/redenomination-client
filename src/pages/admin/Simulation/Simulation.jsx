@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
-import { createSession } from '../../../adapters/Sessions'
-import { capitalize } from '../../../Utils';
-import SummaryComponent from '../../../components/Summary';
 import { Button, Container, Form, Image, Modal } from 'react-bootstrap';
-import LoadingComponent from '../../../components/Loading';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
+import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
+import { createSession } from '../../../adapters/Sessions'
+import SummaryComponent from '../../../components/Summary';
+import LoadingComponent from '../../../components/Loading';
+import { capitalize } from '../../../Utils';
 import './Simulation.css'
 
 
@@ -19,7 +19,7 @@ export default function Simulation() {
     let urlParams = useParams();
 
     useEffect(() => {
-        document.title = "No Data";
+        document.title = "Tidak ada Data";
         readSimulation(urlParams.id)
             .then((value) => {
                 setDataGet(value.data);
@@ -132,8 +132,8 @@ export default function Simulation() {
 
                 <hr />
                 <section className='my-5'>
-                    <h1>Danger Zone</h1>
-                    <Button variant="danger" className='mt-3' onClick={showDeleteSessionForm} >Delete Simulation</Button>
+                    <h1>Zona Bahaya</h1>
+                    <Button variant="danger" className='mt-3' onClick={showDeleteSessionForm}>Hapus Simulasi</Button>
                 </section>
 
                 <Modal show={modalCreate} onHide={showCreateSessionForm}>
@@ -160,12 +160,8 @@ export default function Simulation() {
                             </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={showCreateSessionForm}>
-                                Close
-                            </Button>
-                            <Button variant="primary" type="submit">
-                                Save Changes
-                            </Button>
+                            <Button variant="secondary" onClick={showCreateSessionForm}>Close</Button>
+                            <Button variant="primary" type="submit">Save Changes</Button>
                         </Modal.Footer>
                     </form>
                 </Modal>

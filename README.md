@@ -2,9 +2,10 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- logout navbar => keluar
-- buyer double auction
-- buyer decentralized
+- interface bahasa indo
+- fetch response handling
+- nama barang foto barang required
+- PUT Simulations
 
 # Doing
 

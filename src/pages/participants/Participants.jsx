@@ -27,7 +27,7 @@ export default function Participants() {
     }, [urlParams.id]);
 
     if (dataGet)
-        return <Ready />
+        return <Ready data={dataGet} />
     else
         return <LoadingComponent className='child' />
 }

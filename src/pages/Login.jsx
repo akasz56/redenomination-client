@@ -7,14 +7,14 @@ export default function Login() {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
-        document.title = "Login as Admin";
+        document.title = "Masuk";
     }, []);
 
     async function handleSubmit(e) {
         e.preventDefault();
 
         if (myRole()) {
-            alert(`Anda sudah login sebagai ${myRole()}`)
+            alert(`Anda sudah masuk sebagai ${myRole()}`)
             window.location.href = "/admin";
         }
 
@@ -27,8 +27,8 @@ export default function Login() {
             }));
             window.location.href = "/admin";
         } else if (res.status === 401) {
-            alert("Password Salah");
             setPassword("");
+            alert("Password Salah");
         } else {
             console.log(res);
             alert("Terdapat kesalahan");
@@ -42,7 +42,7 @@ export default function Login() {
                     <Form.Label>Masukkan password admin</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                 </Form.Group>
-                <Button className="mt-3 float-end" variant="primary" type="submit">Submit</Button>
+                <Button className="mt-3 float-end" variant="primary" type="submit">Masuk</Button>
             </Form>
         </Container>
     )

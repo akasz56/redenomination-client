@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap'
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 import { readSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
-import dayjs from "dayjs";
-import "dayjs/locale/id";
 
 export default function Session() {
     const [data, setData] = useState(null);
     let urlParams = useParams();
 
     useEffect(() => {
-        document.title = "No Data";
+        document.title = "Tidak ada Data";
         readSession(urlParams.id).then((value) => {
             setData(value.data);
-            document.title = "Session " + value.data.id;
+            document.title = "Ulangan " + value.data.id;
         })
     }, [urlParams.id]);
 

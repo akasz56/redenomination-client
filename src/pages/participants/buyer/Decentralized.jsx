@@ -6,7 +6,7 @@ import Label from '../../../components/Label'
 export default function Decentralized() {
 
     useEffect(() => {
-        document.title = "Posted Offer"
+        document.title = "Decentralized"
     }, [])
 
     return (

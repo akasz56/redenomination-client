@@ -17,7 +17,7 @@ export default function Create() {
     });
 
     useEffect(() => {
-        document.title = "Create new Simulation";
+        document.title = "Buat Simulasi baru";
     })
 
     async function submitForm(e) {
@@ -92,7 +92,7 @@ export default function Create() {
                 <section className="row mb-3">
                     <div className="col-md-6">
                         <Form.Group controlId="">
-                            <Form.Label className='required'>Jumlah participant</Form.Label>
+                            <Form.Label className='required'>Jumlah responden</Form.Label>
                             <br />
                             <Form.Control type="number" max={100} min={2} step={2} style={{ width: "5em", display: "inline" }}
                                 defaultValue={formData.participantNumber}
@@ -102,9 +102,7 @@ export default function Create() {
                                     &nbsp;Maka, <span className='fw-bold'>{formData.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{formData.participantNumber / 2} Pembeli</span>
                                 </>
                                 :
-                                <span style={{ color: "red", fontWeight: "bold" }}>
-                                    &nbsp;Jumlah participant Ganjil!
-                                </span>
+                                <span style={{ color: "red", fontWeight: "bold" }}>&nbsp;Jumlah responden ganjil!</span>
                             }
                         </Form.Group>
                     </div>
@@ -127,11 +125,10 @@ export default function Create() {
                             <UnitInput
                                 key={i + 1}
                                 id={i + 1}
-                                role="penjual"
                                 required
-                                onChange={(e) => {
-                                    setUnitValues({ ...unitValues, ["penjual" + (i + 1)]: e.target.value });
-                                }} />
+                                role="penjual"
+                                onChange={(e) => { setUnitValues({ ...unitValues, ["penjual" + (i + 1)]: e.target.value }); }}
+                            />
                         ))}
                     </div>
                     <div className="col-md-6">
@@ -140,16 +137,15 @@ export default function Create() {
                             <UnitInput
                                 key={i + 1}
                                 id={i + 1}
-                                role="pembeli"
                                 required
-                                onChange={(e) => {
-                                    setUnitCosts({ ...unitCosts, ["pembeli" + (i + 1)]: e.target.value });
-                                }} />
+                                role="pembeli"
+                                onChange={(e) => { setUnitCosts({ ...unitCosts, ["pembeli" + (i + 1)]: e.target.value }); }}
+                            />
                         ))}
                     </div>
                 </section>
 
-                <Button className="my-3 p-3 float-end" variant="primary" type="submit">Buat Simulasi Baru</Button>
+                <Button className="my-3 p-3 float-end" variant="primary" type="submit">Submit</Button>
             </form>
         </Container >
     )

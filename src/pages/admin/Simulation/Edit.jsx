@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Container, Form, Button, Image } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { Container, Form, Button, Image } from 'react-bootstrap';
 import { readSimulation, readUnitCostValue } from '../../../adapters/Simulations';
 import UnitInput from '../../../components/UnitInput';
 
@@ -13,7 +13,7 @@ export default function Edit() {
 
 
     useEffect(() => {
-        document.title = "No Data";
+        document.title = "Tidak ada Data";
         readSimulation(urlParams.id).then((value) => {
             setData(value.data);
             document.title = "Edit " + value.data.id;
@@ -94,7 +94,7 @@ export default function Edit() {
                 <section className="row mb-3">
                     <div className="col-md-6">
                         <Form.Group controlId="">
-                            <Form.Label className="required">Jumlah participant</Form.Label>
+                            <Form.Label className="required">Jumlah responden</Form.Label>
                             <br />
                             <Form.Control type="number" max={100} min={2} step={2} style={{ width: "5em", display: "inline" }}
                                 required
@@ -108,7 +108,7 @@ export default function Edit() {
                                     </>
                                     :
                                     <span style={{ color: "red", fontWeight: "bold" }}>
-                                        &nbsp;Jumlah participant Ganjil!
+                                        &nbsp;Jumlah responden ganjil!
                                     </span>
                             }
                         </Form.Group>
@@ -162,7 +162,7 @@ export default function Edit() {
                     </div>
                 </section>
 
-                <Button className="my-3 p-3 float-end" type="submit">Ubah Simulasi</Button>
+                <Button className="my-3 p-3 float-end" type="submit">Simpan</Button>
             </form>
         </Container >
     )

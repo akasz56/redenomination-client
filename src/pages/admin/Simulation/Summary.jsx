@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 import { readSimulation } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import UnitShow from '../../../components/UnitShow';
-import dayjs from "dayjs";
-import "dayjs/locale/id";
-import { Link } from 'react-router-dom';
 
 export default function Summary() {
     const [data, setData] = useState(false);
 
     useEffect(() => {
-        document.title = "No Data";
+        document.title = "Tidak ada Data";
         const id = getIDfromLink(window.location.pathname)
         readSimulation(id)
             .then((value) => {
                 setData(value.data);
-                document.title = "Ringkasan Session " + value.data.id;
+                document.title = "Ringkasan Simulasi " + value.data.id;
             })
             .catch((err) => {
-                window.alert("Simulasi Tidak ditemukan");
+                window.alert("Simulasi tidak ditemukan");
                 window.location.href = "/admin";
             })
     }, []);

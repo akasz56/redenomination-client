@@ -25,10 +25,10 @@ export function Header() {
                                 (myRole() === "admin" ?
                                     <Link to='/simulations' className="btn btn-outline-light"><i className='bx bxs-dashboard' /> Panel Admin</Link>
                                     :
-                                    <Button variant="danger" onClick={handlerClick}>Log Out</Button>
+                                    <Button variant="danger" onClick={handlerClick}>Keluar</Button>
                                 )
                                 :
-                                <Link to='/login' className="btn btn-primary">Login as Admin</Link>
+                                <Link to='/login' className="btn btn-primary">Masuk</Link>
                             }
                         </div>
                     </Nav>

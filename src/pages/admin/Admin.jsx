@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { capitalize } from '../../Utils';
-import { readAllSimulations } from '../../adapters/Simulations';
 import { Container, Button, Table } from 'react-bootstrap'
-import LoadingComponent from '../../components/Loading';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
+import { readAllSimulations } from '../../adapters/Simulations';
+import LoadingComponent from '../../components/Loading';
+import { capitalize } from '../../Utils';
 import './Admin.css'
 
 export default function Admin() {
@@ -13,7 +13,7 @@ export default function Admin() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.title = "Admin Page";
+        document.title = "Halaman Admin";
         readAllSimulations().then((value) => {
             setSimulations(value.data);
         })
@@ -40,7 +40,7 @@ export default function Admin() {
     return (
         <Container>
             <div className="mt-5 header">
-                <span className="fs-1">History Simulasi</span>
+                <span className="fs-1">Daftar Simulasi</span>
                 <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
             </div>
 
