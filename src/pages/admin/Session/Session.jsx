@@ -6,17 +6,36 @@ import "dayjs/locale/id";
 import { readSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
+import Error404 from '../../errors/Error404';
 
 export default function Session() {
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
     let urlParams = useParams();
 
     useEffect(() => {
         document.title = "Tidak ada Data";
-        readSession(urlParams.id).then((value) => {
-            setData(value.data);
-            document.title = "Ulangan " + value.data.id;
-        })
+
+        async function fetchData() {
+            const res = await readSession(urlParams.id)
+            if (res.status === 200) {
+                setData(res.data);
+                setLoading(false)
+                document.title = "Ulangan " + res.data.id;
+            } else if (res.status === 401) {
+                setLoading(false)
+                console.log(res);
+                window.alert("Tidak diizinkan mengakses");
+            } else if (res.status === 404) {
+                window.alert("Ulangan tidak ditemukan");
+                window.location.href = "/admin";
+            } else {
+                setLoading(false)
+                console.log(res);
+                alert("Terjadi Kesalahan");
+            }
+        }
+        fetchData();
     }, [urlParams.id]);
 
     function runSession() {
@@ -25,42 +44,44 @@ export default function Session() {
         }
     }
 
-    if (data)
-        return (
-            <Container>
-                <section className="header mt-5 row">
-                    <div className="col-9">
-                        <h1>{data.sessionType}</h1>
-                        <p>SimulationID: {data.id}</p>
-                    </div>
-                    <div className="col-3 text-end">
-                        <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
-                    </div>
-                </section>
-                <hr />
-                <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>
+    if (loading) { return (<LoadingComponent className='child' />) }
+    else {
+        if (data) {
+            return (
+                <Container>
+                    <section className="header mt-5 row">
+                        <div className="col-9">
+                            <h1>{data.sessionType}</h1>
+                            <p>SimulationID: {data.id}</p>
+                        </div>
+                        <div className="col-3 text-end">
+                            <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
+                        </div>
+                    </section>
+                    <hr />
+                    <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>
 
-                <section className='summary mt-5'>
-                    <h1>Ringkasan Simulasi</h1>
-                    <Link to={'./summary'}>rincian simulasi...</Link>
-                    <SummaryComponent
-                        title="Rata-Rata Jumlah transaksi"
-                        src="https://via.placeholder.com/400x360"
-                        download=""
-                    />
-                    <SummaryComponent
-                        title="Rata-rata Harga kesepakatan"
-                        src="https://via.placeholder.com/400x360"
-                        download=""
-                    />
-                    <SummaryComponent
-                        title="Log Tawar-Menawar"
-                        src="https://via.placeholder.com/400x360"
-                        download=""
-                    />
-                </section>
-            </Container>
-        )
-    else
-        return (<LoadingComponent className='child' />)
+                    <section className='summary mt-5'>
+                        <h1>Ringkasan Simulasi</h1>
+                        <Link to={'./summary'}>rincian simulasi...</Link>
+                        <SummaryComponent
+                            title="Rata-Rata Jumlah transaksi"
+                            src="https://via.placeholder.com/400x360"
+                            download=""
+                        />
+                        <SummaryComponent
+                            title="Rata-rata Harga kesepakatan"
+                            src="https://via.placeholder.com/400x360"
+                            download=""
+                        />
+                        <SummaryComponent
+                            title="Log Tawar-Menawar"
+                            src="https://via.placeholder.com/400x360"
+                            download=""
+                        />
+                    </section>
+                </Container>
+            )
+        } else { return <Error404 /> }
+    }
 }

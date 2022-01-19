@@ -11,6 +11,11 @@ export function myRole() {
     if (jwt) { return jwt.role; }
 }
 
+export function myToken() {
+    const jwt = JSON.parse(localStorage.getItem('auth'));
+    if (jwt) { return jwt.token; }
+}
+
 export function logout(next) {
     localStorage.removeItem('auth');
     next()

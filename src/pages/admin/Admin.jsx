@@ -9,14 +9,34 @@ import { capitalize } from '../../Utils';
 import './Admin.css'
 
 export default function Admin() {
+    const [loading, setLoading] = useState(true);
     const [simulations, setSimulations] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Halaman Admin";
-        readAllSimulations().then((value) => {
-            setSimulations(value.data);
-        })
+
+        async function fetchData() {
+            const res = await readAllSimulations();
+            if (res.status === 200) {
+                setSimulations(res.data);
+                setLoading(false)
+            } else if (res.status === 401) {
+                setLoading(false)
+                console.log(res);
+                window.alert("Tidak diizinkan mengakses");
+            } else if (res.status === 404) {
+                setLoading(false)
+                console.log(res);
+                window.alert("Data tidak ditemukan");
+            } else {
+                setLoading(false)
+                console.log(res);
+                window.alert("Terjadi Kesalahan");
+            }
+        }
+
+        fetchData();
     }, []);
 
     function addBtnHandler(e) {
@@ -53,7 +73,9 @@ export default function Admin() {
                     </tr>
                 </thead>
                 <tbody>
-                    {simulations ?
+                    {loading ?
+                        <tr><td colSpan={3}><LoadingComponent className="mx-auto my-5" /></td></tr>
+                        :
                         simulations.map((simulation, i) => (
                             <tr key={i} className='simulations' onClick={e => rowHandler(e, simulation.id)}>
                                 <td className='number'>{i + 1}</td>
@@ -64,8 +86,6 @@ export default function Admin() {
                                 <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                             </tr>
                         ))
-                        :
-                        <tr><td colSpan={3}><LoadingComponent className="mx-auto my-5" /></td></tr>
                     }
                 </tbody>
             </Table>

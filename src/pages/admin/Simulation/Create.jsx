@@ -25,6 +25,9 @@ export default function Create() {
         const res = await createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
         if (res.status === 201) {
             window.location.href = "/admin";
+        } else if (res.status === 401) {
+            console.log(res);
+            window.alert("Tidak diizinkan mengakses");
         } else {
             console.log(res);
             alert("Terjadi Kesalahan, mohon coba lagi")

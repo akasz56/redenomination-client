@@ -5,29 +5,34 @@ import LoadingComponent from '../../components/Loading';
 import Ready from "./Ready";
 
 export default function Participants() {
-    const [dataGet, setDataGet] = useState(false);
+    const [data, setData] = useState(false);
     let urlParams = useParams();
 
     useEffect(() => {
         document.title = "No Data";
-        readSimulation(urlParams.id)
-            .then((res) => {
-                if (res.status === 200) {
-                    setDataGet(res.data);
-                    document.title = "Simulation " + res.data.id;
-                } else {
-                    window.alert("Simulasi Tidak ditemukan");
-                    window.location.href = "/";
-                }
-            })
-            .catch((err) => {
+
+        async function fetchData() {
+            const res = await readSimulation(urlParams.id)
+            if (res.status === 200) {
+                setData(res.data);
+                document.title = "Simulation " + res.data.id;
+            } else if (res.status === 401) {
+                setLoading(false)
+                console.log(res);
+                window.alert("Tidak diizinkan mengakses");
+            } else if (res.status === 404) {
+                window.alert("Simulasi Tidak ditemukan");
+                window.location.href = "/";
+            } else {
                 console.log(err)
                 window.alert("Terjadi Kesalahan");
-            })
+            }
+        }
+        fetchData();
     }, [urlParams.id]);
 
-    if (dataGet)
-        return <Ready data={dataGet} />
+    if (data)
+        return <Ready data={data} />
     else
         return <LoadingComponent className='child' />
 }
