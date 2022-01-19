@@ -15,7 +15,6 @@ export default function Session() {
         document.title = "No Data";
         readSession(urlParams.id).then((value) => {
             setData(value.data);
-            console.log(value.data);
             document.title = "Session " + value.data.id;
         })
     }, [urlParams.id]);

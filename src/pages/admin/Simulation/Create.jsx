@@ -26,8 +26,8 @@ export default function Create() {
         if (res.status === 201) {
             window.location.href = "/admin";
         } else {
-            alert("Terjadi Kesalahan, mohon coba lagi")
             console.log(res);
+            alert("Terjadi Kesalahan, mohon coba lagi")
         }
     }
 

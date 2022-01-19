@@ -21,8 +21,8 @@ export default function Participants() {
                 }
             })
             .catch((err) => {
-                window.alert("Terjadi Kesalahan");
                 console.log(err)
+                window.alert("Terjadi Kesalahan");
             })
     }, [urlParams.id]);
 

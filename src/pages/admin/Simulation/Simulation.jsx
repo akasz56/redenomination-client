@@ -47,8 +47,8 @@ export default function Simulation() {
         if (res.status === 201) {
             window.location.reload();
         } else {
-            alert("Terjadi Kesalahan, mohon coba lagi")
             console.log(res);
+            alert("Terjadi Kesalahan, mohon coba lagi")
         }
     }
 
@@ -61,8 +61,8 @@ export default function Simulation() {
             if (res.status === 200) {
                 window.location.href = "/admin";
             } else {
-                alert("Terjadi Kesalahan, mohon coba lagi")
                 console.log(res);
+                alert("Terjadi Kesalahan, mohon coba lagi")
             }
         }
         else { alert("Simulasi gagal dihapus"); }

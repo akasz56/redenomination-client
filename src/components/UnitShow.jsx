@@ -8,7 +8,7 @@ export default function UnitShow(props) {
     return (
         <div className={classes}>
             <p>{title}:</p>
-            <p>Rp. 3700</p>
+            <p>Rp. {props.price}</p>
         </div >
     )
 }

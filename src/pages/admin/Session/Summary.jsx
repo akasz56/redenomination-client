@@ -1,7 +1,9 @@
+// unit value unit cost belum selesai
 import { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { readSession } from '../../../adapters/Sessions';
+import { readSimulation } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import UnitShow from '../../../components/UnitShow';
@@ -15,14 +17,19 @@ export default function Summary() {
         readSession(id)
             .then((value) => {
                 setData(value.data);
-                console.log(value.data);
                 document.title = "Ringkasan Session " + value.data.id;
+                readSimulation(value.data.simulation.id)
+                    .then((res) => { setData({ ...value.data, simulation: res.data }); })
+                    .catch(catchErr)
             })
-            .catch((err) => {
-                window.alert("Simulasi Tidak ditemukan");
-                window.location.href = "/admin";
-            })
+            .catch(catchErr)
     }, []);
+
+    function catchErr() {
+        window.alert("Simulasi Tidak ditemukan");
+        window.history.back();
+    }
+
     function getIDfromLink(string) {
         const words = string.split("/");
         return words[2];
@@ -80,13 +87,19 @@ export default function Summary() {
                     <div className="col-md-6">
                         <p className="fw-bold text-center">Unit Cost</p>
                         {Array.from({ length: data.simulation.participantNumber / 2 }).map((_, i) => (
-                            <UnitShow key={i + 1} id={i + 1} role="penjual" />
+                            <UnitShow key={i + 1} id={i + 1}
+                                role="penjual"
+                            // price={data.simulation.sellers[i].unitCost}
+                            />
                         ))}
                     </div>
                     <div className="col-md-6">
                         <p className="fw-bold text-center">Unit Value</p>
                         {Array.from({ length: data.simulation.participantNumber / 2 }).map((_, i) => (
-                            <UnitShow key={i + 1} id={i + 1} role="pembeli" />
+                            <UnitShow key={i + 1} id={i + 1}
+                                role="pembeli"
+                            // price={data.simulation.buyers[i].unitValue}
+                            />
                         ))}
                     </div>
                 </section>
