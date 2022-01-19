@@ -147,3 +147,332 @@ export const getBuyer = {
     loginToken: "loginToken",
     unitValue: "unitValue"
 }
+
+
+
+export const simulationstrx = [
+    {
+        avgTrxOccurrence: "",
+        avgTrxPrices: "",
+        sessions: [
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            },
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            },
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        avgTrxOccurrence: "",
+        avgTrxPrices: "",
+        sessions: [
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            },
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            },
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        avgTrxOccurrence: "",
+        avgTrxPrices: "",
+        sessions: [
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            },
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            },
+            {
+                avgTrxOccurrence: 4,
+                avgTrxPrices: 4333,
+                phasePre: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        5000,
+                        8000,
+                        3000,
+                        1000
+                    ]
+                },
+                phaseTransition: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4250,
+                    trxPrices: [
+                        1000,
+                        8000,
+                        7000,
+                        1000
+                    ]
+                },
+                phasePost: {
+                    trxOccurrence: 4,
+                    avgTrxPrices: 4500,
+                    trxPrices: [
+                        3000,
+                        1000,
+                        7000,
+                        7000
+                    ]
+                }
+            }
+        ]
+    }
+]

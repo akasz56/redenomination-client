@@ -1,10 +1,13 @@
 import { Form } from 'react-bootstrap';
+import { capitalize } from '../Utils';
 
 export default function UnitInput(props) {
-    const required = typeof props.required !== undefined
+
+    const required = props.required !== undefined
     const controlID = props.role + "" + props.id
     const title = capitalize(props.role) + " " + props.id
     const classes = "d-flex justify-content-evenly mb-3 " + props.className;
+
     return (
         <Form.Group controlId={controlID} className={classes}>
             <Form.Label className={required ? "required" : ''}>{title}:</Form.Label>
@@ -16,8 +19,4 @@ export default function UnitInput(props) {
                 onChange={props.onChange} />
         </Form.Group >
     )
-}
-
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
 }
