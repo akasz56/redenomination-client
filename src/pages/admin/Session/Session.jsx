@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap'
 import { readSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
-import Summary from '../../../components/Summary';
+import SummaryComponent from '../../../components/Summary';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 
@@ -44,17 +44,17 @@ export default function Session() {
                 <section className='summary mt-5'>
                     <h1>Ringkasan Simulasi</h1>
                     <Link to={'./summary'}>rincian simulasi...</Link>
-                    <Summary
+                    <SummaryComponent
                         title="Rata-Rata Jumlah transaksi"
                         src="https://via.placeholder.com/400x360"
                         download=""
                     />
-                    <Summary
+                    <SummaryComponent
                         title="Rata-rata Harga kesepakatan"
                         src="https://via.placeholder.com/400x360"
                         download=""
                     />
-                    <Summary
+                    <SummaryComponent
                         title="Log Tawar-Menawar"
                         src="https://via.placeholder.com/400x360"
                         download=""

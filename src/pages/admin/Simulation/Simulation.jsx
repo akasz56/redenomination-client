@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
 import { createSession } from '../../../adapters/Sessions'
 import { capitalize } from '../../../Utils';
-import Summary from '../../../components/Summary';
+import SummaryComponent from '../../../components/Summary';
 import { Button, Container, Form, Image, Modal } from 'react-bootstrap';
 import LoadingComponent from '../../../components/Loading';
 import dayjs from "dayjs";
@@ -113,17 +113,17 @@ export default function Simulation() {
                 <section className='summary mt-5'>
                     <h1>Ringkasan Simulasi</h1>
                     <Link to={'./summary'}>rincian simulasi...</Link>
-                    <Summary
+                    <SummaryComponent
                         title="Rata-Rata Jumlah transaksi"
                         src="https://via.placeholder.com/400x360"
                         download=""
                     />
-                    <Summary
+                    <SummaryComponent
                         title="Rata-rata Harga kesepakatan"
                         src="https://via.placeholder.com/400x360"
                         download=""
                     />
-                    <Summary
+                    <SummaryComponent
                         title="Log Tawar-Menawar"
                         src="https://via.placeholder.com/400x360"
                         download=""
