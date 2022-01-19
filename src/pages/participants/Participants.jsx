@@ -17,14 +17,13 @@ export default function Participants() {
                 setData(res.data);
                 document.title = "Simulation " + res.data.id;
             } else if (res.status === 401) {
-                setLoading(false)
                 console.log(res);
                 window.alert("Tidak diizinkan mengakses");
             } else if (res.status === 404) {
                 window.alert("Simulasi Tidak ditemukan");
                 window.location.href = "/";
             } else {
-                console.log(err)
+                console.log(res)
                 window.alert("Terjadi Kesalahan");
             }
         }

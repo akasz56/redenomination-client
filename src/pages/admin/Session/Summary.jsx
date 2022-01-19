@@ -29,18 +29,18 @@ export default function Summary() {
                 document.title = "Ringkasan Ulangan " + res.data.id;
                 const res1 = await readSimulation(res.data.simulation.id)
                 if (res1.status === 200) {
-                    setData({ ...res.data, simulation: res1.data });
+                    setData({ ...res1.data, simulation: res1.data });
                     setLoading(false)
                 } else if (res1.status === 401) {
                     setLoading(false)
-                    console.log(res);
+                    console.log(res1);
                     window.alert("Tidak diizinkan mengakses");
                 } else if (res1.status === 404) {
                     window.alert("Simulasi tidak ditemukan");
                     window.history.back();
                 } else {
                     setLoading(false)
-                    console.log(res);
+                    console.log(res1);
                     alert("Terjadi Kesalahan");
                 }
             } else if (res.status === 401) {
