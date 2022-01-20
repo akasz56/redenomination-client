@@ -108,55 +108,65 @@ export default function Simulation() {
                         </div>
                     </section>
 
-                    <section className='sessions my-5'>
+                    <section className='sessions'>
                         {dataGet.sessions.map((session, index) => (
-                            <div key={index}>
+                            <div key={index} className='session'>
                                 <span className='fw-bold'>{session.sessionType}</span>
                                 <span>{dayjs(session.timeCreated).locale("id").format("dddd, D MMM YYYY")}</span>
                                 <Link to={'/sessions/' + session.id}>rincian ulangan...</Link>
                             </div>
                         ))}
-                        <Button className='w-100 py-lg-3' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
+                        <div>
+                            <Button className='w-100 py-lg-2' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
+                        </div>
                     </section>
 
-                    <hr />
+                    <hr style={{ marginTop: "7rem" }} />
                     <section className='info'>
-                        <div>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} {dataGet.goodsName ? ('(' + dataGet.goodsName + ')') : ''}</span></div>
-                        <div>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></div>
-                        <div>Timer : <span className='fw-bold'>{dataGet.timer} menit</span></div>
+                        <h1>Detail Simulasi</h1>
+                        <div className="details">
+                            <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} {dataGet.goodsName ? ('(' + dataGet.goodsName + ')') : ''}</span></p>
+                            <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
+                            <p>Timer : <span className='fw-bold'>{dataGet.timer} menit</span></p>
+                        </div>
+                        {dataGet.goodsPic ?
+                            <section className='info-image'>
+                                <figure>
+                                    <Image src={dataGet.goodsPic} fluid></Image>
+                                    <figcaption>Illustrasi barang</figcaption>
+                                </figure>
+                            </section>
+                            :
+                            ''
+                        }
                     </section>
-                    {dataGet.goodsPic ?
-                        <section className='info-image'>
-                            <Image src={dataGet.goodsPic} fluid></Image>
-                        </section>
-                        :
-                        ''
-                    }
-                    <hr />
 
-                    <section className='summary mt-5'>
+                    <hr style={{ marginTop: "7rem" }} />
+                    <section>
                         <h1>Ringkasan Simulasi</h1>
                         <Link to={'./summary'}>rincian simulasi...</Link>
-                        <SummaryComponent
-                            title="Rata-Rata Jumlah transaksi"
-                            src="https://via.placeholder.com/400x360"
-                            download=""
-                        />
-                        <SummaryComponent
-                            title="Rata-rata Harga kesepakatan"
-                            src="https://via.placeholder.com/400x360"
-                            download=""
-                        />
-                        <SummaryComponent
-                            title="Log Tawar-Menawar"
-                            src="https://via.placeholder.com/400x360"
-                            download=""
-                        />
+                        <div className='d-flex flex-column flex-xl-row justify-content-around'>
+                            <SummaryComponent
+                                title="Rata-Rata Jumlah transaksi"
+                                src="https://via.placeholder.com/400x360"
+                                download=""
+                            />
+                            <SummaryComponent
+                                title="Rata-rata Harga kesepakatan"
+                                src="https://via.placeholder.com/400x360"
+                                download=""
+                            />
+                            <SummaryComponent
+                                title="Log Tawar-Menawar"
+                                src="https://via.placeholder.com/400x360"
+                                download=""
+                            />
+                        </div>
                     </section>
 
-                    <hr />
-                    <section className='my-5'>
-                        <h1>Zona Bahaya</h1>
+                    <hr style={{ marginTop: "7rem" }} />
+                    <section className='mb-5'>
+                        <h1>Hapus Simulasi</h1>
                         <Button variant="danger" className='mt-3' onClick={showDeleteSessionForm}>Hapus Simulasi</Button>
                     </section>
 

@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 import { readSession } from '../../../adapters/Sessions';
 import { readSimulation } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
@@ -25,11 +27,10 @@ export default function Summary() {
             const id = getIDfromLink(window.location.pathname)
             const res = await readSession(id)
             if (res.status === 200) {
-                setData(res.data);
                 document.title = "Ringkasan Ulangan " + res.data.id;
                 const res1 = await readSimulation(res.data.simulation.id)
                 if (res1.status === 200) {
-                    setData({ ...res1.data, simulation: res1.data });
+                    setData({ ...res.data, simulation: res1.data });
                     setLoading(false)
                 } else if (res1.status === 401) {
                     setLoading(false)
@@ -67,13 +68,8 @@ export default function Summary() {
                 <Container>
                     <section className='mt-5'>
                         <h1>Ringkasan Ulangan</h1>
-                        <p>SessionID: <Link to={'/sessions/' + data.id}>{data.id}</Link></p>
-                    </section>
-
-                    <section className='d-flex justify-content-around'>
-                        <button className='btn btn-link' onClick={() => { window.location.replace("#phasePre"); }}>Sebelum Redenominasi</button>
-                        <button className='btn btn-link' onClick={() => { window.location.replace("#phaseTransition"); }}>Transisi Redenominasi</button>
-                        <button className='btn btn-link' onClick={() => { window.location.replace("#phasePost"); }}>Setelah Redenominasi</button>
+                        <p className='mb-0'>SessionID: <Link to={'/sessions/' + data.id}>{data.id}</Link></p>
+                        <p className='mb-0'>Terakhir dijalankan: {dayjs(data.timeLastRun).locale("id").format("DD-MM-YY HH:mm:ss")}</p>
                     </section>
 
                     <hr />
@@ -87,9 +83,48 @@ export default function Summary() {
                             <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
                         </div>
                     </section>
-                    <hr />
 
-                    <section className='d-flex flex-column flex-xl-row justify-content-around'>
+                    <hr />
+                    <section className='row' id="phasePre">
+                        <h1 className='mb-3 text-center'>Sebelum Redenominasi</h1>
+                        <div className="col-md-6 text-center">
+                            <p>Jumlah Transaksi</p>
+                            <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
+                        </div>
+                        <div className="col-md-6 text-center">
+                            <p>Rata-rata Harga kesepakatan</p>
+                            <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
+                        </div>
+                    </section>
+
+                    <hr />
+                    <section className='row' id="phaseTransition">
+                        <h1 className='mb-3 text-center'>Transisi Redenominasi</h1>
+                        <div className="col-md-6 text-center">
+                            <p>Jumlah Transaksi</p>
+                            <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
+                        </div>
+                        <div className="col-md-6 text-center">
+                            <p>Rata-rata Harga kesepakatan</p>
+                            <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
+                        </div>
+                    </section>
+
+                    <hr />
+                    <section className='row' id="phasePost">
+                        <h1 className='mb-3 text-center'>Setelah Redenominasi</h1>
+                        <div className="col-md-6 text-center">
+                            <p>Jumlah Transaksi</p>
+                            <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
+                        </div>
+                        <div className="col-md-6 text-center">
+                            <p>Rata-rata Harga kesepakatan</p>
+                            <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
+                        </div>
+                    </section>
+
+                    <hr />
+                    <section className='mt-5 d-flex flex-column flex-xl-row justify-content-around'>
                         <SummaryComponent
                             title="Rata-Rata Jumlah transaksi"
                             src="https://via.placeholder.com/400x360"
@@ -107,8 +142,7 @@ export default function Summary() {
                         />
                     </section>
 
-                    <hr className='mt-5' />
-
+                    <hr style={{ marginTop: "5rem" }} />
                     <section className="row">
                         <h1>Unit Cost dan Unit Value</h1>
                         <div className="col-md-6">
@@ -116,7 +150,7 @@ export default function Summary() {
                             {Array.from({ length: data.simulation.participantNumber / 2 }).map((_, i) => (
                                 <UnitShow key={i + 1} id={i + 1}
                                     role="penjual"
-                                // price={data.simulation.sellers[i].unitCost}
+                                    price={data.simulation.sellers[i].unitCost}
                                 />
                             ))}
                         </div>
@@ -125,51 +159,9 @@ export default function Summary() {
                             {Array.from({ length: data.simulation.participantNumber / 2 }).map((_, i) => (
                                 <UnitShow key={i + 1} id={i + 1}
                                     role="pembeli"
-                                // price={data.simulation.buyers[i].unitValue}
+                                    price={data.simulation.buyers[i].unitValue}
                                 />
                             ))}
-                        </div>
-                    </section>
-
-                    <hr className='mt-5' />
-                    <button className='btn btn-link' onClick={() => { window.location.replace("#"); }}>Kembali ke atas</button>
-                    <section className='row' id="phasePre">
-                        <h1 className='mb-3'>Sebelum Redenominasi</h1>
-                        <div className="col-md-6 text-center">
-                            <p>Jumlah Transaksi</p>
-                            <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
-                        </div>
-                        <div className="col-md-6 text-center">
-                            <p>Rata-rata Harga kesepakatan</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
-                        </div>
-                    </section>
-
-                    <hr className='mt-5' />
-                    <button className='btn btn-link' onClick={() => { window.location.replace("#"); }}>Kembali ke atas</button>
-                    <section className='row' id="phaseTransition">
-                        <h1 className='mb-3'>Transisi Redenominasi</h1>
-                        <div className="col-md-6 text-center">
-                            <p>Jumlah Transaksi</p>
-                            <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
-                        </div>
-                        <div className="col-md-6 text-center">
-                            <p>Rata-rata Harga kesepakatan</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
-                        </div>
-                    </section>
-
-                    <hr className='mt-5' />
-                    <button className='btn btn-link' onClick={() => { window.location.replace("#"); }}>Kembali ke atas</button>
-                    <section className='row' id="phasePost">
-                        <h1 className='mb-3'>Setelah Redenominasi</h1>
-                        <div className="col-md-6 text-center">
-                            <p>Jumlah Transaksi</p>
-                            <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
-                        </div>
-                        <div className="col-md-6 text-center">
-                            <p>Rata-rata Harga kesepakatan</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
                         </div>
                     </section>
                 </Container>

@@ -21,6 +21,7 @@ export default function Summary() {
             const res = await readSimulation(id)
             if (res.status === 200) {
                 setData(res.data);
+                setLoading(false)
                 document.title = "Ringkasan Simulasi " + res.data.id;
             } else if (res.status === 401) {
                 setLoading(false)
@@ -54,8 +55,8 @@ export default function Summary() {
                         <p className='mb-0'>Terakhir dijalankan: {dayjs(data.timeLastRun).locale("id").format("DD-MM-YY HH:mm:ss")}</p>
                     </section>
 
-                    <hr className='mt-5' />
-                    <section className='row'>
+                    <section className='row my-3'>
+                        <hr className='mb-3' />
                         <div className="col-md-6 text-center">
                             <p>Rata-rata jumlah transaksi Simulasi</p>
                             <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
@@ -64,8 +65,8 @@ export default function Summary() {
                             <p>Rata-rata harga kesepakatan Simulasi</p>
                             <h1 className='text-primary fw-bolder'>Rp. {data.avgTrxPrice}</h1>
                         </div>
+                        <hr className='mt-3' />
                     </section>
-                    <hr />
 
                     <section className='d-flex flex-column flex-xl-row justify-content-around'>
                         <SummaryComponent
@@ -85,8 +86,8 @@ export default function Summary() {
                         />
                     </section>
 
-                    <hr className='mt-5' />
 
+                    <hr style={{ marginTop: "5rem" }} />
                     <section className="row">
                         <h1>Unit Cost dan Unit Value</h1>
                         <div className="col-md-6">

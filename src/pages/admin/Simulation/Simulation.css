@@ -6,22 +6,17 @@
     line-height: 1;
 }
 
-.sessions {
-    position: relative;
-}
-
-.sessions div {
+.sessions .session {
     margin: 2rem 0;
 }
 
-.info {
+.info .details {
     margin: auto;
     width: 70%;
 }
 
 .info-image {
     margin: auto;
-    margin-top: 1.5rem;
     min-width: 300px;
     width: 45%;
 }
@@ -33,9 +28,13 @@
         margin: 1rem 3rem;
     }
 
-    .info {
+    .info .details {
         display: flex;
         justify-content: space-around;
         width: initial;
+    }
+
+    .info-image {
+        width: 50%;
     }
 }
