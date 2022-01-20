@@ -1,12 +1,11 @@
-import { useState } from 'react'
-import { Button, Container, Form } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils'
 
 //------------------------------ Data section
 function generateSeller(num = 1) {
-    let sellers = new Array();
+    let sellers = [];
     for (let i = 1; i <= num; i++) {
         sellers.push({
             role: "Penjual " + i,
@@ -76,12 +75,4 @@ export function FlashSaleScreen() {
             />
         </Container >
     );
-}
-
-export function BuyerCompleteScreen() {
-    return (
-        <Container>
-            <h1 className='child'>Simulasi Selesai</h1>
-        </Container>
-    )
 }

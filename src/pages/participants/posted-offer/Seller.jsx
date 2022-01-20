@@ -6,7 +6,7 @@ import { capitalize } from '../../../Utils'
 
 //------------------------------ Data section
 function generateSeller(num = 1) {
-    let sellers = new Array();
+    let sellers = [];
     for (let i = 1; i <= num; i++) {
         sellers.push({
             role: "Penjual " + i,
@@ -92,12 +92,4 @@ export function SellerIdleScreen() {
             />
         </Container >
     );
-}
-
-export function SellerCompleteScreen() {
-    return (
-        <Container>
-            <h1 className='child'>Simulasi Selesai</h1>
-        </Container>
-    )
 }

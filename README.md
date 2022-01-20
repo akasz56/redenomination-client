@@ -12,3 +12,8 @@ pass: IpB_b3rc4nd4
 - Download Rerata jumlah trx
 - Download Rerata harga
 - Download Selisih price dgn Unit Value/Cost
+
+# Participant Data
+
+- socket = phase related
+- API = non-phase related
