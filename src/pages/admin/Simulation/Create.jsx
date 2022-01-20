@@ -90,7 +90,7 @@ export default function Create() {
                     <div className="col-md-6">
                         <Form.Group controlId="formFile" className="mb-3">
                             <Form.Label className='required'>Illustrasi Barang</Form.Label>
-                            <Form.Control type="file" accept="image/*" required
+                            <Form.Control type="file" accept="image/*"
                                 onChange={(e) => { setFormData({ ...formData, goodsPic: e.target.value }) }} />
                         </Form.Group>
                     </div>

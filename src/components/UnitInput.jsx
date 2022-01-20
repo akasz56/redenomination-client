@@ -3,6 +3,7 @@ import { capitalize } from '../Utils';
 
 export default function UnitInput(props) {
 
+    const disabled = props.disabled !== undefined
     const required = props.required !== undefined
     const controlID = props.role + "" + props.id
     const title = capitalize(props.role) + " " + props.id
@@ -16,6 +17,7 @@ export default function UnitInput(props) {
                 style={{ width: "6em", display: "inline" }}
                 defaultValue={props.defaultValue}
                 required={required}
+                disabled={disabled}
                 onChange={props.onChange} />
         </Form.Group >
     )

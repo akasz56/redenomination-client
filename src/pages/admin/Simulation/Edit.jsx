@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Form, Button, Image } from 'react-bootstrap';
-import { readSimulation } from '../../../adapters/Simulations';
+import { readSimulation, updateSimulation } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
 import Error404 from '../../errors/Error404';
 
 export default function Edit() {
     const [loading, setLoading] = useState(true);
-    const [buyers, setBuyers] = useState(null);
-    const [sellers, setSellers] = useState(null);
     const [data, setData] = useState(null);
     const urlParams = useParams();
 
@@ -20,8 +18,6 @@ export default function Edit() {
             const res = await readSimulation(urlParams.id)
             if (res.status === 200) {
                 setData(res.data);
-                setBuyers(res.data.buyers);
-                setSellers(res.data.sellers);
                 setLoading(false);
                 document.title = "Edit " + res.data.id;
             } else if (res.status === 401) {
@@ -40,15 +36,37 @@ export default function Edit() {
         fetchData();
     }, [urlParams.id]);
 
-    function changeValue(value, key, key2) {
-        setData({
-            ...data,
-            [key]: Object.assign([], data[key], { 0: { ...data[key][0], [key2]: value } })
-        })
-    }
+    // function changeValue(value, key, key2) {
+    //     setData({
+    //         ...data,
+    //         [key]: Object.assign([], data[key], { 0: { ...data[key][0], [key2]: value } })
+    //     })
+    // }
 
-    function submitForm(e) {
+    async function submitForm(e) {
         e.preventDefault();
+        const res = await updateSimulation(data.id, {
+            simulationType: data.simulationType,
+            goodsType: data.goodsType,
+            goodsName: data.goodsName,
+            goodsPic: data.goodsPic,
+            inflationType: data.inflationType,
+            participantNumber: data.participantNumber,
+            timer: data.timer
+        });
+        if (res.status === 200) {
+            window.alert("Berhasil diubah");
+            window.location.href = "/simulations/" + data.id;
+        } else if (res.status === 401) {
+            console.log(res);
+            window.alert("Tidak diizinkan mengakses");
+        } else if (res.status === 404) {
+            window.alert("Simulasi tidak ditemukan");
+            window.location.href = "/admin";
+        } else {
+            console.log(res);
+            alert("Terjadi Kesalahan");
+        }
     }
 
     if (loading) { return (<LoadingComponent className='child' />) }
@@ -107,7 +125,7 @@ export default function Edit() {
                                 <Form.Group controlId="formFile" className="mb-3">
                                     <Form.Label className='required'>Illustrasi Barang</Form.Label>
                                     <Image src={data.goodsPic} className=' w-100 mb-3' thumbnail rounded ></Image>
-                                    <Form.Control type="file" accept="image/*" required
+                                    <Form.Control type="file" accept="image/*"
                                         onChange={(e) => { setData({ ...data, goodsPic: e.target.value }) }} />
                                 </Form.Group>
                             </div>
@@ -115,26 +133,16 @@ export default function Edit() {
 
                         <section className="row mb-3">
                             <div className="col-md-6">
-                                <Form.Group controlId="participantNumber">
-                                    <Form.Label className="required">Jumlah responden</Form.Label>
-                                    <br />
-                                    <Form.Control type="number" max={100} min={2} step={2} style={{ width: "5em", display: "inline" }}
-                                        required
-                                        defaultValue={data.participantNumber}
-                                        onChange={(e) => { setData({ ...data, participantNumber: e.target.value }) }} />
-                                    {data.participantNumber % 2 === 0 ?
-                                        <>
-                                            &nbsp;Maka, <span className='fw-bold'>{data.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{data.participantNumber / 2} Pembeli</span>
-                                        </>
-                                        :
-                                        <span style={{ color: "red", fontWeight: "bold" }}>&nbsp;Jumlah responden ganjil!</span>
-                                    }
+                                <Form.Group>
+                                    <Form.Label className="d-block">Jumlah responden</Form.Label>
+                                    <Form.Control type="number" style={{ width: "5em", display: "inline" }}
+                                        disabled value={data.participantNumber}
+                                    />
                                 </Form.Group>
                             </div>
                             <div className="col-md-6">
                                 <Form.Group controlId="timer">
-                                    <Form.Label className="required">Timer</Form.Label>
-                                    <br />
+                                    <Form.Label className="required d-block">Timer</Form.Label>
                                     <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
                                         defaultValue={data.timer} required
                                         onChange={(e) => { setData({ ...data, timer: e.target.value }) }} />
@@ -148,12 +156,12 @@ export default function Edit() {
                                 <p className="fw-bold text-center">Unit Cost</p>
                                 {Array.from({ length: data.participantNumber / 2 }).map((_, i) => (
                                     <UnitInput
-                                        required
+                                        disabled
                                         key={i + 1}
                                         id={i + 1}
                                         role="penjual"
                                         defaultValue={data.sellers[i].unitCost}
-                                        onChange={(e) => { changeValue(e.target.value, "sellers", "unitCost") }}
+                                    // onChange={(e) => { changeValue(e.target.value, "sellers", "unitCost") }}
                                     />
                                 ))}
                             </div>
@@ -161,12 +169,12 @@ export default function Edit() {
                                 <p className="fw-bold text-center">Unit Value</p>
                                 {Array.from({ length: data.participantNumber / 2 }).map((_, i) => (
                                     <UnitInput
-                                        required
+                                        disabled
                                         key={i + 1}
                                         id={i + 1}
                                         role="pembeli"
                                         defaultValue={data.buyers[i].unitValue}
-                                        onChange={(e) => { changeValue(e.target.value, "buyers", "unitValue") }}
+                                    // onChange={(e) => { changeValue(e.target.value, "buyers", "unitValue") }}
                                     />
                                 ))}
                             </div>
