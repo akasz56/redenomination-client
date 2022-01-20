@@ -1,37 +1,23 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
-import { readSimulation } from '../../adapters/Simulations'
-import LoadingComponent from '../../components/Loading';
+import { useEffect } from 'react'
+import { PostPriceScreen, SellerIdleScreen, SellerCompleteScreen } from './posted-offer/Seller';
+import { BuyerIdleScreen, FlashSaleScreen, BuyerCompleteScreen } from './posted-offer/Buyer';
 import Ready from "./Ready";
 
 export default function Participants() {
-    const [data, setData] = useState(false);
-    let urlParams = useParams();
-
     useEffect(() => {
-        document.title = "No Data";
+        document.title = "Posted Offer"
+    }, [])
 
-        async function fetchData() {
-            const res = await readSimulation(urlParams.id)
-            if (res.status === 200) {
-                setData(res.data);
-                document.title = "Simulation " + res.data.id;
-            } else if (res.status === 401) {
-                console.log(res);
-                window.alert("Tidak diizinkan mengakses");
-            } else if (res.status === 404) {
-                window.alert("Simulasi Tidak ditemukan");
-                window.location.href = "/";
-            } else {
-                console.log(res)
-                window.alert("Terjadi Kesalahan");
-            }
-        }
-        fetchData();
-    }, [urlParams.id]);
+    // Waiting
+    // return <Ready data={data} />
 
-    if (data)
-        return <Ready data={data} />
-    else
-        return <LoadingComponent className='child' />
+    // PO Seller
+    // return <PostPriceScreen />
+    // return <SellerIdleScreen />
+    // return <SellerCompleteScreen />
+
+    // PO Buyer
+    // return <BuyerIdleScreen />
+    // return <FlashSaleScreen />
+    // return <BuyerCompleteScreen />
 }

@@ -15,9 +15,6 @@ import Session from "./pages/admin/Session/Session";
 import SessionSummary from "./pages/admin/Session/Summary";
 
 import Participants from './pages/participants/Participants';
-import PostedOffer from './pages/participants/buyer/PostedOffer';
-import DoubleAuction from './pages/participants/buyer/DoubleAuction';
-import Decentralized from './pages/participants/buyer/Decentralized';
 
 import Error404 from './pages/errors/Error404';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -30,7 +27,7 @@ export default function App() {
 			<Route path="/">
 				<Route index element={<Homepage />} />
 				<Route path="login" element={<Login />} />
-				<Route path="participant-test" element={<Test />} />
+				<Route path="participant/*" element={<Participants />} />
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='admin' />}>
@@ -55,14 +52,14 @@ export default function App() {
 				</Route>
 			</Route>
 
-			<Route path="/" element={<ProtectedRoute for='participant' />}>
-				<Route path=":id">
-					<Route index element={<Participants />} />
+			{/* <Route path="/" element={<ProtectedRoute for='participant' />}>
+				<Route path="sessions">
+					<Route index element={<Navigate to='/' />} />
+					<Route path=":id">
+						<Route index element={<Participants />} />
+					</Route>
 				</Route>
-				<Route path="posted-offer" element={<PostedOffer />} />
-				<Route path="double-auction" element={<DoubleAuction />} />
-				<Route path="decentralized" element={<Decentralized />} />
-			</Route>
+			</Route> */}
 
 			<Route path="*" element={<Error404 />} />
 
@@ -75,6 +72,7 @@ function Homepage() {
 	if (myRole() === 'admin') {
 		return <Navigate to='/admin' />
 	} else if (myRole() === 'participant') {
+		// return <Navigate to='/sessions' />
 		return <Home />
 	} else {
 		return <Home />
@@ -87,13 +85,4 @@ function ProtectedRoute(props) {
 	} else {
 		return <Navigate to='/' />;
 	}
-}
-
-function Test() {
-	localStorage.setItem('auth', JSON.stringify({
-		login: true,
-		role: "participant",
-		token: "Bearer yes"
-	}))
-	window.location.href = "/";
 }
