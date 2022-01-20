@@ -28,7 +28,7 @@ export function Header() {
                                     <Button variant="danger" onClick={handlerClick}>Keluar</Button>
                                 )
                                 :
-                                <Link to='/login' className="btn btn-primary">Masuk</Link>
+                                <Link to='/login' className="btn btn-outline-light">Masuk sebagai Admin</Link>
                             }
                         </div>
                     </Nav>

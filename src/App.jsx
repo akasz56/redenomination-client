@@ -28,7 +28,7 @@ export default function App() {
 		<Routes>
 
 			<Route path="/">
-				<Route index element={<Home />} />
+				<Route index element={<Homepage />} />
 				<Route path="login" element={<Login />} />
 				<Route path="participant-test" element={<Test />} />
 			</Route>
@@ -69,6 +69,16 @@ export default function App() {
 		</Routes>
 		<Footer />
 	</>)
+}
+
+function Homepage() {
+	if (myRole() === 'admin') {
+		return <Navigate to='/admin' />
+	} else if (myRole() === 'participant') {
+		return <Home />
+	} else {
+		return <Home />
+	}
 }
 
 function ProtectedRoute(props) {
