@@ -52,7 +52,7 @@ export default function Session() {
                     <section className="header mt-5 row">
                         <div className="col-9">
                             <h1>{data.sessionType}</h1>
-                            <p>SimulationID: {data.id}</p>
+                            <p className='mb-0'>SimulationID: <Link to={'/simulations/' + data.simulation.id}>{data.simulation.id}</Link></p>
                         </div>
                         <div className="col-3 text-end">
                             <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>

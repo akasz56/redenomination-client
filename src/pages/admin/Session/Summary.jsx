@@ -1,4 +1,3 @@
-// unit value unit cost belum selesai
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
