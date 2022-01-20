@@ -6,10 +6,6 @@
     line-height: 1;
 }
 
-.sessions .session {
-    margin: 2rem 0;
-}
-
 .info .details {
     margin: auto;
     width: 70%;
@@ -22,10 +18,8 @@
 }
 
 @media (min-width: 768px) {
-    .sessions div {
-        display: flex;
-        justify-content: space-around;
-        margin: 1rem 3rem;
+    .sessions {
+        margin: 2rem 5em 0 5em;
     }
 
     .info .details {

@@ -59,7 +59,7 @@ export default function Session() {
                         </div>
                     </section>
 
-                    {false ?
+                    {data.timeLastRun !== null ?
                         <section>
                             <hr />
                             <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>

@@ -110,7 +110,7 @@ export default function Simulation() {
 
                     <section className='sessions'>
                         {dataGet.sessions.map((session, index) => (
-                            <div key={index} className='session'>
+                            <div key={index} className='d-flex justify-content-around mb-3'>
                                 <span className='fw-bold'>{session.sessionType}</span>
                                 <span>{dayjs(session.timeCreated).locale("id").format("dddd, D MMM YYYY")}</span>
                                 <Link to={'/sessions/' + session.id}>rincian ulangan...</Link>
@@ -125,20 +125,14 @@ export default function Simulation() {
                     <section className='info'>
                         <h1>Detail Simulasi</h1>
                         <div className="details">
-                            <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} {dataGet.goodsName ? ('(' + dataGet.goodsName + ')') : ''}</span></p>
+                            <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
                             <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
                             <p>Timer : <span className='fw-bold'>{dataGet.timer} menit</span></p>
                         </div>
-                        {dataGet.goodsPic ?
-                            <section className='info-image'>
-                                <figure>
-                                    <Image src={dataGet.goodsPic} fluid></Image>
-                                    <figcaption>Illustrasi barang</figcaption>
-                                </figure>
-                            </section>
-                            :
-                            ''
-                        }
+                        <figure className='info-image'>
+                            <Image src={dataGet.goodsPic} fluid></Image>
+                            <figcaption>Illustrasi barang</figcaption>
+                        </figure>
                     </section>
 
                     <hr style={{ marginTop: "7rem" }} />
@@ -177,13 +171,13 @@ export default function Simulation() {
                             </Modal.Header>
                             <Modal.Body>
                                 <Form.Group controlId="sessionType">
-                                    <Form.Label className='required'>Nama barang</Form.Label>
+                                    <Form.Label className='required'>Nama Sesi</Form.Label>
                                     <Form.Control type="text"
                                         defaultValue={dataPost.sessionType}
                                         required
                                         onChange={(e) => { setDataPost({ ...dataPost, sessionType: e.target.value }) }} />
                                 </Form.Group>
-                                <Form.Group controlId="timer">
+                                <Form.Group controlId="timer" className='mt-3'>
                                     <Form.Label className='required'>Timer</Form.Label>
                                     <br />
                                     <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
