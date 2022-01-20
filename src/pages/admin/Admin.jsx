@@ -59,10 +59,10 @@ export default function Admin() {
 
     return (
         <Container>
-            <div className="mt-5 header">
+            <section className="mt-5 header">
                 <span className="fs-1">Daftar Simulasi</span>
                 <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
-            </div>
+            </section>
 
             <Table responsive hover className="mt-3">
                 <thead>
@@ -89,7 +89,10 @@ export default function Admin() {
                     }
                 </tbody>
             </Table>
-            <Button variant="danger" onClick={logoutBtnHandler}>Log Out</Button>
+
+            <section className="d-flex flex-row-reverse">
+                <Button variant="danger" className='' onClick={logoutBtnHandler}>Log Out</Button>
+            </section>
         </Container>
     )
 }

@@ -25,4 +25,11 @@ export async function readSession(id) {
 
 export async function updateSession(id, body) { }
 
-export async function deleteSession(id) { }
+export async function deleteSession(id) {
+    return await fetch(serverURL + "sessions/" + id, {
+        method: "DELETE",
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
+}

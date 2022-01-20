@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap'
+import { Button, Container, Form, Modal } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { readSession } from '../../../adapters/Sessions';
+import { readSession, deleteSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import Error404 from '../../errors/Error404';
+import { capitalize } from '../../../Utils';
 
 export default function Session() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
+    const [modalDelete, setModalDelete] = useState(false);
     let urlParams = useParams();
 
     useEffect(() => {
@@ -42,6 +44,27 @@ export default function Session() {
         if (window.confirm("Jalankan sesi sekarang?")) {
             console.log("yes")
         }
+    }
+
+    function showDeleteSessionForm(e) { setModalDelete(prev => !prev); }
+
+    async function confirmDelete(e) {
+        e.preventDefault();
+        setModalDelete(prev => !prev);
+
+        if (e.target.elements.confirm.value === capitalize(data.sessionType)) {
+            const res = await deleteSession(data.id)
+            if (res.status === 200) {
+                window.location.href = "/admin";
+            } else if (res.status === 401) {
+                console.log(res);
+                window.alert("Tidak diizinkan mengakses");
+            } else {
+                console.log(res);
+                alert("Terjadi Kesalahan, mohon coba lagi")
+            }
+        }
+        else { alert("Simulasi gagal dihapus"); }
     }
 
     if (loading) { return (<LoadingComponent className='child' />) }
@@ -89,6 +112,29 @@ export default function Session() {
                             </div>
                         </section>
                     }
+
+                    <section className='my-5'>
+                        <h1>Hapus Ulangan</h1>
+                        <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
+                    </section>
+
+                    <Modal show={modalDelete} onHide={showDeleteSessionForm} centered>
+                        <form onSubmit={confirmDelete}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Konfirmasi Hapus Ulangan</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group controlId="confirm">
+                                    <p>Aksi ini <strong>tidak dapat dibatalkan</strong>. Ketik ulang Tipe Simulasi untuk mengkonfirmasi anda benar-benar ingin menghapus.</p>
+                                    <Form.Control required placeholder={capitalize(data.sessionType)} name="confirm" />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant='secondary' onClick={showDeleteSessionForm}>Batalkan</Button>
+                                <Button variant='danger' type="submit">Konfirmasi Hapus</Button>
+                            </Modal.Footer>
+                        </form>
+                    </Modal>
                 </Container>
             )
         } else { return <Error404 /> }

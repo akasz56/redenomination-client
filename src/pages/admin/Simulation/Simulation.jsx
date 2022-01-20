@@ -101,9 +101,7 @@ export default function Simulation() {
                             <div>Token Partisipan: <span className='fw-bold text-primary'>{dataGet.token}</span></div>
                         </div>
                         <div className='col-6 text-end'>
-                            <div>
-                                {dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
-                            </div>
+                            <div>{dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
                             <Link to='./edit' className="btn btn-outline-dark py-1">edit</Link>
                         </div>
                     </section>
