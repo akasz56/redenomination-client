@@ -4,9 +4,8 @@ import { Container, Button } from 'react-bootstrap'
 import { capitalize } from '../../Utils';
 import "./Ready.css";
 
-const socket = io.connect("http://localhost:5000/");
-
 export default function Ready({ data }) {
+    const socket = io.connect("http://localhost:5000/");
     const [ready, setReady] = useState(false)
 
     useEffect(() => {
