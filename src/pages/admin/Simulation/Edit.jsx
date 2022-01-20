@@ -72,7 +72,7 @@ export default function Edit() {
 
                         <section className="row mb-3">
                             <div className="col-md-6">
-                                <Form.Group controlId="">
+                                <Form.Group controlId="goodsType">
                                     <Form.Label className='required'>Jenis barang</Form.Label>
                                     <Form.Select
                                         value={data.goodsType}
@@ -83,7 +83,7 @@ export default function Edit() {
                                 </Form.Group>
                             </div>
                             <div className="col-md-6">
-                                <Form.Group controlId="">
+                                <Form.Group controlId="inflationType">
                                     <Form.Label className='required'>Jenis inflasi</Form.Label>
                                     <Form.Select
                                         value={data.inflationType}
@@ -97,35 +97,31 @@ export default function Edit() {
 
                         <section className="row mb-3">
                             <div className="col-md-6">
-                                <Form.Group controlId="">
-                                    <Form.Label>Nama barang</Form.Label>
-                                    <Form.Control type="text"
-                                        defaultValue={data.goodsName}
-                                        onChange={(e) => { setData({ ...data, goodsName: e.target.value }) }}
-                                    />
+                                <Form.Group controlId="goodsName">
+                                    <Form.Label className='required'>Nama barang</Form.Label>
+                                    <Form.Control type="text" defaultValue={data.goodsName} required
+                                        onChange={(e) => { setData({ ...data, goodsName: e.target.value }) }} />
                                 </Form.Group>
                             </div>
                             <div className="col-md-6">
                                 <Form.Group controlId="formFile" className="mb-3">
-                                    <Form.Label>Illustrasi Barang</Form.Label>
+                                    <Form.Label className='required'>Illustrasi Barang</Form.Label>
                                     <Image src={data.goodsPic} className=' w-100 mb-3' thumbnail rounded ></Image>
-                                    <Form.Control type="file" accept="image/*"
-                                        onChange={(e) => { setData({ ...data, goodsPic: e.target.value }) }}
-                                    />
+                                    <Form.Control type="file" accept="image/*" required
+                                        onChange={(e) => { setData({ ...data, goodsPic: e.target.value }) }} />
                                 </Form.Group>
                             </div>
                         </section>
 
                         <section className="row mb-3">
                             <div className="col-md-6">
-                                <Form.Group controlId="">
+                                <Form.Group controlId="participantNumber">
                                     <Form.Label className="required">Jumlah responden</Form.Label>
                                     <br />
                                     <Form.Control type="number" max={100} min={2} step={2} style={{ width: "5em", display: "inline" }}
                                         required
                                         defaultValue={data.participantNumber}
-                                        onChange={(e) => { setData({ ...data, participantNumber: e.target.value }) }}
-                                    />
+                                        onChange={(e) => { setData({ ...data, participantNumber: e.target.value }) }} />
                                     {data.participantNumber % 2 === 0 ?
                                         <>
                                             &nbsp;Maka, <span className='fw-bold'>{data.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{data.participantNumber / 2} Pembeli</span>
@@ -136,14 +132,12 @@ export default function Edit() {
                                 </Form.Group>
                             </div>
                             <div className="col-md-6">
-                                <Form.Group controlId="">
+                                <Form.Group controlId="timer">
                                     <Form.Label className="required">Timer</Form.Label>
                                     <br />
                                     <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
-                                        required
-                                        defaultValue={data.timer}
-                                        onChange={(e) => { setData({ ...data, timer: e.target.value }) }}
-                                    />
+                                        defaultValue={data.timer} required
+                                        onChange={(e) => { setData({ ...data, timer: e.target.value }) }} />
                                     &nbsp;Menit
                                 </Form.Group>
                             </div>

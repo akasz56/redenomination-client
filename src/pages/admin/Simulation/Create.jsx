@@ -22,6 +22,13 @@ export default function Create() {
 
     async function submitForm(e) {
         e.preventDefault();
+
+        if (formData.participantNumber % 2) {
+            alert("Jumlah responden tidak bisa ganjil");
+            document.getElementById('participantNumber').scrollIntoView();
+            return;
+        }
+
         const res = await createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
         if (res.status === 201) {
             window.location.href = "/admin";
@@ -41,8 +48,7 @@ export default function Create() {
 
                 <Form.Group controlId='type' className="mb-3">
                     <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
-                    <Form.Select
-                        value={formData.simulationType}
+                    <Form.Select value={formData.simulationType}
                         onChange={(e) => { setFormData({ ...formData, simulationType: e.target.value }) }}>
                         <option value="Posted Offer">Posted Offer</option>
                         <option value="Double Auction">Double Auction</option>
@@ -52,10 +58,9 @@ export default function Create() {
 
                 <section className="row mb-3">
                     <div className="col-md-6">
-                        <Form.Group controlId="">
+                        <Form.Group controlId="goodsType">
                             <Form.Label className='required'>Jenis barang</Form.Label>
-                            <Form.Select
-                                value={formData.goodsType}
+                            <Form.Select value={formData.goodsType}
                                 onChange={(e) => { setFormData({ ...formData, goodsType: e.target.value }) }}>
                                 <option value={"Non-Elastis"}>Non-Elastis</option>
                                 <option value={"Elastis"}>Elastis</option>
@@ -63,10 +68,9 @@ export default function Create() {
                         </Form.Group>
                     </div>
                     <div className="col-md-6">
-                        <Form.Group controlId="">
+                        <Form.Group controlId="inflationType">
                             <Form.Label className='required'>Jenis inflasi</Form.Label>
-                            <Form.Select
-                                value={formData.inflationType}
+                            <Form.Select value={formData.inflationType}
                                 onChange={(e) => { setFormData({ ...formData, inflationType: e.target.value }) }}>
                                 <option value={"Inflasi Rendah"}>Inflasi Rendah</option>
                                 <option value={"Inflasi Tinggi"}>Inflasi Tinggi</option>
@@ -77,16 +81,16 @@ export default function Create() {
 
                 <section className="row mb-3">
                     <div className="col-md-6">
-                        <Form.Group controlId="">
-                            <Form.Label>Nama barang</Form.Label>
-                            <Form.Control type="text" placeholder="contoh: Mobil"
+                        <Form.Group controlId="goodsName">
+                            <Form.Label className='required'>Nama barang</Form.Label>
+                            <Form.Control type="text" placeholder="contoh: Mobil" required
                                 onChange={(e) => { setFormData({ ...formData, goodsName: e.target.value }) }} />
                         </Form.Group>
                     </div>
                     <div className="col-md-6">
                         <Form.Group controlId="formFile" className="mb-3">
-                            <Form.Label>Illustrasi Barang</Form.Label>
-                            <Form.Control type="file" accept="image/*"
+                            <Form.Label className='required'>Illustrasi Barang</Form.Label>
+                            <Form.Control type="file" accept="image/*" required
                                 onChange={(e) => { setFormData({ ...formData, goodsPic: e.target.value }) }} />
                         </Form.Group>
                     </div>
@@ -94,11 +98,11 @@ export default function Create() {
 
                 <section className="row mb-3">
                     <div className="col-md-6">
-                        <Form.Group controlId="">
+                        <Form.Group controlId="participantNumber">
                             <Form.Label className='required'>Jumlah responden</Form.Label>
                             <br />
-                            <Form.Control type="number" max={100} min={2} step={2} style={{ width: "5em", display: "inline" }}
-                                defaultValue={formData.participantNumber}
+                            <Form.Control type="number" style={{ width: "5em", display: "inline" }}
+                                defaultValue={formData.participantNumber} required
                                 onChange={(e) => { setFormData({ ...formData, participantNumber: e.target.value }) }} />
                             {formData.participantNumber % 2 === 0 ?
                                 <>
@@ -110,11 +114,11 @@ export default function Create() {
                         </Form.Group>
                     </div>
                     <div className="col-md-6">
-                        <Form.Group controlId="">
+                        <Form.Group controlId="timer">
                             <Form.Label className='required'>Timer</Form.Label>
                             <br />
                             <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
-                                defaultValue={formData.timer}
+                                defaultValue={formData.timer} required
                                 onChange={(e) => { setFormData({ ...formData, timer: e.target.value }) }} />
                             &nbsp;Menit
                         </Form.Group>
