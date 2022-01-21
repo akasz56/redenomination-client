@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
-import { Container } from 'react-bootstrap'
 import { PostPriceScreen, SellerIdleScreen } from './posted-offer/Seller';
 import { BuyerIdleScreen, FlashSaleScreen } from './posted-offer/Buyer';
 import SellerAuctionScreen from './double-auction/Seller';
 import BuyerAuctionScreen from './double-auction/Buyer';
-import Ready from "./Ready";
+import { ListChatroom, JoinChatroom } from './decentralized/Decentralized';
+// import Ready from "./Ready";
 
 export default function Participants() {
     useEffect(() => {
-        document.title = "Double Auction"
+        document.title = "Posted Offer"
+        // document.title = "Double Auction"
         // document.title = "Decentralized"
     }, [])
 
@@ -35,21 +36,21 @@ export default function Participants() {
 
 
     // DS Seller
-    // return < />
-    // return < />
-    // return < />
+    // return <JoinChatroom />
 
     // DS Buyer
-    // return < />
-    // return < />
-    // return < />
-    return <div></div>
+    return <ListChatroom />
 }
 
-function SellerCompleteScreen() {
-    return (
-        <Container>
-            <h1 className='child'>Simulasi Selesai</h1>
-        </Container>
-    )
-}
+// function CompleteScreen() {
+//     return (
+//         <Container>
+//             <h1 className='child'>Simulasi Selesai</h1>
+//         </Container>
+//     )
+// }
+
+
+
+// connection
+// room = loginToken
