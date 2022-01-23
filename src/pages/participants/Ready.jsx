@@ -1,25 +1,22 @@
 import { useState } from 'react'
-// import { io } from 'socket.io-client';
 import { Container, Button } from 'react-bootstrap'
 import { capitalize } from '../../Utils';
 import "./Ready.css";
 
 export default function Ready({ data }) {
-    // const socket = io.connect("http://localhost:5000/");
     const [ready, setReady] = useState(false)
 
     function btnHandler(e) {
         e.preventDefault()
         const changeStatus = !ready;
         setReady(changeStatus);
-        // socket.emit('ready', changeStatus ? 'ready' : 'notready');
     }
 
     return (
         <Container className='text-center'>
             <section className='mt-5 pt-5'>
                 <p>Anda berperan sebagai</p>
-                <h1 className='text-primary fw-bolder'>Penjual</h1>
+                <h1 className='text-primary fw-bolder'>{capitalize(data.role)}</h1>
             </section>
 
             <section className='mt-3'>

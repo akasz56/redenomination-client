@@ -4,32 +4,6 @@ import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils'
 
-//------------------------------ Data section
-function generateSeller(num = 1) {
-    let sellers = [];
-    for (let i = 1; i <= num; i++) {
-        sellers.push({
-            role: "Penjual " + i,
-            price: Math.floor(Math.random() * 100) * 100,
-            status: "wait"
-        })
-    }
-    return sellers;
-}
-
-const API = {
-    role: "Seller",
-    goodsType: "Elastis",
-    goodsName: "Laptop",
-    inflationType: "Inflasi Tinggi",
-}
-const socket = {
-    phase: "Sebelum Redenominasi",
-    unitCost: 3700,
-    seller: generateSeller(10),
-}
-
-//------------------------------ Screens
 export function PostPriceScreen({ data }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
@@ -42,7 +16,7 @@ export function PostPriceScreen({ data }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Cost</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {socket.unitCost}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {data.unitCost}</h1>
 
             {status ?
                 <p className='mt-5'>menunggu partisipan lain...</p>
@@ -58,21 +32,21 @@ export function PostPriceScreen({ data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={socket.phase}
-                goods={API.goodsType + " (" + capitalize(API.goodsName) + ")"}
-                inflation={API.inflationType}
+                phase={data.phase}
+                goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
+                inflation={data.inflationType}
             />
         </Container >
     )
 }
 
-export function SellerIdleScreen() {
+export function SellerIdleScreen({ data }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <p className='mt-5'>menunggu...</p>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {socket.seller.map((item, i) => (
+                {data.seller.map((item, i) => (
                     <Card
                         key={i}
                         variant={item.status}
@@ -86,9 +60,9 @@ export function SellerIdleScreen() {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={socket.phase}
-                goods={API.goodsType + " (" + capitalize(API.goodsName) + ")"}
-                inflation={API.inflationType}
+                phase={data.phase}
+                goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
+                inflation={data.inflationType}
             />
         </Container >
     );

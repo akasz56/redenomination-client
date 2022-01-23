@@ -2,6 +2,9 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
+- upload pic di create dan edit
+- edit functionality
+- socket test
 - Summaries tambahan dibawah
 - loading animate while logging in
 

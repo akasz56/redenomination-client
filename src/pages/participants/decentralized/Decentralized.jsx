@@ -3,32 +3,7 @@ import { Container } from 'react-bootstrap'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 
-//------------------------------ Data section
-function generateSeller(num = 1) {
-    let sellers = [];
-    for (let i = 1; i <= num; i++) {
-        sellers.push({
-            role: "Penjual " + i,
-            status: 'decentralized'
-        })
-    }
-    return sellers;
-}
-
-const API = {
-    role: "Buyer",
-    goodsType: "Elastis",
-    goodsName: "Laptop",
-    inflationType: "Inflasi Tinggi",
-}
-const socket = {
-    phase: "Sebelum Redenominasi",
-    unitCost: 8700,
-    seller: generateSeller(10),
-}
-
-//------------------------------ Screens
-export function ListChatroom() {
+export function ListChatroom({ data }) {
 
     useEffect(() => {
         document.title = "Decentralized"
@@ -42,7 +17,7 @@ export function ListChatroom() {
         <Container className='text-center d-flex flex-column'>
             <h3 className='mt-5'>Silahkan <span className='fw-bold'>Pilih Penjual</span> untuk bernegosiasi</h3>
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {socket.seller.map((item, i) => (
+                {data.seller.map((item, i) => (
                     <Card
                         key={i}
                         variant={item.status}
@@ -55,15 +30,15 @@ export function ListChatroom() {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={socket.phase}
-                goods={API.goodsType + " (" + API.goodsName + ")"}
-                inflation={API.inflationType}
+                phase={data.phase}
+                goods={data.goodsType + " (" + data.goodsName + ")"}
+                inflation={data.inflationType}
             />
         </Container >
     )
 }
 
-export function JoinChatroom() {
+export function JoinChatroom({ data }) {
     return (
         <Container>
 

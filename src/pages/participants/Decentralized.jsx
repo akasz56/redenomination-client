@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap'
 import Card from '../../components/Card'
 import Label from '../../components/Label'
 
-export default function Decentralized() {
+export default function Decentralized({ data }) {
 
     useEffect(() => {
         document.title = "Decentralized"
