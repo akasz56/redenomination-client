@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { readAllSimulations } from '../../adapters/Simulations';
 import LoadingComponent from '../../components/Loading';
-import { capitalize } from '../../Utils';
+import { capitalize, logout } from '../../Utils';
 import './Admin.css'
 
 export default function Admin() {
@@ -23,8 +23,7 @@ export default function Admin() {
                 setLoading(false)
             } else if (res.status === 401) {
                 setLoading(false)
-                console.log(res);
-                window.alert("Tidak diizinkan mengakses");
+                logout(window.location.href = "/");
             } else if (res.status === 404) {
                 setLoading(false)
                 console.log(res);
