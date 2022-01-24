@@ -22,7 +22,6 @@ export default function Admin() {
                 setSimulations(res.data);
                 setLoading(false)
             } else if (res.status === 401) {
-                setLoading(false)
                 logout(window.location.href = "/");
             } else if (res.status === 404) {
                 setLoading(false)
