@@ -6,12 +6,11 @@ import { PostPriceScreen, SellerIdleScreen } from './posted-offer/Seller';
 import { BuyerIdleScreen, FlashSaleScreen } from './posted-offer/Buyer';
 import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/doubleAuction';
 import { ListChatroom, JoinChatroom } from './decentralized/Decentralized';
-import serverURL from '../../adapters/serverURL';
+import { apiURL, socketURL } from '../../adapters/serverURL';
 
 export default function Participants() {
-    // const socket = io.connect("http://localhost:8000/");
+    const socket = io.connect(socketURL);
 
-    //------------------------------ Data section
     function generateSeller(num = 1) {
         let sellers = [];
         for (let i = 1; i <= num; i++) {
@@ -33,10 +32,10 @@ export default function Participants() {
         phase: "Sebelum Redenominasi",
         minPrice: 3700,
         maxPrice: 8900,
+        seller: generateSeller(10),
 
         role: "Penjual",
         unitCost: 3700,
-        seller: generateSeller(10),
     }
 
     const buyerData = {
@@ -48,10 +47,10 @@ export default function Participants() {
         phase: "Sebelum Redenominasi",
         minPrice: 3700,
         maxPrice: 8900,
+        seller: generateSeller(10),
 
         role: "Pembeli",
         unitValue: 8900,
-        seller: generateSeller(10),
     }
 
     useEffect(() => {

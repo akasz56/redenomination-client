@@ -1,4 +1,4 @@
-import serverURL from "./serverURL";
+import { apiURL } from "./serverURL";
 import { myToken } from '../Utils';
 
 export async function createSimulation(body) {
@@ -14,9 +14,7 @@ export async function createSimulation(body) {
     body.seller = body.seller.splice(0, body.participantNumber / 2);
     delete body.unitCost
 
-    body.goodsPic = "https://via.placeholder.com/800x600";
-
-    return await fetch(serverURL + "simulations/", {
+    return await fetch(apiURL + "simulations/", {
         method: "POST",
         headers: {
             'Accept': "application/json",
@@ -28,7 +26,7 @@ export async function createSimulation(body) {
 }
 
 export async function readAllSimulations() {
-    return await fetch(serverURL + "simulations/", {
+    return await fetch(apiURL + "simulations/", {
         headers: {
             'Authorization': myToken()
         }
@@ -36,7 +34,7 @@ export async function readAllSimulations() {
 }
 
 export async function readSimulation(id) {
-    return await fetch(serverURL + "simulations/" + id, {
+    return await fetch(apiURL + "simulations/" + id, {
         headers: {
             'Authorization': myToken()
         }
@@ -44,7 +42,7 @@ export async function readSimulation(id) {
 }
 
 export async function updateSimulation(id, body) {
-    return await fetch(serverURL + "simulations/" + id, {
+    return await fetch(apiURL + "simulations/" + id, {
         method: "PUT",
         headers: {
             "Accept": "application/json",
@@ -56,11 +54,21 @@ export async function updateSimulation(id, body) {
 }
 
 export async function deleteSimulation(id) {
-    return await fetch(serverURL + "simulations/" + id, {
+    return await fetch(apiURL + "simulations/" + id, {
         method: "DELETE",
         headers: {
             'Authorization': myToken()
         }
+    }).then(response => response.json());
+}
+
+export async function uploadPicture(id, formData) {
+    return await fetch(apiURL + "simulations/" + id + "/pictures", {
+        method: 'POST',
+        headers: {
+            'Authorization': myToken()
+        },
+        body: formData
     }).then(response => response.json());
 }
 

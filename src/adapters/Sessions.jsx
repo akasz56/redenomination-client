@@ -1,10 +1,10 @@
-import serverURL from "./serverURL";
+import { apiURL } from "./serverURL";
 import { myToken } from '../Utils';
 
 export async function createSession(body) {
     body.timer = parseInt(body.timer)
 
-    return await fetch(serverURL + "sessions/", {
+    return await fetch(apiURL + "sessions/", {
         method: "POST",
         headers: {
             'Accept': "application/json",
@@ -16,7 +16,7 @@ export async function createSession(body) {
 }
 
 export async function readSession(id) {
-    return await fetch(serverURL + "sessions/" + id, {
+    return await fetch(apiURL + "sessions/" + id, {
         headers: {
             'Authorization': myToken()
         }
@@ -26,7 +26,7 @@ export async function readSession(id) {
 export async function updateSession(id, body) { }
 
 export async function deleteSession(id) {
-    return await fetch(serverURL + "sessions/" + id, {
+    return await fetch(apiURL + "sessions/" + id, {
         method: "DELETE",
         headers: {
             'Authorization': myToken()

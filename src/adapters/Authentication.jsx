@@ -1,8 +1,8 @@
-import serverURL from "./serverURL";
+import { apiURL } from "./serverURL";
 // IpB_b3rc4nd4
 
 export async function connectAsAdmin(password) {
-    return await fetch(serverURL + "sessions/admins", {
+    return await fetch(apiURL + "sessions/admins", {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -16,7 +16,7 @@ export async function connectAsAdmin(password) {
 }
 
 export async function connectAsParticipant(token) {
-    return await fetch(serverURL + "sessions/tokens", {
+    return await fetch(apiURL + "sessions/tokens", {
         method: "POST",
         headers: {
             "Accept": "application/json",
