@@ -2,7 +2,6 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- upload pic di create dan edit
 - edit functionality
 - socket test
 - Summaries tambahan dibawah
@@ -25,3 +24,10 @@ pass: IpB_b3rc4nd4
 
 - report
 - prize
+
+# Socket endpoint
+
+- "serverMessage"
+- loginToken
+- "seller"
+- "buyer"

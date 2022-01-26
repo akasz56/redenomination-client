@@ -4,7 +4,8 @@ import { Button, Container, Form, Image, Modal } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
-import { createSession } from '../../../adapters/Sessions'
+import { createSession } from '../../../adapters/Sessions';
+import { imgURL } from '../../../adapters/serverURL';
 import SummaryComponent from '../../../components/Summary';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
@@ -127,10 +128,14 @@ export default function Simulation() {
                             <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
                             <p>Timer : <span className='fw-bold'>{dataGet.timer} menit</span></p>
                         </div>
-                        <figure className='info-image'>
-                            <Image src={dataGet.goodsPic} fluid></Image>
-                            <figcaption>Illustrasi barang</figcaption>
-                        </figure>
+                        {dataGet.goodsPic !== '' ?
+                            <figure className='info-image'>
+                                <Image src={imgURL + dataGet.goodsPic} fluid></Image>
+                                <figcaption>Illustrasi barang</figcaption>
+                            </figure>
+                            :
+                            <></>
+                        }
                     </section>
 
                     <hr style={{ marginTop: "7rem" }} />

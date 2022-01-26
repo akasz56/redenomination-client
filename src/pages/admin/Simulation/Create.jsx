@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import { createSimulation } from '../../../adapters/Simulations';
+import { createSimulation, uploadPicture } from '../../../adapters/Simulations';
 import UnitInput from '../../../components/UnitInput';
 
 export default function Create() {
@@ -10,10 +10,9 @@ export default function Create() {
         simulationType: "Posted Offer",
         goodsType: "Non-Elastis",
         goodsName: '',
-        goodsPic: '',
         inflationType: "Inflasi Rendah",
         participantNumber: 20,
-        timer: 2,
+        timer: 1,
     });
 
     useEffect(() => {
@@ -24,20 +23,37 @@ export default function Create() {
         e.preventDefault();
 
         if (formData.participantNumber % 2) {
-            alert("Jumlah responden tidak bisa ganjil");
+            alert("Jumlah responden tidak bisa ganjil atau kosong");
             document.getElementById('participantNumber').scrollIntoView();
             return;
         }
 
         const res = await createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
         if (res.status === 201) {
-            window.location.href = "/admin";
+            const fileName = await uploadPic(res.data.id);
+            if (fileName !== null) {
+                window.location.href = '/admin';
+            }
         } else if (res.status === 401) {
             console.log(res);
             window.alert("Tidak diizinkan mengakses");
         } else {
             console.log(res);
             alert("Terjadi Kesalahan, mohon coba lagi")
+        }
+    }
+
+    async function uploadPic(id) {
+        const input = document.querySelector('input[type="file"]')
+        let pic = new FormData()
+        pic.append('file', input.files[0])
+        const res = await uploadPicture(id, pic);
+        if (res.status === 200) {
+            return res.data.goodsPic;
+        } else {
+            console.log(res);
+            alert("Terjadi Kesalahan dalam mengupload foto");
+            return null;
         }
     }
 
@@ -52,7 +68,7 @@ export default function Create() {
                         onChange={(e) => { setFormData({ ...formData, simulationType: e.target.value }) }}>
                         <option value="Posted Offer">Posted Offer</option>
                         <option value="Double Auction">Double Auction</option>
-                        <option value="Desentralisasi">Desentralisasi</option>
+                        <option value="Decentralized">Desentralisasi</option>
                     </Form.Select>
                 </Form.Group>
 
@@ -88,10 +104,9 @@ export default function Create() {
                         </Form.Group>
                     </div>
                     <div className="col-md-6">
-                        <Form.Group controlId="formFile" className="mb-3">
-                            <Form.Label className='required'>Illustrasi Barang</Form.Label>
-                            <Form.Control type="file" accept="image/*"
-                                onChange={(e) => { setFormData({ ...formData, goodsPic: e.target.value }) }} />
+                        <Form.Group controlId="file" className="mb-3">
+                            <Form.Label>Illustrasi Barang</Form.Label>
+                            <Form.Control type="file" accept="image/*" />
                         </Form.Group>
                     </div>
                 </section>

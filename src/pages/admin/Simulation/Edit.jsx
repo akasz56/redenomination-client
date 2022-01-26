@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Form, Button, Image } from 'react-bootstrap';
-import { readSimulation, updateSimulation } from '../../../adapters/Simulations';
+import { readSimulation, updateSimulation, uploadPicture } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
 import Error404 from '../../errors/Error404';
@@ -36,26 +36,22 @@ export default function Edit() {
         fetchData();
     }, [urlParams.id]);
 
-    // function changeValue(value, key, key2) {
-    //     setData({
-    //         ...data,
-    //         [key]: Object.assign([], data[key], { 0: { ...data[key][0], [key2]: value } })
-    //     })
-    // }
-
     async function submitForm(e) {
         e.preventDefault();
+        setLoading(true);
+
+        const fileName = await uploadPic();
         const res = await updateSimulation(data.id, {
             simulationType: data.simulationType,
             goodsType: data.goodsType,
             goodsName: data.goodsName,
-            goodsPic: data.goodsPic,
+            goodsPic: (fileName) ? fileName : '',
             inflationType: data.inflationType,
             participantNumber: data.participantNumber,
             timer: data.timer
         });
         if (res.status === 200) {
-            window.alert("Berhasil diubah");
+            window.alert((fileName) ? "Data berhasil diubah kecuali foto" : "Data berhasil diubah");
             window.location.href = "/simulations/" + data.id;
         } else if (res.status === 401) {
             console.log(res);
@@ -66,6 +62,21 @@ export default function Edit() {
         } else {
             console.log(res);
             alert("Terjadi Kesalahan");
+        }
+        setLoading(false);
+    }
+
+    async function uploadPic() {
+        const input = document.querySelector('input[type="file"]')
+        let pic = new FormData()
+        pic.append('file', input.files[0])
+        const res = await uploadPicture(data.id, pic);
+        if (res.status === 200) {
+            return res.data.goodsPic;
+        } else {
+            console.log(res);
+            alert("Terjadi Kesalahan dalam mengupload foto");
+            return null;
         }
     }
 
@@ -122,11 +133,10 @@ export default function Edit() {
                                 </Form.Group>
                             </div>
                             <div className="col-md-6">
-                                <Form.Group controlId="formFile" className="mb-3">
+                                <Form.Group controlId="file" className="mb-3">
                                     <Form.Label className='required'>Illustrasi Barang</Form.Label>
                                     <Image src={data.goodsPic} className=' w-100 mb-3' thumbnail rounded ></Image>
-                                    <Form.Control type="file" accept="image/*"
-                                        onChange={(e) => { setData({ ...data, goodsPic: e.target.value }) }} />
+                                    <Form.Control type="file" accept="image/*" />
                                 </Form.Group>
                             </div>
                         </section>
@@ -161,7 +171,6 @@ export default function Edit() {
                                         id={i + 1}
                                         role="penjual"
                                         defaultValue={data.sellers[i].unitCost}
-                                    // onChange={(e) => { changeValue(e.target.value, "sellers", "unitCost") }}
                                     />
                                 ))}
                             </div>
@@ -174,7 +183,6 @@ export default function Edit() {
                                         id={i + 1}
                                         role="pembeli"
                                         defaultValue={data.buyers[i].unitValue}
-                                    // onChange={(e) => { changeValue(e.target.value, "buyers", "unitValue") }}
                                     />
                                 ))}
                             </div>
