@@ -78,6 +78,7 @@ export default function Simulation() {
         setModalDelete(prev => !prev);
 
         if (e.target.elements.confirm.value === capitalize(dataGet.simulationType)) {
+            setLoading(true)
             const res = await deleteSimulation(dataGet.id)
             if (res.status === 200) {
                 window.location.href = "/admin";
@@ -88,6 +89,7 @@ export default function Simulation() {
                 console.log(res);
                 alert("Terjadi Kesalahan, mohon coba lagi")
             }
+            setLoading(false)
         }
         else { alert("Simulasi gagal dihapus"); }
     }

@@ -80,7 +80,7 @@ export default function Admin() {
                                     <td className='number'>{i + 1}</td>
                                     <td>
                                         <h3>{capitalize(simulation.simulationType)}</h3>
-                                        <span>{simulation.goodsType}, {simulation.inflationType}</span>
+                                        <span>{simulation.goodsType} ({simulation.goodsName}), {simulation.inflationType}</span>
                                     </td>
                                     <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                                 </tr>
