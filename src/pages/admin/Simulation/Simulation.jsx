@@ -58,18 +58,19 @@ export default function Simulation() {
         e.preventDefault();
         showCreateSessionForm();
 
+        setLoading(true)
         const res = await createSession(dataPost);
         if (res.status === 201) {
             alert("Ulangan berhasil dibuat");
             window.location.reload();
         } else if (res.status === 401) {
-            setLoading(false)
             console.log(res);
             window.alert("Tidak diizinkan mengakses");
         } else {
             console.log(res);
             alert("Terjadi Kesalahan, mohon coba lagi");
         }
+        setLoading(false)
     }
 
     async function confirmDelete(e) {
