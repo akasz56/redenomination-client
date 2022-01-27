@@ -3,13 +3,14 @@ import { Container, Button } from 'react-bootstrap'
 import { capitalize } from '../../Utils';
 import "./Ready.css";
 
-export default function Ready({ data }) {
+export default function Ready({ socket, data }) {
     const [ready, setReady] = useState(false)
 
     function btnHandler(e) {
         e.preventDefault()
         const changeStatus = !ready;
         setReady(changeStatus);
+        socket.emit("toggleReady");
     }
 
     return (

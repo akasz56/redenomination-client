@@ -4,7 +4,7 @@ import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils'
 
-export function PostPriceScreen({ data }) {
+export function PostPriceScreen({ socket, data }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
@@ -40,7 +40,7 @@ export function PostPriceScreen({ data }) {
     )
 }
 
-export function SellerIdleScreen({ data }) {
+export function SellerIdleScreen({ socket, data }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <p className='mt-5'>menunggu...</p>

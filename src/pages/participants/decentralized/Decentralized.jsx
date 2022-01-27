@@ -7,11 +7,11 @@ import { BuyerIdleScreen, FlashSaleScreen } from '../posted-offer/Buyer';
 import { PostPriceScreen, SellerIdleScreen } from '../posted-offer/Seller';
 
 // ---------------------------------------------BUYER
-export function BuyerIdleDS({ data }) {
+export function BuyerIdleDS({ socket, data }) {
     return <BuyerIdleScreen data={data} />
 }
 
-export function ListShops({ data }) {
+export function ListShops({ socket, data }) {
     useEffect(() => {
         document.title = "Decentralized"
     }, [])
@@ -45,7 +45,7 @@ export function ListShops({ data }) {
     )
 }
 
-export function EnterShop({ data }) {
+export function EnterShop({ socket, data }) {
     const [status, setStatus] = useState(false);
 
 
@@ -94,10 +94,10 @@ export function EnterShop({ data }) {
 }
 
 // ---------------------------------------------SELLER
-export function PostPriceDS({ data }) {
+export function PostPriceDS({ socket, data }) {
     return <PostPriceScreen data={data} />
 }
 
-export function SellerIdleDS({ data }) {
+export function SellerIdleDS({ socket, data }) {
     return <SellerIdleScreen data={data} />
 }

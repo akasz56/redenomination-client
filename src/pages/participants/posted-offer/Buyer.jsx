@@ -3,7 +3,7 @@ import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils'
 
-export function BuyerIdleScreen({ data }) {
+export function BuyerIdleScreen({ socket, data }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
@@ -21,7 +21,7 @@ export function BuyerIdleScreen({ data }) {
     )
 }
 
-export function FlashSaleScreen({ data }) {
+export function FlashSaleScreen({ socket, data }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>

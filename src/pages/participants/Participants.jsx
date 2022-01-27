@@ -1,98 +1,70 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import socket from "../../adapters/SocketIO";
 import Ready from "./Ready";
 import { PostPriceScreen, SellerIdleScreen } from './posted-offer/Seller';
 import { BuyerIdleScreen, FlashSaleScreen } from './posted-offer/Buyer';
-import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/doubleAuction';
+import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/DoubleAuction';
 import { BuyerIdleDS, ListShops, EnterShop, PostPriceDS, SellerIdleDS } from './decentralized/Decentralized';
 
 export default function Participants() {
-    function generateSeller(num = 1) {
-        let sellers = [];
-        for (let i = 1; i <= num; i++) {
-            sellers.push({
-                role: "Penjual " + i,
-                price: Math.floor(Math.random() * 100) * 100,
-                // status: "wait"
-                status: "done"
-                // status: "decentralized"
-            })
-        }
-        return sellers;
-    }
-
-    const sellerData = {
-        simulationType: "simulationType",
-        goodsType: "Elastis",
-        goodsName: "Laptop",
-        inflationType: "Inflasi Tinggi",
-
-        phase: "Sebelum Redenominasi",
-        minPrice: 3700,
-        maxPrice: 8900,
-        seller: generateSeller(10),
-
-        role: "Penjual",
-        unitCost: 3700,
-    }
-
-    const buyerData = {
-        simulationType: "simulationType",
-        goodsType: "Elastis",
-        goodsName: "Laptop",
-        inflationType: "Inflasi Tinggi",
-
-        phase: "Sebelum Redenominasi",
-        minPrice: 3700,
-        maxPrice: 8900,
-        seller: generateSeller(10),
-
-        role: "Pembeli",
-        unitValue: 8900,
-    }
+    const { state } = useLocation();
+    const [role] = useState(state.type);
+    const [data, setData] = useState(state.detail);
+    const [stage, setStage] = useState('');
 
     useEffect(() => {
         document.title = "simulationType"
+        socket.on("serverMessage", res => { console.log("from serverMessage"); console.log(res); })
+        if (role === "seller") {
+            socket.on("seller", res => { console.log("from seller"); console.log(res); })
+        } else if (role === "buyer") {
+            socket.on("buyer", res => { console.log("from buyer"); console.log(res); })
+        }
     }, [])
 
-    // Waiting
-    return <Ready data={sellerData} />
-    // return <Ready data={buyerData} />
+    const phaseData = {
+        simulationType: "simulationType",
+        goodsType: "Elastis",
+        goodsName: "Laptop",
+        inflationType: "Inflasi Tinggi",
+    }
 
+    if (stage === '') {
+        return <Ready socket={socket} data={{ ...data, ...phaseData, role: role }} />
+    } else {
+        if (role === "seller") {
+            // PO
+            // return <PostPriceScreen socket={socket} data={sellerData} />
+            // return <SellerIdleScreen socket={socket} data={sellerData} />
+            // return <CompleteScreen socket={socket} data={sellerData} />
 
-    // PO Seller
-    // return <PostPriceScreen data={sellerData} />
-    // return <SellerIdleScreen data={sellerData} />
-    // return <CompleteScreen data={sellerData} />
+            // DA
+            // return <SellerAuctionScreen socket={socket} data={sellerData} />
+            // return <CompleteScreen socket={socket} data={sellerData} />
 
-    // PO Buyer
-    // return <BuyerIdleScreen data={buyerData} />
-    // return <FlashSaleScreen data={buyerData} />
-    // return <CompleteScreen data={buyerData} />
+            // DS
+            // return <PostPriceDS socket={socket} data={sellerData} />
+            // return <SellerIdleDS socket={socket} data={sellerData} />
+            // return <CompleteScreen socket={socket} data={sellerData} />
+        } else if (role === "buyer") {
+            // PO
+            // return <BuyerIdleScreen socket={socket} data={buyerData} />
+            // return <FlashSaleScreen socket={socket} data={buyerData} />
+            // return <CompleteScreen socket={socket} data={buyerData} />
 
+            // DA
+            // return <BuyerAuctionScreen socket={socket} data={buyerData} />
+            // return <CompleteScreen socket={socket} data={buyerData} />
 
-    // DA Seller
-    // return <SellerAuctionScreen data={sellerData} />
-    // return <CompleteScreen data={sellerData} />
-
-    // DA Buyer
-    // return <BuyerAuctionScreen data={buyerData} />
-    // return <CompleteScreen data={buyerData} />
-
-
-    // DS Seller
-    // return <PostPriceDS data={sellerData} />
-    // return <SellerIdleDS data={sellerData} />
-    // return <CompleteScreen data={sellerData} />
-
-    // DS Buyer
-    // return <BuyerIdleDS data={buyerData} />
-    // return <ListShops data={buyerData} />
-    // return <EnterShop data={buyerData} />
-    // return <CompleteScreen data={buyerData} />
-
-    return <div />
+            // DS
+            // return <BuyerIdleDS socket={socket} data={buyerData} />
+            // return <ListShops socket={socket} data={buyerData} />
+            // return <EnterShop socket={socket} data={buyerData} />
+            // return <CompleteScreen socket={socket} data={buyerData} />
+        }
+    }
 }
 
 function CompleteScreen() {

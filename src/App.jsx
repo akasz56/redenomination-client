@@ -27,7 +27,6 @@ export default function App() {
 			<Route path="/">
 				<Route index element={<Homepage />} />
 				<Route path="login" element={<Login />} />
-				<Route path="participant/*" element={<Participants />} />
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='admin' />}>
@@ -50,16 +49,12 @@ export default function App() {
 						<Route path="summary" element={<SessionSummary />} />
 					</Route>
 				</Route>
+				<Route path="participant/*" element={<Participants />} />
 			</Route>
 
-			{/* <Route path="/" element={<ProtectedRoute for='participant' />}>
-				<Route path="sessions">
-					<Route index element={<Navigate to='/' />} />
-					<Route path=":id">
-						<Route index element={<Participants />} />
-					</Route>
-				</Route>
-			</Route> */}
+			<Route path="/" element={<ProtectedRoute for='participant' />}>
+				<Route path="participant/" element={<Participants />} />
+			</Route>
 
 			<Route path="*" element={<Error404 />} />
 
@@ -71,9 +66,6 @@ export default function App() {
 function Homepage() {
 	if (myRole() === 'admin') {
 		return <Navigate to='/admin' />
-	} else if (myRole() === 'participant') {
-		// return <Navigate to='/sessions' />
-		return <Home />
 	} else {
 		return <Home />
 	}

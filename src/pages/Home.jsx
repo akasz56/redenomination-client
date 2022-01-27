@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
-import { connectAsParticipant } from "../adapters/Authentication";
+import socket from '../adapters/SocketIO';
 import LoadingComponent from '../components/Loading';
-import { myRole } from '../Utils';
 import './Home.css';
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Redenomination Project App";
@@ -16,29 +17,20 @@ export default function Home() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (myRole()) {
-            alert(`Anda sudah login sebagai ${myRole()}`)
-            window.location.href = "/";
-        }
-
         setLoading(true)
-        const res = await connectAsParticipant(token);
-        if (res.status === 200) {
-            localStorage.setItem('auth', JSON.stringify({
-                login: true,
-                role: "participant",
-                token: "Bearer " + res.data.jwtToken
-            }));
-            window.location.href = "/";
-        } else if (res.status === 401) {
-            setLoading(false)
-            setToken("");
-            alert("Token tidak valid");
-        } else {
-            setLoading(false)
-            console.log(res);
-            alert("Terdapat kesalahan");
-        }
+        socket.emit("loginToken", { "token": token })
+        socket.on("serverMessage", res => {
+            if (res.status === 200) {
+                localStorage.setItem('auth', JSON.stringify({
+                    login: true,
+                    role: "participant",
+                    id: res.data.detail.id,
+                }));
+                navigate('/participant', { state: res.data });
+            } else {
+                setLoading(false)
+            }
+        })
     }
 
     if (loading) { return <LoadingComponent className='child' /> }
