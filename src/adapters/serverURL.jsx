@@ -3,4 +3,4 @@ const mainURL = "https://carbide-bongo-338115.et.r.appspot.com/";
 
 export default mainURL
 export const apiURL = mainURL + "api/";
-export const imgURL = mainURL + "static/";
+export const imgURL = "https://storage.googleapis.com/carbide-bongo-338115.appspot.com/";

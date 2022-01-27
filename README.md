@@ -2,10 +2,8 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- edit functionality
-- socket test
+- sort data by date
 - Summaries tambahan dibawah
-- loading animate while logging in
 
 # Summaries
 
@@ -31,3 +29,7 @@ pass: IpB_b3rc4nd4
 - loginToken
 - "seller"
 - "buyer"
+
+# saran ke backend
+
+- getAllSimulation disort berdasarkan datenya (latest)

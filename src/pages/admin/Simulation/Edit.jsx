@@ -5,6 +5,7 @@ import { readSimulation, updateSimulation, uploadPicture } from '../../../adapte
 import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
 import Error404 from '../../errors/Error404';
+import { imgURL } from '../../../adapters/serverURL';
 
 export default function Edit() {
     const [loading, setLoading] = useState(true);
@@ -45,13 +46,13 @@ export default function Edit() {
             simulationType: data.simulationType,
             goodsType: data.goodsType,
             goodsName: data.goodsName,
-            goodsPic: (fileName) ? fileName : '',
+            goodsPic: (fileName) ? fileName : data.goodsPic,
             inflationType: data.inflationType,
             participantNumber: data.participantNumber,
             timer: data.timer
         });
         if (res.status === 200) {
-            window.alert((fileName) ? "Data berhasil diubah kecuali foto" : "Data berhasil diubah");
+            window.alert("Data berhasil diubah");
             window.location.href = "/simulations/" + data.id;
         } else if (res.status === 401) {
             console.log(res);
@@ -68,16 +69,18 @@ export default function Edit() {
 
     async function uploadPic() {
         const input = document.querySelector('input[type="file"]')
-        let pic = new FormData()
-        pic.append('file', input.files[0])
-        const res = await uploadPicture(data.id, pic);
-        if (res.status === 200) {
-            return res.data.goodsPic;
-        } else {
-            console.log(res);
-            alert("Terjadi Kesalahan dalam mengupload foto");
-            return null;
+        if (input.files.length > 0) {
+            let pic = new FormData()
+            pic.append('file', input.files[0])
+            const res = await uploadPicture(data.id, pic);
+            if (res.status === 201) {
+                return res.data.goodsPic;
+            } else {
+                console.log(res);
+                alert("Terjadi Kesalahan dalam mengupload foto");
+            }
         }
+        return null;
     }
 
     if (loading) { return (<LoadingComponent className='child' />) }
@@ -95,7 +98,7 @@ export default function Edit() {
                                 onChange={(e) => { setData({ ...data, simulationType: e.target.value }) }}>
                                 <option value="Posted Offer">Posted Offer</option>
                                 <option value="Double Auction">Double Auction</option>
-                                <option value="Desentralisasi">Desentralisasi</option>
+                                <option value="Decentralized">Desentralisasi</option>
                             </Form.Select>
                         </Form.Group>
 
@@ -135,7 +138,7 @@ export default function Edit() {
                             <div className="col-md-6">
                                 <Form.Group controlId="file" className="mb-3">
                                     <Form.Label className='required'>Illustrasi Barang</Form.Label>
-                                    <Image src={data.goodsPic} className=' w-100 mb-3' thumbnail rounded ></Image>
+                                    <Image src={imgURL + data.goodsPic} className=' w-100 mb-3' thumbnail rounded ></Image>
                                     <Form.Control type="file" accept="image/*" />
                                 </Form.Group>
                             </div>

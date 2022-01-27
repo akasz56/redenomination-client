@@ -131,7 +131,7 @@ export default function Simulation() {
                         </div>
                         {dataGet.goodsPic !== '' ?
                             <figure className='info-image'>
-                                <Image src={imgURL + dataGet.goodsPic} fluid></Image>
+                                <Image src={(dataGet.goodsPic) ? imgURL + dataGet.goodsPic : ''} fluid></Image>
                                 <figcaption>Illustrasi barang</figcaption>
                             </figure>
                             :

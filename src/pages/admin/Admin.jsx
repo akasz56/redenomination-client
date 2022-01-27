@@ -74,16 +74,25 @@ export default function Admin() {
                     {loading ?
                         <tr><td colSpan={3}><LoadingComponent className="mx-auto my-5" /></td></tr>
                         :
-                        simulations.map((simulation, i) => (
-                            <tr key={i} className='simulations' onClick={e => rowHandler(e, simulation.id)}>
-                                <td className='number'>{i + 1}</td>
-                                <td>
-                                    <h3>{capitalize(simulation.simulationType)}</h3>
-                                    <span>{simulation.goodsType}, {simulation.inflationType}</span>
+                        (simulations.length !== 0 ?
+                            (simulations.map((simulation, i) => (
+                                <tr key={i} className='simulations' onClick={e => rowHandler(e, simulation.id)}>
+                                    <td className='number'>{i + 1}</td>
+                                    <td>
+                                        <h3>{capitalize(simulation.simulationType)}</h3>
+                                        <span>{simulation.goodsType}, {simulation.inflationType}</span>
+                                    </td>
+                                    <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
+                                </tr>
+                            )))
+                            :
+                            <tr>
+                                <td colSpan={3} className='text-center py-5'>
+                                    <h1>No Data</h1>
+                                    <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
                                 </td>
-                                <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                             </tr>
-                        ))
+                        )
                     }
                 </tbody>
             </Table>
