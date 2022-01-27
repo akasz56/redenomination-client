@@ -23,7 +23,17 @@ export async function readSession(id) {
     }).then(response => response.json());
 }
 
-export async function updateSession(id, body) { }
+export async function updateSession(id, body) {
+    return await fetch(apiURL + "sessions/" + id, {
+        method: "PUT",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": myToken()
+        },
+        body: JSON.stringify(body)
+    }).then(response => response.json());
+}
 
 export async function deleteSession(id) {
     return await fetch(apiURL + "sessions/" + id, {

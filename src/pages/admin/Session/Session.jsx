@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Button, Container, Form, Modal } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { readSession, deleteSession } from '../../../adapters/Sessions';
+import { readSession, deleteSession, updateSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import Error404 from '../../errors/Error404';
@@ -12,6 +12,8 @@ import { myToken, capitalize } from '../../../Utils';
 export default function Session() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
+    const [dataPost, setDataPost] = useState(null);
+    const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     let urlParams = useParams();
 
@@ -22,6 +24,10 @@ export default function Session() {
             const res = await readSession(urlParams.id)
             if (res.status === 200) {
                 setData(res.data);
+                setDataPost({
+                    sessionType: res.data.sessionType,
+                    timer: res.data.timer
+                })
                 setLoading(false)
                 document.title = "Ulangan " + res.data.id;
             } else if (res.status === 401) {
@@ -50,7 +56,27 @@ export default function Session() {
         }
     }
 
+    function showEditSessionForm(e) { setModalEdit(prev => !prev); }
     function showDeleteSessionForm(e) { setModalDelete(prev => !prev); }
+
+    async function submitEditSession(e) {
+        e.preventDefault();
+        showEditSessionForm();
+
+        setLoading(true)
+        const res = await updateSession(data.id, dataPost);
+        if (res.status === 200) {
+            alert("Ulangan berhasil diubah");
+            window.location.reload();
+        } else if (res.status === 401) {
+            console.log(res);
+            window.alert("Tidak diizinkan mengakses");
+        } else {
+            console.log(res);
+            alert("Terjadi Kesalahan, mohon coba lagi");
+        }
+        setLoading(false)
+    }
 
     async function confirmDelete(e) {
         e.preventDefault();
@@ -83,10 +109,15 @@ export default function Session() {
                         </div>
                         <div className="col-3 text-end">
                             <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
+                            <Button variant="outline-dark" className='py-1' onClick={showEditSessionForm}>edit</Button>
                         </div>
                     </section>
 
-                    {data.timeLastRun !== null ?
+                    <section className='mt-4 text-center'>
+                        <p>Timer : <span className='fw-bold'>{data.timer} menit</span></p>
+                    </section>
+
+                    {data.timeLastRun === null ?
                         <section>
                             <hr />
                             <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>
@@ -94,7 +125,7 @@ export default function Session() {
                         </section>
                         :
                         <section className='summary'>
-                            <hr style={{ marginTop: "7rem" }} />
+                            <hr />
                             <h1>Ringkasan Simulasi</h1>
                             <Link to={'./summary'}>rincian simulasi...</Link>
                             <div className='d-flex flex-column flex-xl-row justify-content-around'>
@@ -121,6 +152,36 @@ export default function Session() {
                         <h1>Hapus Ulangan</h1>
                         <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
                     </section>
+
+                    <Modal show={modalEdit} onHide={showEditSessionForm}>
+                        <form onSubmit={submitEditSession}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Tambah Ulangan Simulasi</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group controlId="sessionType">
+                                    <Form.Label className='required'>Nama Sesi</Form.Label>
+                                    <Form.Control type="text"
+                                        defaultValue={dataPost.sessionType}
+                                        required
+                                        onChange={(e) => { setDataPost({ ...dataPost, sessionType: e.target.value }) }} />
+                                </Form.Group>
+                                <Form.Group controlId="timer" className='mt-3'>
+                                    <Form.Label className='required'>Timer</Form.Label>
+                                    <br />
+                                    <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
+                                        required
+                                        defaultValue={dataPost.timer}
+                                        onChange={(e) => { setDataPost({ ...dataPost, timer: e.target.value }) }} />
+                                    &nbsp;Menit
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={showEditSessionForm}>Close</Button>
+                                <Button variant="primary" type="submit">Save Changes</Button>
+                            </Modal.Footer>
+                        </form>
+                    </Modal>
 
                     <Modal show={modalDelete} onHide={showDeleteSessionForm} centered>
                         <form onSubmit={confirmDelete}>
