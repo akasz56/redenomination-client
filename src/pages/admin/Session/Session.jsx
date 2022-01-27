@@ -117,7 +117,7 @@ export default function Session() {
                         <p>Timer : <span className='fw-bold'>{data.timer} menit</span></p>
                     </section>
 
-                    {data.timeLastRun === null ?
+                    {data.timeLastRun === data.timeCreated ?
                         <section>
                             <hr />
                             <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>
