@@ -63,15 +63,15 @@ export function EnterShop({ data }) {
         <>
             <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>Rp. {data.unitValue}</span></p>
             <div className='mt-3'>
-                <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i class='bx bx-arrow-back'></i> Kembali</Button>
-                <Button onClick={clickBuy} className='fs-4 py-2 px-4 ms-3'> <i class='bx bxs-cart-add' ></i> Beli</Button>
+                <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i className='bx bx-arrow-back'></i> Kembali</Button>
+                <Button onClick={clickBuy} className='fs-4 py-2 px-4 ms-3'> <i className='bx bxs-cart-add' ></i> Beli</Button>
             </div>
         </>
         :
         <>
             <p className='mb-3'>Unit Value anda <span className='fw-bold'>(Rp. {data.unitValue})</span> melebihi harga</p>
             <div className='mt-3'>
-                <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i class='bx bx-arrow-back'></i> Kembali</Button>
+                <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i className='bx bx-arrow-back'></i> Kembali</Button>
             </div>
         </>
         ;

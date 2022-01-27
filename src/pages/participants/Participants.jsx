@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Container } from 'react-bootstrap';
+import socket from "../../adapters/SocketIO";
 import Ready from "./Ready";
 import { PostPriceScreen, SellerIdleScreen } from './posted-offer/Seller';
 import { BuyerIdleScreen, FlashSaleScreen } from './posted-offer/Buyer';
@@ -7,7 +8,6 @@ import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/double
 import { BuyerIdleDS, ListShops, EnterShop, PostPriceDS, SellerIdleDS } from './decentralized/Decentralized';
 
 export default function Participants() {
-
     function generateSeller(num = 1) {
         let sellers = [];
         for (let i = 1; i <= num; i++) {
@@ -57,7 +57,7 @@ export default function Participants() {
     }, [])
 
     // Waiting
-    // return <Ready data={sellerData} />
+    return <Ready data={sellerData} />
     // return <Ready data={buyerData} />
 
 
@@ -89,7 +89,7 @@ export default function Participants() {
     // DS Buyer
     // return <BuyerIdleDS data={buyerData} />
     // return <ListShops data={buyerData} />
-    return <EnterShop data={buyerData} />
+    // return <EnterShop data={buyerData} />
     // return <CompleteScreen data={buyerData} />
 
     return <div />
