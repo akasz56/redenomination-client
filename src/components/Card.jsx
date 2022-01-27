@@ -23,7 +23,7 @@ export default function Card(props) {
             return (
                 <div className={"simulation-card " + props.className} {...elseProps}>
                     <span className="fw-bold">{role}</span>
-                    <Button className="var mt-5" onClick={props.onBtnClick}> <i class='bx bx-message-rounded-dots'></i> Chat Penjual</Button>
+                    <Button className="var mt-5" onClick={props.onBtnClick}>Lihat Harga</Button>
                 </div>
             )
         default:

@@ -7,7 +7,7 @@ import { readSession, deleteSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import Error404 from '../../errors/Error404';
-import { capitalize } from '../../../Utils';
+import { myToken, capitalize } from '../../../Utils';
 
 export default function Session() {
     const [loading, setLoading] = useState(true);
@@ -42,7 +42,11 @@ export default function Session() {
 
     function runSession() {
         if (window.confirm("Jalankan sesi sekarang?")) {
-            console.log("yes")
+            const sentSocket = {
+                authentication: myToken(),
+                sessionData: data,
+            };
+            console.log(sentSocket)
         }
     }
 
