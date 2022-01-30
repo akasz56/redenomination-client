@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import socket from "../../adapters/SocketIO";
 import Ready from "./Ready";
 import { PostPriceScreen, SellerIdleScreen } from './posted-offer/Seller';
@@ -50,7 +50,7 @@ export default function Participants() {
             if (res.status === 400) {
                 console.log(res)
                 window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
-                logout(() => { window.location.href = "/"; });
+                logout(() => { window.location.reload("/"); });
             }
         })
 
@@ -110,6 +110,7 @@ export default function Participants() {
                 setStage(nextStage);
                 break;
             case "postRedenomPrice":
+                socket.emit("finishPhase", { "phaseId": phases[2].id })
                 setStage("complete");
                 break;
 
@@ -133,14 +134,6 @@ export default function Participants() {
         }
     }
 
-}
-
-function CompleteScreen({ socket, data }) {
-    return (
-        <Container>
-            <h1 className='child'>Simulasi Selesai</h1>
-        </Container>
-    )
 }
 
 function PostedOfferHandler(stage, timer, socket, data, checkPhase) {
@@ -202,4 +195,22 @@ function DecentralizedHandler(stage, setStage, socket, data, checkPhase) {
         default:
             return <div />
     }
+}
+
+
+function CompleteScreen({ socket, data }) {
+
+    function handlerClick(e) {
+        e.preventDefault();
+        logout(() => { window.location.reload("/"); });
+    }
+
+    return (
+        <Container>
+            <div className='child'>
+                <h1>Simulasi Selesai</h1>
+                <Button variant="danger" onClick={handlerClick}>Keluar</Button>
+            </div>
+        </Container>
+    )
 }

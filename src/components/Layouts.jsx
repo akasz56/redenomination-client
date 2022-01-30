@@ -21,14 +21,13 @@ export function Header() {
                     <Nav className="mt-2 me-auto"></Nav>
                     <Nav>
                         <div>
-                            {myRole() ?
-                                (myRole() === "admin" ?
-                                    <Link to='/admin' className="btn btn-outline-light"><i className='bx bxs-dashboard' /> Panel Admin</Link>
-                                    :
-                                    <Button variant="danger" onClick={handlerClick}>Keluar</Button>
-                                )
+                            {myRole() === "admin" ?
+                                <Link to='/admin' className="btn btn-outline-light"><i className='bx bxs-dashboard' /> Panel Admin</Link>
                                 :
-                                <Link to='/login' className="btn btn-outline-light">Masuk sebagai Admin</Link>
+                                <>
+                                    <Link to='/login' className="btn btn-outline-light me-3">Masuk sebagai Admin</Link>
+                                    <Button variant="danger" onClick={handlerClick}>Keluar</Button>
+                                </>
                             }
                         </div>
                     </Nav>

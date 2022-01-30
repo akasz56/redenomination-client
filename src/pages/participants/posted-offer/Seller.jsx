@@ -18,12 +18,6 @@ export function PostPriceScreen({ socket, data, timer }) {
         setStatus(true);
     }
 
-    function minimumValue() {
-        if (data.currentPhase.phaseType !== "preRedenomPrice") {
-            return data.unitCost / 1000
-        }
-    }
-
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />

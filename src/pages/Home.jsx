@@ -22,13 +22,18 @@ export default function Home() {
         socket.emit("join", token);
         socket.on("serverMessage", res => {
             if (res.status === 200) {
-                localStorage.setItem('auth', JSON.stringify({
-                    login: true,
-                    role: "participant",
-                    id: res.data.detail.id,
-                }));
-                socket.off("serverMessage")
-                navigate('/participant', { state: res.data });
+                if (res.data.phases[0].isRunning) {
+                    localStorage.setItem('auth', JSON.stringify({
+                        login: true,
+                        role: "participant",
+                        id: res.data.detail.id,
+                    }));
+                    socket.off("serverMessage")
+                    navigate('/participant', { state: res.data });
+                } else {
+                    window.alert("Simulasi belum dijalankan");
+                    setLoading(false);
+                }
             } else {
                 window.alert("Simulasi sudah penuh");
                 setLoading(false);

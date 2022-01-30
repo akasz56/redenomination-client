@@ -43,3 +43,21 @@ export async function deleteSession(id) {
         }
     }).then(response => response.json());
 }
+
+export async function runSession(id) {
+    return await fetch(apiURL + "sessions/" + id + "/runs", {
+        method: "POST",
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
+}
+
+export async function finishSession(id) {
+    return await fetch(apiURL + "sessions/" + id + "/finishes", {
+        method: "POST",
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
+}
