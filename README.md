@@ -2,7 +2,7 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- Finalization Posted Offer (timer, displayPrice)
+- Finalization Posted Offer (reward)
 - Summaries tambahan dibawah
 
 # Summaries

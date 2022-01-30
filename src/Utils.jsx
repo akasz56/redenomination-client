@@ -20,3 +20,19 @@ export function logout(next) {
     localStorage.removeItem('auth');
     next()
 }
+
+export function displayPrice(price, phaseType) {
+    switch (phaseType) {
+        case "preRedenomPrice":
+            return Number(price)
+
+        case "transitionPrice":
+            return Number(price) + " / " + (Number(price) / 1000)
+
+        case "postRedenomPrice":
+            return Number(price) / 1000;
+
+        default:
+            break;
+    }
+}

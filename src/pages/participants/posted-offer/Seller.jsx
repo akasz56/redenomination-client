@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
-import { capitalize } from '../../../Utils'
+import Timer from '../../../components/Timer'
+import { capitalize, displayPrice } from '../../../Utils'
 
-export function PostPriceScreen({ socket, data, setStage }) {
+export function PostPriceScreen({ socket, data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
-
-    useEffect(() => {
-        console.log(typeof data.unitCost)
-    })
 
     function submitHandler(e) {
         e.preventDefault()
@@ -21,10 +18,18 @@ export function PostPriceScreen({ socket, data, setStage }) {
         setStatus(true);
     }
 
+    function minimumValue() {
+        if (data.currentPhase.phaseType !== "preRedenomPrice") {
+            return data.unitCost / 1000
+        }
+    }
+
     return (
         <Container className='text-center d-flex flex-column'>
+            <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Cost</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {data.unitCost}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitCost, data.currentPhase.phaseType)}
+            </h1>
 
             {status ?
                 <p className='mt-5'>menunggu partisipan lain...</p>
@@ -32,7 +37,11 @@ export function PostPriceScreen({ socket, data, setStage }) {
                 <Form onSubmit={submitHandler} className='mt-5'>
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
-                        <Form.Control type="number" min={data.unitCost} step="0.001" required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost} />
+                        {(data.currentPhase.phaseType !== "preRedenomPrice") ?
+                            <Form.Control type="number" min={data.unitCost / 1000} step="0.001" required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost / 1000} />
+                            :
+                            <Form.Control type="number" min={data.unitCost} required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost} />
+                        }
                     </Form.Group>
                     <Button type="submit" className='mt-3 py-3 px-5 fs-4'>Tetapkan</Button>
                 </Form>
@@ -48,7 +57,7 @@ export function PostPriceScreen({ socket, data, setStage }) {
     )
 }
 
-export function SellerIdleScreen({ socket, data, setStage, checkPhase }) {
+export function SellerIdleScreen({ socket, data, timer, checkPhase }) {
     const [seller, setSeller] = useState(data.seller);
     const [countSold, setCountSold] = useState(0);
 
@@ -69,12 +78,9 @@ export function SellerIdleScreen({ socket, data, setStage, checkPhase }) {
             setCountSold(count)
         })
 
-        if (countSold === (data.participantNumber / 2)) {
+        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
             checkPhase();
         }
-        // if (timer || all seller sold) {
-        //     checkPhase()
-        // }
 
         return () => {
             socket.off("postedOfferList")
@@ -83,6 +89,7 @@ export function SellerIdleScreen({ socket, data, setStage, checkPhase }) {
 
     return (
         <Container className='text-center d-flex flex-column'>
+            <Timer minutes={timer} />
             <p className='mt-5'>menunggu...</p>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
@@ -93,7 +100,7 @@ export function SellerIdleScreen({ socket, data, setStage, checkPhase }) {
                         className="mb-3"
                         role={item.role}
                     >
-                        Rp. {item.price}
+                        Rp. {displayPrice(item.price, data.currentPhase.phaseType)}
                     </Card>
                 ))}
             </section>

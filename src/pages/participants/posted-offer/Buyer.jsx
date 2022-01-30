@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
-import { capitalize } from '../../../Utils'
+import Timer from '../../../components/Timer'
+import { capitalize, displayPrice } from '../../../Utils'
 
-export function BuyerIdleScreen({ socket, data, setStage }) {
+export function BuyerIdleScreen({ socket, data, timer }) {
     return (
         <Container className='text-center d-flex flex-column'>
+            <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {data.unitValue}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
 
             <p className='mt-5'>menunggu penjual memasang harga......</p>
 
@@ -22,7 +24,7 @@ export function BuyerIdleScreen({ socket, data, setStage }) {
     )
 }
 
-export function FlashSaleScreen({ socket, data, setStage, checkPhase }) {
+export function FlashSaleScreen({ socket, data, timer, checkPhase }) {
     const [seller, setSeller] = useState(data.seller);
     const [hasBought, setHasBought] = useState(false);
     const [countSold, setCountSold] = useState(0);
@@ -45,12 +47,9 @@ export function FlashSaleScreen({ socket, data, setStage, checkPhase }) {
             console.log(count)
         })
 
-        if (countSold === (data.participantNumber / 2)) {
+        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
             checkPhase();
         }
-        // if (timer || all seller sold) {
-        //     checkPhase()
-        // }
 
         return () => {
             socket.off("postedOfferList")
@@ -59,47 +58,24 @@ export function FlashSaleScreen({ socket, data, setStage, checkPhase }) {
 
     function buyHandler(e, item) {
         e.preventDefault();
-
-        let unitValueCheck = data.unitValue
-        switch (data.currentPhase.phaseType) {
-            case "transitionPrice":
-                unitValueCheck = data.unitValue.split(" / ")
-                if (window.confirm("yakin membeli?") && (item.price <= unitValueCheck[0] || item.price <= unitValueCheck[1])) {
-                    socket.emit("po:buy", {
-                        postedOfferId: item.postedOfferId,
-                        phaseId: data.currentPhase.id
-                    })
-                    setHasBought(true)
-                }
-                break;
-            case "postRedenomPrice":
-                let itemPrice = item.price / 1000
-                if (window.confirm("yakin membeli?") && itemPrice <= unitValueCheck) {
-                    socket.emit("po:buy", {
-                        postedOfferId: item.postedOfferId,
-                        phaseId: data.currentPhase.id
-                    })
-                    setHasBought(true)
-                }
-                break;
-
-            default:
-                if (window.confirm("yakin membeli?") && item.price <= unitValueCheck) {
-                    socket.emit("po:buy", {
-                        postedOfferId: item.postedOfferId,
-                        phaseId: data.currentPhase.id
-                    })
-                    setHasBought(true)
-                }
-                break;
+        if (item.price <= data.unitValue) {
+            if (window.confirm("yakin membeli?")) {
+                socket.emit("po:buy", {
+                    postedOfferId: item.postedOfferId,
+                    phaseId: data.currentPhase.id
+                })
+                setHasBought(true)
+            }
+        } else {
+            alert("harga melebihi unit value anda!")
         }
-
     }
 
     return (
         <Container className='text-center d-flex flex-column'>
+            <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {data.unitValue}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
                 {seller.map((item, i) => (
@@ -110,7 +86,7 @@ export function FlashSaleScreen({ socket, data, setStage, checkPhase }) {
                         role={item.role}
                         onBtnClick={(e) => { buyHandler(e, item) }}
                     >
-                        Rp. {item.price}
+                        Rp. {displayPrice(item.price, data.currentPhase.phaseType)}
                     </Card>
                 ))}
             </section>

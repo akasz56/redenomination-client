@@ -11,11 +11,11 @@ import { capitalize, logout } from '../../Utils';
 
 export default function Participants() {
     const { state } = useLocation();
-    const [role] = useState(state.type);
-    const [data, setData] = useState(state.detail);
-    const [phases] = useState(state.phases);
+    const [data, setData] = useState({
+        ...state.detail,
+        role: state.type
+    });
     const [phaseData, setPhaseData] = useState({
-        timer: state.timer,
         currentPhase: state.phases[0],
         phaseName: "Pre-Redenominasi",
         simulationType: capitalize(state.simulationType),
@@ -23,7 +23,10 @@ export default function Participants() {
         goodsName: capitalize(state.goodsName),
         inflationType: capitalize(state.inflationType)
     });
+    const phases = state.phases;
+    const minutes = state.timer;
     const [stage, setStage] = useState('ready');
+    const [timer, setTimer] = useState(minutes * 60);
 
     let nextStage;
     switch (phaseData.simulationType) {
@@ -42,6 +45,7 @@ export default function Participants() {
 
     useEffect(() => {
         document.title = phaseData.simulationType;
+
         socket.on("serverMessage", res => {
             if (res.status === 400) {
                 console.log(res)
@@ -49,6 +53,7 @@ export default function Participants() {
                 logout(() => { window.location.href = "/"; });
             }
         })
+
         if (stage === 'ready') {
             function readyRoutine() {
                 socket.on("readyCount", (res) => {
@@ -60,8 +65,7 @@ export default function Participants() {
                 });
             }
             readyRoutine()
-        }
-        else if (stage === 'postPrice' && phaseData.simulationType === "Posted Offer") {
+        } else if (stage === 'postPrice' && phaseData.simulationType === "Posted Offer") {
             socket.on("postedOfferList", res => {
                 if (res.length === (data.participantNumber / 2)) {
                     setData({
@@ -85,30 +89,24 @@ export default function Participants() {
                 }
             })
         }
+
+        const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+        return () => clearInterval(interval);
     });
 
     function checkPhase() {
+        setTimer(minutes * 60);
         switch (phaseData.currentPhase.phaseType) {
             case "preRedenomPrice":
                 socket.emit("finishPhase", { "phaseId": phases[0].id })
                 socket.emit("startPhase", { "phaseId": phases[1].id })
                 setPhaseData({ ...phaseData, currentPhase: phases[1], phaseName: "Transisi Redenominasi" })
-                if (role === "seller") { setData({ ...data, unitCost: data.unitCost + " / " + (Number(data.unitCost) / 1000) }) }
-                else if (role === "buyer") { setData({ ...data, unitValue: data.unitValue + " / " + (Number(data.unitValue) / 1000) }) }
                 setStage(nextStage);
                 break;
             case "transitionPrice":
                 socket.emit("finishPhase", { "phaseId": phases[1].id })
                 socket.emit("startPhase", { "phaseId": phases[2].id })
                 setPhaseData({ ...phaseData, currentPhase: phases[2], phaseName: "Pasca Transisi Redenominasi" })
-                if (role === "seller") {
-                    const unitCost = data.unitCost.split(" / ")
-                    setData({ ...data, unitCost: Number(unitCost[1]) })
-                }
-                else if (role === "buyer") {
-                    const unitValue = data.unitValue.split(" / ")
-                    setData({ ...data, unitValue: Number(unitValue[1]) })
-                }
                 setStage(nextStage);
                 break;
             case "postRedenomPrice":
@@ -121,15 +119,15 @@ export default function Participants() {
     }
 
     if (stage === 'ready')
-        return <Ready socket={socket} data={{ ...phaseData, ...data, role: role }} />
+        return <Ready socket={socket} data={{ ...phaseData, ...data }} />
     else {
         switch (phaseData.simulationType) {
             case "Posted Offer":
-                return PostedOfferHandler(stage, setStage, socket, { ...phaseData, ...data, role: role }, checkPhase)
+                return PostedOfferHandler(stage, timer, socket, { ...phaseData, ...data }, checkPhase)
             case "Double Auction":
-                return DoubleAuctionHandler(stage, setStage, socket, { ...phaseData, ...data, role: role }, checkPhase)
+                return DoubleAuctionHandler(stage, timer, socket, { ...phaseData, ...data }, checkPhase)
             case "Decentralized":
-                return DecentralizedHandler(stage, setStage, socket, { ...phaseData, ...data, role: role }, checkPhase)
+                return DecentralizedHandler(stage, timer, socket, { ...phaseData, ...data }, checkPhase)
             default:
                 return <div />
         }
@@ -145,16 +143,16 @@ function CompleteScreen({ socket, data }) {
     )
 }
 
-function PostedOfferHandler(stage, setStage, socket, data, checkPhase) {
+function PostedOfferHandler(stage, timer, socket, data, checkPhase) {
     switch (stage) {
         case "postPrice":
-            if (data.role === "seller") { return <PostPriceScreen socket={socket} data={data} setStage={setStage} /> }
-            else if (data.role === "buyer") { return <BuyerIdleScreen socket={socket} data={data} setStage={setStage} /> }
+            if (data.role === "seller") { return <PostPriceScreen socket={socket} data={data} timer={timer} /> }
+            else if (data.role === "buyer") { return <BuyerIdleScreen socket={socket} data={data} timer={timer} /> }
             else { return <div /> }
 
         case "flashSale":
-            if (data.role === "seller") { return <SellerIdleScreen socket={socket} data={data} setStage={setStage} checkPhase={checkPhase} /> }
-            else if (data.role === "buyer") { return <FlashSaleScreen socket={socket} data={data} setStage={setStage} checkPhase={checkPhase} /> }
+            if (data.role === "seller") { return <SellerIdleScreen socket={socket} data={data} timer={timer} checkPhase={checkPhase} /> }
+            else if (data.role === "buyer") { return <FlashSaleScreen socket={socket} data={data} timer={timer} checkPhase={checkPhase} /> }
             else { return <div /> }
 
         case "complete":
