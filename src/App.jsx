@@ -53,7 +53,7 @@ export default function App() {
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='participant' />}>
-				<Route path="participant/" element={<Participants />} />
+				<Route path="participant" element={<Participants />} />
 			</Route>
 
 			<Route path="*" element={<Error404 />} />

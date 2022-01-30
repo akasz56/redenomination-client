@@ -7,7 +7,8 @@ import { readSession, deleteSession, updateSession } from '../../../adapters/Ses
 import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import Error404 from '../../errors/Error404';
-import { myToken, capitalize } from '../../../Utils';
+import { capitalize } from '../../../Utils';
+import socket from '../../../adapters/SocketIO';
 
 export default function Session() {
     const [loading, setLoading] = useState(true);
@@ -17,43 +18,70 @@ export default function Session() {
     const [modalDelete, setModalDelete] = useState(false);
     let urlParams = useParams();
 
+    async function fetchData() {
+        const res = await readSession(urlParams.id)
+        socket.on("readyCount", res => { console.log(res) })
+
+        if (res.status === 200) {
+            setData(res.data);
+            setDataPost({
+                sessionType: res.data.sessionType,
+                timer: res.data.timer
+            })
+            setLoading(false)
+            document.title = "Ulangan " + res.data.id;
+        } else if (res.status === 401) {
+            setLoading(false)
+            console.log(res);
+            window.alert("Tidak diizinkan mengakses");
+        } else if (res.status === 404) {
+            window.alert("Ulangan tidak ditemukan");
+            window.location.href = "/admin";
+        } else {
+            setLoading(false)
+            console.log(res);
+            alert("Terjadi Kesalahan");
+        }
+    }
+
     useEffect(() => {
         document.title = "Tidak ada Data";
-
-        async function fetchData() {
-            const res = await readSession(urlParams.id)
-            if (res.status === 200) {
-                setData(res.data);
-                setDataPost({
-                    sessionType: res.data.sessionType,
-                    timer: res.data.timer
-                })
-                setLoading(false)
-                document.title = "Ulangan " + res.data.id;
-            } else if (res.status === 401) {
-                setLoading(false)
-                console.log(res);
-                window.alert("Tidak diizinkan mengakses");
-            } else if (res.status === 404) {
-                window.alert("Ulangan tidak ditemukan");
-                window.location.href = "/admin";
-            } else {
-                setLoading(false)
-                console.log(res);
-                alert("Terjadi Kesalahan");
-            }
-        }
         fetchData();
-    }, [urlParams.id]);
+    }, []);
 
-    function runSession() {
-        if (window.confirm("Jalankan sesi sekarang?")) {
-            const sentSocket = {
-                authentication: myToken(),
-                sessionData: data,
-            };
-            console.log(sentSocket)
-        }
+    function startSession(e) {
+        e.preventDefault();
+        // if (window.confirm("Jalankan sesi sekarang?")) {
+        //     if (data) {
+        //         socket.emit("startPhase", { "phaseId": data.phases[0].id });
+        //         socket.on("serverMessage", res => {
+        //             if (res.status === 200) {
+        //                 localStorage.setItem('runningPhase', data.phases[0].id);
+        //                 socket.emit("join", data.simulation.token)
+        //                 window.location.reload();
+        //             }
+        //             socket.off("serverMessage");
+        //         })
+
+        //     }
+        // }
+    }
+
+    function finishSession(e) {
+        e.preventDefault();
+        // if (window.confirm("Yakin ingin menghentikan sesi?")) {
+        //     if (data) {
+        //         socket.emit("finishPhase", { "phaseId": data.phases[0].id });
+
+        //         socket.on("serverMessage", res => {
+        //             if (res.status === 200) {
+        //                 localStorage.removeItem('runningPhase');
+        //                 window.location.reload();
+        //             }
+        //             socket.off("serverMessage");
+        //         })
+        //     }
+        // }
     }
 
     function showEditSessionForm(e) { setModalEdit(prev => !prev); }
@@ -97,6 +125,53 @@ export default function Session() {
         else { alert("Simulasi gagal dihapus"); }
     }
 
+    function ViewStart() {
+        return (
+            <section>
+                <hr />
+                <Link to='#' className="btn btn-primary w-100 p-4" onClick={startSession} >Jalankan Sesi</Link>
+                <hr />
+            </section>
+        )
+    }
+
+    function ViewRun() {
+        return (
+            <section>
+                <hr />
+                <Link to='#' className="btn btn-danger w-100 p-4" onClick={finishSession} >Hentikan Sesi</Link>
+                <hr />
+            </section>
+        )
+    }
+
+    function ViewDone() {
+        return (
+            <section className='summary'>
+                <hr />
+                <h1>Ringkasan Simulasi</h1>
+                <Link to={'./summary'}>rincian simulasi...</Link>
+                <div className='d-flex flex-column flex-xl-row justify-content-around'>
+                    <SummaryComponent
+                        title="Rata-Rata Jumlah transaksi"
+                        src="https://via.placeholder.com/400x360"
+                        download=""
+                    />
+                    <SummaryComponent
+                        title="Rata-rata Harga kesepakatan"
+                        src="https://via.placeholder.com/400x360"
+                        download=""
+                    />
+                    <SummaryComponent
+                        title="Log Tawar-Menawar"
+                        src="https://via.placeholder.com/400x360"
+                        download=""
+                    />
+                </div>
+            </section>
+        )
+    }
+
     if (loading) { return (<LoadingComponent className='child' />) }
     else {
         if (data) {
@@ -117,37 +192,11 @@ export default function Session() {
                         <p>Timer : <span className='fw-bold'>{data.timer} menit</span></p>
                     </section>
 
-                    {data.timeLastRun === data.timeCreated ?
-                        <section>
-                            <hr />
-                            <Link to='#' className="btn btn-primary w-100 p-4" onClick={runSession} >Jalankan Sesi</Link>
-                            <hr />
-                        </section>
+                    {(data.timeLastRun === data.timeCreated) ?
+                        (localStorage.getItem("runningPhase") ? <ViewRun /> : <ViewStart />)
                         :
-                        <section className='summary'>
-                            <hr />
-                            <h1>Ringkasan Simulasi</h1>
-                            <Link to={'./summary'}>rincian simulasi...</Link>
-                            <div className='d-flex flex-column flex-xl-row justify-content-around'>
-                                <SummaryComponent
-                                    title="Rata-Rata Jumlah transaksi"
-                                    src="https://via.placeholder.com/400x360"
-                                    download=""
-                                />
-                                <SummaryComponent
-                                    title="Rata-rata Harga kesepakatan"
-                                    src="https://via.placeholder.com/400x360"
-                                    download=""
-                                />
-                                <SummaryComponent
-                                    title="Log Tawar-Menawar"
-                                    src="https://via.placeholder.com/400x360"
-                                    download=""
-                                />
-                            </div>
-                        </section>
+                        <ViewDone />
                     }
-
                     <section className='my-5'>
                         <h1>Hapus Ulangan</h1>
                         <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>

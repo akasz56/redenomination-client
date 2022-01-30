@@ -17,8 +17,9 @@ export default function Home() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        setLoading(true)
-        socket.emit("loginToken", { "token": token })
+        setLoading(true);
+        socket.emit("loginToken", { "token": token });
+        socket.emit("join", token);
         socket.on("serverMessage", res => {
             if (res.status === 200) {
                 localStorage.setItem('auth', JSON.stringify({
@@ -26,9 +27,11 @@ export default function Home() {
                     role: "participant",
                     id: res.data.detail.id,
                 }));
+                socket.off("serverMessage")
                 navigate('/participant', { state: res.data });
             } else {
-                setLoading(false)
+                window.alert("Simulasi sudah penuh");
+                setLoading(false);
             }
         })
     }
@@ -41,7 +44,7 @@ export default function Home() {
                 <Form className="mt-3" onSubmit={handleSubmit}>
                     <Form.Group controlId="login">
                         <Form.Label>Masukkan token partisipan anda disini</Form.Label>
-                        <Form.Control type="text" placeholder="Token" autoComplete="off" value={token} onChange={e => setToken(e.target.value)} />
+                        <Form.Control type="text" placeholder="Token" value={token} onChange={e => setToken(e.target.value)} />
                     </Form.Group>
                     <Button className="mt-3 float-end" variant="primary" type="submit">Masuk</Button>
                 </Form>

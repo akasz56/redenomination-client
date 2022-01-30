@@ -7,17 +7,26 @@ import { BuyerIdleScreen, FlashSaleScreen } from '../posted-offer/Buyer';
 import { PostPriceScreen, SellerIdleScreen } from '../posted-offer/Seller';
 
 // ---------------------------------------------BUYER
-export function BuyerIdleDS({ socket, data }) {
+export function BuyerIdleDS({ socket, data, setStage }) {
     return <BuyerIdleScreen data={data} />
 }
 
-export function ListShops({ socket, data }) {
+export function Lobby({ socket, data, setStage, checkPhase }) {
+    const [isInside, setIsInside] = useState(false);
+
+    if (isInside) { return <EnterShop socket={socket} data={data} zxc={{ isInside, setStage, setIsInside }} /> }
+    else { return <ListShops socket={socket} data={data} zxc={{ isInside, setStage, setIsInside }} /> }
+}
+
+export function ListShops({ socket, data, zxc }) {
+
     useEffect(() => {
         document.title = "Decentralized"
     }, [])
 
     function clickHandler(item) {
         console.log(item.role);
+        zxc.setIsInside(true)
     }
 
     return (
@@ -37,7 +46,7 @@ export function ListShops({ socket, data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phase}
+                phase={data.phaseName}
                 goods={data.goodsType + " (" + data.goodsName + ")"}
                 inflation={data.inflationType}
             />
@@ -45,12 +54,13 @@ export function ListShops({ socket, data }) {
     )
 }
 
-export function EnterShop({ socket, data }) {
+export function EnterShop({ socket, data, zxc }) {
     const [status, setStatus] = useState(false);
 
 
     function clickBack() {
         console.log("clickBack");
+        zxc.setIsInside(false)
     }
 
     function clickBuy() {
@@ -85,7 +95,7 @@ export function EnterShop({ socket, data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phase}
+                phase={data.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -94,10 +104,10 @@ export function EnterShop({ socket, data }) {
 }
 
 // ---------------------------------------------SELLER
-export function PostPriceDS({ socket, data }) {
+export function PostPriceDS({ socket, data, setStage, checkPhase }) {
     return <PostPriceScreen data={data} />
 }
 
-export function SellerIdleDS({ socket, data }) {
+export function SellerIdleDS({ socket, data, setStage }) {
     return <SellerIdleScreen data={data} />
 }

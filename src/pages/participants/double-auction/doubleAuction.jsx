@@ -2,7 +2,7 @@ import { Button, Container, Form } from 'react-bootstrap'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils'
 
-export function SellerAuctionScreen({ socket, data }) {
+export function SellerAuctionScreen({ socket, data, setStage, checkPhase }) {
     function submitHandler(e) {
         e.preventDefault()
     }
@@ -38,7 +38,7 @@ export function SellerAuctionScreen({ socket, data }) {
 
             <Label
                 className="my-5 mx-auto"
-                phase={data.phase}
+                phase={data.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -46,7 +46,7 @@ export function SellerAuctionScreen({ socket, data }) {
     )
 }
 
-export function BuyerAuctionScreen({ socket, data }) {
+export function BuyerAuctionScreen({ socket, data, setStage, checkPhase }) {
     function submitHandler(e) {
         e.preventDefault()
     }
@@ -83,7 +83,7 @@ export function BuyerAuctionScreen({ socket, data }) {
 
             <Label
                 className="my-5 mx-auto"
-                phase={data.phase}
+                phase={data.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />

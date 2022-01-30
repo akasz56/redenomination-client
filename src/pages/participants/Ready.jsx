@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import { capitalize } from '../../Utils';
 import "./Ready.css";
