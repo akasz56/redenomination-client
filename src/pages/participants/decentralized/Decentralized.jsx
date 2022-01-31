@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Button, Container, Form } from 'react-bootstrap'
+import { Button, Container } from 'react-bootstrap'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils';
-import { BuyerIdleScreen, FlashSaleScreen } from '../posted-offer/Buyer';
+import { BuyerIdleScreen } from '../posted-offer/Buyer';
 import { PostPriceScreen, SellerIdleScreen } from '../posted-offer/Seller';
 
 // ---------------------------------------------BUYER

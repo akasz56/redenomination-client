@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom';
-import { Button, Container, Form, Image, Modal } from 'react-bootstrap';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Button, Container, Form, Image, Modal, Table } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
@@ -19,6 +19,7 @@ export default function Simulation() {
     const [dataPost, setDataPost] = useState(false);
     const [modalCreate, setModalCreate] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
+    const navigate = useNavigate();
     let urlParams = useParams();
 
     useEffect(() => {
@@ -94,6 +95,11 @@ export default function Simulation() {
         else { alert("Simulasi gagal dihapus"); }
     }
 
+    function rowHandler(e, id) {
+        e.preventDefault();
+        navigate('/sessions/' + id);
+    }
+
     if (loading) return (<LoadingComponent className='child' />)
     else {
         if (dataGet) {
@@ -110,22 +116,30 @@ export default function Simulation() {
                         </div>
                     </section>
 
-                    <section className='sessions'>
-                        {dataGet.sessions.map((session, index) => (
-                            <div key={index} className='d-flex justify-content-around mb-3'>
-                                <span className='fw-bold'>{session.sessionType}</span>
-                                <span>{dayjs(session.timeCreated).locale("id").format("dddd, D MMM YYYY")}</span>
-                                <Link to={'/sessions/' + session.id}>rincian ulangan...</Link>
-                            </div>
-                        ))}
-                        <div>
-                            <Button className='w-100 py-lg-2' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
-                        </div>
-                    </section>
+                    <Table responsive hover className="mt-3">
+                        <thead>
+                            <tr>
+                                <th width='50'>No</th>
+                                <th width='60%'>Nama Ulangan</th>
+                                <th>Tanggal Dibuat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataGet.sessions.map((item, i) => (
+                                <tr key={i} className='simulations' onClick={e => rowHandler(e, item.id)}>
+                                    <td className='number'>{i + 1}</td>
+                                    <td className='fw-bold'>{capitalize(item.sessionType)}</td>
+                                    <td>{dayjs(item.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                    <Button className='w-100 py-lg-2' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
 
-                    <hr style={{ marginTop: "7rem" }} />
-                    <section className='info'>
+
+                    <section style={{ marginTop: "5rem" }} className='info'>
                         <h1>Detail Simulasi</h1>
+                        <hr />
                         <div className="details">
                             <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
                             <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
@@ -141,9 +155,9 @@ export default function Simulation() {
                         }
                     </section>
 
-                    <hr style={{ marginTop: "7rem" }} />
-                    <section>
+                    <section style={{ marginTop: "5rem" }} >
                         <h1>Ringkasan Simulasi</h1>
+                        <hr />
                         <Link to={'./summary'}>rincian simulasi...</Link>
                         <div className='d-flex flex-column flex-xl-row justify-content-around'>
                             <SummaryComponent
@@ -164,9 +178,9 @@ export default function Simulation() {
                         </div>
                     </section>
 
-                    <hr style={{ marginTop: "7rem" }} />
-                    <section className='mb-5'>
+                    <section style={{ marginTop: "5rem" }} className='mb-5' >
                         <h1>Hapus Simulasi</h1>
+                        <hr />
                         <Button variant="danger" className='mt-3' onClick={showDeleteSessionForm}>Hapus Simulasi</Button>
                     </section>
 

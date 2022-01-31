@@ -33,7 +33,7 @@ export default function Create() {
         setLoading(true)
         const res = await createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
         if (res.status === 201) {
-            const fileName = await uploadPic(res.data.id);
+            await uploadPic(res.data.id);
             window.location.href = "/simulations/" + res.data.id;
         } else if (res.status === 401) {
             console.log(res);

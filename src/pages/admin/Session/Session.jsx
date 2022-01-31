@@ -8,7 +8,6 @@ import LoadingComponent from '../../../components/Loading';
 import SummaryComponent from '../../../components/Summary';
 import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
-import socket from '../../../adapters/SocketIO';
 
 export default function Session() {
     const [loading, setLoading] = useState(true);
@@ -118,6 +117,7 @@ export default function Session() {
             console.log(res)
             if (res.status === 200) {
                 setIsRunning(false)
+                window.location.reload()
             } else if (res.status === 401) {
                 setLoading(false)
                 console.log(res);
