@@ -12,7 +12,7 @@ export default function Home() {
 
     useEffect(() => {
         document.title = "Redenomination Project App";
-    }, []);
+    });
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -32,7 +32,7 @@ export default function Home() {
                     navigate('/participant', { state: res.data });
                 } else {
                     window.alert("Simulasi belum dijalankan");
-                    setLoading(false);
+                    window.location.reload()
                 }
             } else {
                 window.alert("Simulasi sudah penuh");
