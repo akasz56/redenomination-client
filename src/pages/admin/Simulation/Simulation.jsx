@@ -67,11 +67,12 @@ export default function Simulation() {
         } else if (res.status === 401) {
             console.log(res);
             window.alert("Tidak diizinkan mengakses");
+            setLoading(false)
         } else {
             console.log(res);
             alert("Terjadi Kesalahan, mohon coba lagi");
+            setLoading(false)
         }
-        setLoading(false)
     }
 
     async function confirmDelete(e) {
@@ -86,11 +87,12 @@ export default function Simulation() {
             } else if (res.status === 401) {
                 console.log(res);
                 window.alert("Tidak diizinkan mengakses");
+                setLoading(false)
             } else {
                 console.log(res);
                 alert("Terjadi Kesalahan, mohon coba lagi")
+                setLoading(false)
             }
-            setLoading(false)
         }
         else { alert("Simulasi gagal dihapus"); }
     }
@@ -122,6 +124,7 @@ export default function Simulation() {
                                 <th width='50'>No</th>
                                 <th width='60%'>Nama Ulangan</th>
                                 <th>Tanggal Dibuat</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,6 +133,11 @@ export default function Simulation() {
                                     <td className='number'>{i + 1}</td>
                                     <td className='fw-bold'>{capitalize(item.sessionType)}</td>
                                     <td>{dayjs(item.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
+                                    <td>{item.timeCreated !== item.timeLastRun ?
+                                        'Sudah dijalankan'
+                                        :
+                                        (item.isRunning ? 'Sedang berjalan' : 'Belum dijalankan')
+                                    }</td>
                                 </tr>
                             ))}
                         </tbody>

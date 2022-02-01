@@ -25,6 +25,7 @@ export default function Session() {
             const res = await readSession(urlParams.id)
             if (res.status === 200) {
                 setData(res.data);
+                setIsRunning(res.data.isRunning);
                 setDataPost({
                     sessionType: res.data.sessionType,
                     timer: res.data.timer
@@ -76,7 +77,7 @@ export default function Session() {
         if (e.target.elements.confirm.value === capitalize(data.sessionType)) {
             const res = await deleteSession(data.id)
             if (res.status === 200) {
-                window.location.href = "/admin";
+                window.location.href = '/simulations/' + data.simulation.id;
             } else if (res.status === 401) {
                 console.log(res);
                 window.alert("Tidak diizinkan mengakses");
