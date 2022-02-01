@@ -132,9 +132,9 @@ export default function Simulation() {
                                     <td className='fw-bold'>{capitalize(item.sessionType)}</td>
                                     <td>{dayjs(item.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                                     <td>{item.timeCreated !== item.timeLastRun ?
-                                        'Sudah dijalankan'
+                                        <span className='fw-bold text-success'>Sudah dijalankan</span>
                                         :
-                                        (item.isRunning ? 'Sedang berjalan' : 'Belum dijalankan')
+                                        (item.isRunning ? <span>Sedang berjalan</span> : <span className='fw-bold text-primary'>Belum dijalankan</span>)
                                     }</td>
                                 </tr>
                             ))}

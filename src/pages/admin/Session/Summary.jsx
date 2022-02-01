@@ -32,7 +32,7 @@ export default function Summary(props) {
             }
         }
         fetchData();
-    }, []);
+    }, [data]);
 
     if (loading) return (<LoadingComponent className='child' />)
     else {
