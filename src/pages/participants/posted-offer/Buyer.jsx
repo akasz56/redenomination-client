@@ -24,10 +24,11 @@ export function BuyerIdleScreen({ socket, data, timer }) {
     )
 }
 
-export function FlashSaleScreen({ socket, data, timer, checkPhase }) {
+export function FlashSaleScreen({ socket, data, timer, phaseContinue }) {
     const [seller, setSeller] = useState(data.seller);
     const [hasBought, setHasBought] = useState(false);
     const [countSold, setCountSold] = useState(0);
+    const [myProfit, setMyProfit] = useState(0);
 
     useEffect(() => {
         let count = 0;
@@ -44,11 +45,10 @@ export function FlashSaleScreen({ socket, data, timer, checkPhase }) {
             })
             setSeller(temp)
             setCountSold(count)
-            console.log(count)
         })
 
         if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
-            checkPhase();
+            phaseContinue(myProfit);
         }
 
         return () => {
@@ -64,6 +64,7 @@ export function FlashSaleScreen({ socket, data, timer, checkPhase }) {
                     postedOfferId: item.postedOfferId,
                     phaseId: data.currentPhase.id
                 })
+                setMyProfit(data.unitValue - item.price);
                 setHasBought(true)
             }
         } else {

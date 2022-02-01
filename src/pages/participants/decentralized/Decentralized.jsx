@@ -11,7 +11,7 @@ export function BuyerIdleDS({ socket, data, setStage }) {
     return <BuyerIdleScreen data={data} />
 }
 
-export function Lobby({ socket, data, setStage, checkPhase }) {
+export function Lobby({ socket, data, setStage, phaseContinue }) {
     const [isInside, setIsInside] = useState(false);
 
     if (isInside) { return <EnterShop socket={socket} data={data} zxc={{ isInside, setStage, setIsInside }} /> }
@@ -22,7 +22,7 @@ export function ListShops({ socket, data, zxc }) {
 
     useEffect(() => {
         document.title = "Decentralized"
-    }, [])
+    })
 
     function clickHandler(item) {
         console.log(item.role);
@@ -104,7 +104,7 @@ export function EnterShop({ socket, data, zxc }) {
 }
 
 // ---------------------------------------------SELLER
-export function PostPriceDS({ socket, data, setStage, checkPhase }) {
+export function PostPriceDS({ socket, data, setStage, phaseContinue }) {
     return <PostPriceScreen data={data} />
 }
 

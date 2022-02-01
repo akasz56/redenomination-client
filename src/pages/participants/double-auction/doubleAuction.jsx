@@ -2,7 +2,7 @@ import { Button, Container, Form } from 'react-bootstrap'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils'
 
-export function SellerAuctionScreen({ socket, data, setStage, checkPhase }) {
+export function SellerAuctionScreen({ socket, data, setStage, phaseContinue }) {
     function submitHandler(e) {
         e.preventDefault()
     }
@@ -46,7 +46,7 @@ export function SellerAuctionScreen({ socket, data, setStage, checkPhase }) {
     )
 }
 
-export function BuyerAuctionScreen({ socket, data, setStage, checkPhase }) {
+export function BuyerAuctionScreen({ socket, data, setStage, phaseContinue }) {
     function submitHandler(e) {
         e.preventDefault()
     }

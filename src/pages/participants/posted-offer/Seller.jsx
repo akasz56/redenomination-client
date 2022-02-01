@@ -32,7 +32,8 @@ export function PostPriceScreen({ socket, data, timer }) {
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
                         {(data.currentPhase.phaseType !== "preRedenomPrice") ?
-                            <Form.Control type="number" min={data.unitCost / 1000} step="0.001" required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost / 1000} />
+                            <Form.Control type="number" min={data.unitCost / 1000} max={(data.currentPhase.phaseType === "postRedenomPrice") ? 10 : ''}
+                                step="0.001" required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost / 1000} />
                             :
                             <Form.Control type="number" min={data.unitCost} required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost} />
                         }
@@ -51,15 +52,19 @@ export function PostPriceScreen({ socket, data, timer }) {
     )
 }
 
-export function SellerIdleScreen({ socket, data, timer, checkPhase }) {
+export function SellerIdleScreen({ socket, data, timer, phaseContinue }) {
     const [seller, setSeller] = useState(data.seller);
     const [countSold, setCountSold] = useState(0);
+    const [myProfit, setMyProfit] = useState(0);
+    let myID = JSON.parse(localStorage.getItem("auth"));
+    myID = myID.id;
 
     useEffect(() => {
         socket.on("postedOfferList", (res) => {
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
+                if (item.sellerId === myID) setMyProfit(item.price - data.unitCost)
                 return {
                     sellerId: item.sellerId,
                     role: "Penjual " + (i + 1),
@@ -73,7 +78,7 @@ export function SellerIdleScreen({ socket, data, timer, checkPhase }) {
         })
 
         if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
-            checkPhase();
+            phaseContinue(myProfit);
         }
 
         return () => {
