@@ -6,6 +6,7 @@ import UnitInput from '../../../components/UnitInput';
 
 export default function Create() {
     const [loading, setLoading] = useState(false);
+    const [fileSend, setFileSend] = useState(null);
     const [unitValues, setUnitValues] = useState({});
     const [unitCosts, setUnitCosts] = useState({});
     const [formData, setFormData] = useState({
@@ -20,6 +21,11 @@ export default function Create() {
     useEffect(() => {
         document.title = "Buat Simulasi baru";
     })
+
+    function fileHandler(e) {
+        e.preventDefault();
+        setFileSend(e.target.files[0])
+    }
 
     async function submitForm(e) {
         e.preventDefault();
@@ -47,9 +53,8 @@ export default function Create() {
     }
 
     async function uploadPic(id) {
-        const input = document.querySelector('input[type="file"]')
         let pic = new FormData()
-        pic.append('file', input.files[0])
+        pic.append('file', fileSend)
         const res = await uploadPicture(id, pic);
         if (res.status === 201) {
             return res.data.goodsPic;
@@ -111,7 +116,7 @@ export default function Create() {
                         <div className="col-md-6">
                             <Form.Group controlId="file" className="mb-3">
                                 <Form.Label className='required'>Illustrasi Barang</Form.Label>
-                                <Form.Control type="file" accept="image/*" required />
+                                <Form.Control type="file" accept="image/*" required onChange={fileHandler} />
                             </Form.Group>
                         </div>
                     </section>
