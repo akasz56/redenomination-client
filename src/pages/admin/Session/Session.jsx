@@ -5,9 +5,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { readSession, deleteSession, updateSession, runSession, finishSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
-import SummaryComponent from '../../../components/Summary';
 import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
+import Summary from './Summary';
 
 export default function Session() {
     const [loading, setLoading] = useState(true);
@@ -136,15 +136,22 @@ export default function Session() {
 
     function ViewStart() {
         return (
-            <section>
-                <hr />
-                <div className='text-center mb-3'>
-                    <p>Token Partisipan:</p>
-                    <p className='fw-bold text-primary fs-3'>{data.simulation.token}</p>
-                </div>
-                <Link to='#' className="btn btn-primary w-100 p-4" onClick={startSession} >Jalankan Sesi</Link>
-                <hr />
-            </section>
+            <>
+                <section>
+                    <hr />
+                    <div className='text-center mb-3'>
+                        <p>Token Partisipan:</p>
+                        <p className='fw-bold text-primary fs-3'>{data.simulation.token}</p>
+                    </div>
+                    <Link to='#' className="btn btn-primary w-100 p-4" onClick={startSession} >Jalankan Ulangan</Link>
+                    <hr />
+                </section>
+
+                <section className='my-5'>
+                    <h1>Hapus Ulangan</h1>
+                    <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
+                </section>
+            </>
         )
     }
 
@@ -156,35 +163,8 @@ export default function Session() {
                     <p>Token Partisipan:</p>
                     <p className='fw-bold text-primary fs-3'>{data.simulation.token}</p>
                 </div>
-                <Link to='#' className="btn btn-danger w-100 p-4" onClick={completeSession} >Hentikan Sesi</Link>
+                <Link to='#' className="btn btn-danger w-100 p-4" onClick={completeSession} >Hentikan Ulangan</Link>
                 <hr />
-            </section>
-        )
-    }
-
-    function ViewDone() {
-        return (
-            <section className='summary'>
-                <hr />
-                <h1>Ringkasan Simulasi</h1>
-                <Link to={'./summary'}>rincian simulasi...</Link>
-                <div className='d-flex flex-column flex-xl-row justify-content-around'>
-                    <SummaryComponent
-                        title="Rata-Rata Jumlah transaksi"
-                        src="https://via.placeholder.com/400x360"
-                        download=""
-                    />
-                    <SummaryComponent
-                        title="Rata-rata Harga kesepakatan"
-                        src="https://via.placeholder.com/400x360"
-                        download=""
-                    />
-                    <SummaryComponent
-                        title="Log Tawar-Menawar"
-                        src="https://via.placeholder.com/400x360"
-                        download=""
-                    />
-                </div>
             </section>
         )
     }
@@ -201,7 +181,11 @@ export default function Session() {
                         </div>
                         <div className="col-3 text-end">
                             <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
-                            <Button variant="outline-dark" className='py-1' onClick={showEditSessionForm}>edit</Button>
+                            {(data.timeLastRun === data.timeCreated && !isRunning) ?
+                                <Button variant="outline-dark" className='py-1' onClick={showEditSessionForm}>edit</Button>
+                                :
+                                ''
+                            }
                         </div>
                     </section>
 
@@ -212,12 +196,8 @@ export default function Session() {
                     {(data.timeLastRun === data.timeCreated) ?
                         (isRunning ? <ViewRun /> : <ViewStart />)
                         :
-                        <ViewDone />
+                        <Summary data={data} />
                     }
-                    <section className='my-5'>
-                        <h1>Hapus Ulangan</h1>
-                        <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
-                    </section>
 
                     <Modal show={modalEdit} onHide={showEditSessionForm}>
                         <form onSubmit={submitEditSession}>
