@@ -3,8 +3,9 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- Finalization Posted Offer (reward)
 - Summaries tambahan dibawah
+- Double Auction
+- Decentralization
 
 # Summaries
 

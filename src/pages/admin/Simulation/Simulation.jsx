@@ -6,7 +6,6 @@ import "dayjs/locale/id";
 import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
 import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
-import SummaryComponent from '../../../components/Summary';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
@@ -62,7 +61,6 @@ export default function Simulation() {
         setLoading(true)
         const res = await createSession(dataPost);
         if (res.status === 201) {
-            alert("Ulangan berhasil dibuat");
             window.location.reload();
         } else if (res.status === 401) {
             console.log(res);
@@ -163,7 +161,7 @@ export default function Simulation() {
                         }
                     </section>
 
-                    <section style={{ marginTop: "5rem" }} >
+                    {/* <section style={{ marginTop: "5rem" }} >
                         <h1>Ringkasan Simulasi</h1>
                         <hr />
                         <Link to={'./summary'}>rincian simulasi...</Link>
@@ -184,7 +182,7 @@ export default function Simulation() {
                                 download=""
                             />
                         </div>
-                    </section>
+                    </section> */}
 
                     <section style={{ marginTop: "5rem" }} className='mb-5' >
                         <h1>Hapus Simulasi</h1>

@@ -173,7 +173,7 @@ export default function Edit() {
                                         key={i + 1}
                                         id={i + 1}
                                         role="penjual"
-                                        defaultValue={data.sellers[i].unitCost}
+                                        defaultValue={Number(data.sellers[i].unitCost)}
                                     />
                                 ))}
                             </div>
@@ -185,7 +185,7 @@ export default function Edit() {
                                         key={i + 1}
                                         id={i + 1}
                                         role="pembeli"
-                                        defaultValue={data.buyers[i].unitValue}
+                                        defaultValue={Number(data.buyers[i].unitValue)}
                                     />
                                 ))}
                             </div>
