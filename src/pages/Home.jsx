@@ -28,14 +28,15 @@ export default function Home() {
                         role: "participant",
                         id: res.data.detail.id,
                     }));
-                    socket.off("serverMessage")
                     navigate('/participant', { state: res.data });
                 } else {
                     window.alert("Simulasi belum dijalankan");
                     window.location.reload()
                 }
             } else {
-                window.alert("Simulasi sudah penuh");
+                console.log(res)
+                const msg = "(" + res.status + ") " + res.message;
+                window.alert(msg);
                 setLoading(false);
             }
         })

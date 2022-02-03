@@ -3,9 +3,10 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- Summaries tambahan dibawah
-- Double Auction
+- Finalisasi Double Auction (Timer, testing 4 player)
+- foto produk ditampilin di participant
 - Decentralization
+- Summaries tambahan dibawah
 
 # Summaries
 
