@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Container } from 'react-bootstrap'
+import { Container, Image } from 'react-bootstrap'
+import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer'
@@ -12,6 +13,7 @@ export function BuyerIdleScreen({ socket, data, timer }) {
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
             <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
 
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} style={{ width: "720px" }} />
             <p className='mt-5'>menunggu penjual memasang harga......</p>
 
             <Label
@@ -77,6 +79,8 @@ export function FlashSaleScreen({ socket, data, timer, phaseContinue }) {
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
             <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} style={{ width: "720px" }} />
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
                 {seller.map((item, i) => (

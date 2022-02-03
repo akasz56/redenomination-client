@@ -70,6 +70,7 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
                 </div>
             </section>
 
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} style={{ width: "720px" }} />
             {status.matched ?
                 <p>menunggu partisipan lain...</p>
                 :
@@ -172,6 +173,7 @@ export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
                 </div>
             </section>
 
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} style={{ width: "720px" }} />
             {status.matched ?
                 <p>menunggu partisipan lain...</p>
                 :

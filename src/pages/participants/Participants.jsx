@@ -22,6 +22,7 @@ export default function Participants() {
         phaseName: "Pre-Redenominasi",
         simulationType: capitalize(state.simulationType),
         goodsType: capitalize(state.goodsType),
+        goodsPic: state.goodsPic,
         goodsName: capitalize(state.goodsName),
         inflationType: capitalize(state.inflationType)
     });
