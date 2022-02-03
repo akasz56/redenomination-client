@@ -61,7 +61,7 @@ export default function Simulation() {
         setLoading(true)
         const res = await createSession(dataPost);
         if (res.status === 201) {
-            window.location.reload();
+            window.location.href = "/sessions/" + res.data.id;
         } else if (res.status === 401) {
             console.log(res);
             window.alert("Tidak diizinkan mengakses");

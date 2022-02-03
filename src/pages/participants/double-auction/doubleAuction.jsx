@@ -1,41 +1,43 @@
 import { useEffect, useState } from 'react';
-import { Button, Container, Form } from 'react-bootstrap'
+import { Button, Container, Form, Image } from 'react-bootstrap'
+import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
-import { adjustPrice, capitalize, displayPrice } from '../../../Utils'
+import { capitalize, displayPrice } from '../../../Utils'
 
 export function SellerAuctionScreen({ socket, data, phaseContinue }) {
     const [inputPrice, setInputPrice] = useState(0);
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
-    const [status, setStatus] = useState({ matched: false, profit: 0 });
-    const [isDone, setIsDone] = useState(false);
-
-    function cleanUp() {
-        setIsDone(false);
-        setInputPrice(0);
-        setStatus({ matched: false, profit: 0 });
-        setSocketData({ minPrice: "-", maxPrice: "-" });
-    }
+    const [status, setStatus] = useState({ isDone: false, matched: false, profit: 0, resPhaseId: null, });
 
     useEffect(() => {
-        socket.on("doubleAuctionList", res => {
-            if (res) {
-                console.log(res)
-                setSocketData({
-                    minPrice: displayPrice(res.minPrice, data.currentPhase.phaseType),
-                    maxPrice: displayPrice(res.maxPrice, data.currentPhase.phaseType)
-                });
-                if (res.TrxOccurrence * 2 >= data.participantNumber) {
-                    setIsDone(true)
-                }
-            }
-        });
-
-        if (status.matched && isDone) {
-            cleanUp();
+        console.log(status);
+        if (status.isDone && status.resPhaseId === data.currentPhase.id) {
             const myProfit = status.profit;
+            setInputPrice(0);
+            setSocketData({ minPrice: "-", maxPrice: "-" });
+            setStatus({ isDone: false, matched: false, profit: 0, resPhaseId: null });
             phaseContinue(myProfit)
         }
-    }, [status, isDone, socket, phaseContinue, data]);
+
+        if (status.matched) {
+            socket.emit("da:isDone", { phaseId: data.currentPhase.id });
+            socket.on("da:isDone", res => {
+                setStatus({ ...status, isDone: res.isDone, resPhaseId: res.phaseId })
+            })
+        }
+
+        socket.on("doubleAuctionList", res => {
+            setSocketData({
+                minPrice: displayPrice(res.minPrice, data.currentPhase.phaseType),
+                maxPrice: displayPrice(res.maxPrice, data.currentPhase.phaseType)
+            });
+        });
+
+        return () => {
+            socket.off("doubleAuctionList")
+            socket.off("da:isDone")
+        }
+    }, [status, data.currentPhase, socket, phaseContinue]);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -45,11 +47,13 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
         });
 
         socket.on("bidMatch", res => {
-            setStatus({
-                matched: res.match,
-                profit: res.transaction.price - adjustPrice(data.unitCost, data.currentPhase.phaseType)
-            });
-            console.log(res.transaction.price - data.unitCost)
+            if (res.match) {
+                setStatus({
+                    matched: res.match,
+                    profit: res.transaction.price - data.unitCost
+                });
+                socket.off("bidMatch")
+            }
         });
     }
 
@@ -70,7 +74,7 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
                 </div>
             </section>
 
-            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} style={{ width: "720px" }} />
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} />
             {status.matched ?
                 <p>menunggu partisipan lain...</p>
                 :
@@ -81,12 +85,14 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
                             <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
                                 onChange={e => { setInputPrice(e.target.value) }}
                                 min={data.unitCost}
+                                placeholder={data.unitCost}
                             />
                             :
                             <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
                                 onChange={e => { setInputPrice(e.target.value) }}
                                 max={10}
                                 min={data.unitCost / 1000}
+                                placeholder={data.unitCost / 1000}
                                 step={0.001}
                             />
 
@@ -109,36 +115,37 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
 export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
     const [inputPrice, setInputPrice] = useState(0);
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
-    const [status, setStatus] = useState({ matched: false, profit: 0 });
-    const [isDone, setIsDone] = useState(false);
-
-    function cleanUp() {
-        setIsDone(false);
-        setInputPrice(0);
-        setStatus({ matched: false, profit: 0 });
-        setSocketData({ minPrice: "-", maxPrice: "-" });
-    }
+    const [status, setStatus] = useState({ isDone: false, matched: false, profit: 0, resPhaseId: null, });
 
     useEffect(() => {
-        socket.on("doubleAuctionList", res => {
-            if (res) {
-                console.log(res)
-                setSocketData({
-                    minPrice: displayPrice(res.minPrice, data.currentPhase.phaseType),
-                    maxPrice: displayPrice(res.maxPrice, data.currentPhase.phaseType)
-                });
-                if (res.TrxOccurrence * 2 >= data.participantNumber) {
-                    setIsDone(true)
-                }
-            }
-        });
-
-        if (status.matched && isDone) {
-            cleanUp();
+        console.log(status);
+        if (status.isDone && status.resPhaseId === data.currentPhase.id) {
             const myProfit = status.profit;
+            setInputPrice(0);
+            setSocketData({ minPrice: "-", maxPrice: "-" });
+            setStatus({ isDone: false, matched: false, profit: 0, resPhaseId: null });
             phaseContinue(myProfit)
         }
-    }, [status, isDone, socket, phaseContinue, data]);
+
+        if (status.matched) {
+            socket.emit("da:isDone", { phaseId: data.currentPhase.id });
+            socket.on("da:isDone", res => {
+                setStatus({ ...status, isDone: res.isDone, resPhaseId: res.phaseId })
+            })
+        }
+
+        socket.on("doubleAuctionList", res => {
+            setSocketData({
+                minPrice: displayPrice(res.minPrice, data.currentPhase.phaseType),
+                maxPrice: displayPrice(res.maxPrice, data.currentPhase.phaseType)
+            });
+        });
+
+        return () => {
+            socket.off("doubleAuctionList")
+            socket.off("da:isDone")
+        }
+    }, [status, data.currentPhase, socket, phaseContinue]);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -148,11 +155,13 @@ export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
         });
 
         socket.on("bidMatch", res => {
-            setStatus({
-                matched: res.match,
-                profit: adjustPrice(data.unitValue, data.currentPhase.phaseType) - res.transaction.price
-            });
-            console.log(data.unitValue - res.transaction.price)
+            if (res.match) {
+                setStatus({
+                    matched: res.match,
+                    profit: data.unitValue - res.transaction.price
+                });
+                socket.off("bidMatch")
+            }
         });
     }
 
@@ -173,7 +182,7 @@ export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
                 </div>
             </section>
 
-            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} style={{ width: "720px" }} />
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} />
             {status.matched ?
                 <p>menunggu partisipan lain...</p>
                 :

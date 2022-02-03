@@ -3,6 +3,8 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
+- coba lagi pake dependency array, kalo gabisa, bikin component temporary setelah match, phasecontinuenya setelah isdone
+- pake usereducer?
 - Finalisasi Double Auction (Timer, testing 4 player)
 - foto produk ditampilin di participant
 - Decentralization
@@ -15,3 +17,8 @@ pass: IpB_b3rc4nd4
 - Download Rerata jumlah trx
 - Download Rerata harga
 - Download Selisih price dgn Unit Value/Cost
+
+# Known issues
+
+- bidmatch sama yang udah selesai
+- satu user suka one stage/phase ahead
