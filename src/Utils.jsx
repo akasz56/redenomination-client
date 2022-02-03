@@ -21,13 +21,27 @@ export function logout(next) {
     next()
 }
 
-export function displayPrice(price, phaseType) {
+export function displayPrice(price, phaseType = "preRedenomPrice") {
     switch (phaseType) {
         case "preRedenomPrice":
             return Number(price)
 
         case "transitionPrice":
             return Number(price) + " / " + (Number(price) / 1000)
+
+        case "postRedenomPrice":
+            return Number(price) / 1000;
+
+        default:
+            break;
+    }
+}
+
+export function adjustPrice(price, phaseType = "preRedenomPrice") {
+    switch (phaseType) {
+        case "preRedenomPrice":
+        case "transitionPrice":
+            return Number(price)
 
         case "postRedenomPrice":
             return Number(price) / 1000;
