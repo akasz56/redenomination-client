@@ -18,4 +18,4 @@ pass: IpB_b3rc4nd4
 
 # Known issues
 
-- satu ketinggalan phase
+- broken di deploy heroku
