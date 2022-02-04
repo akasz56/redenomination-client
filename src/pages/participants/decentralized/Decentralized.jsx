@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Container } from 'react-bootstrap'
+import socket from "../../../adapters/SocketIO";
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import { capitalize } from '../../../Utils';
@@ -7,18 +8,18 @@ import { BuyerIdleScreen } from '../posted-offer/Buyer';
 import { PostPriceScreen, SellerIdleScreen } from '../posted-offer/Seller';
 
 // ---------------------------------------------BUYER
-export function BuyerIdleDS({ socket, data, setStage }) {
+export function BuyerIdleDS({ data, setStage }) {
     return <BuyerIdleScreen data={data} />
 }
 
-export function Lobby({ socket, data, setStage, phaseContinue }) {
+export function Lobby({ data, setStage, phaseContinue }) {
     const [isInside, setIsInside] = useState(false);
 
-    if (isInside) { return <EnterShop socket={socket} data={data} zxc={{ isInside, setStage, setIsInside }} /> }
-    else { return <ListShops socket={socket} data={data} zxc={{ isInside, setStage, setIsInside }} /> }
+    if (isInside) { return <EnterShop data={data} zxc={{ isInside, setStage, setIsInside }} /> }
+    else { return <ListShops data={data} zxc={{ isInside, setStage, setIsInside }} /> }
 }
 
-export function ListShops({ socket, data, zxc }) {
+export function ListShops({ data, zxc }) {
 
     useEffect(() => {
         document.title = "Decentralized"
@@ -54,7 +55,7 @@ export function ListShops({ socket, data, zxc }) {
     )
 }
 
-export function EnterShop({ socket, data, zxc }) {
+export function EnterShop({ data, zxc }) {
     const [status, setStatus] = useState(false);
 
 
@@ -104,10 +105,10 @@ export function EnterShop({ socket, data, zxc }) {
 }
 
 // ---------------------------------------------SELLER
-export function PostPriceDS({ socket, data, setStage, phaseContinue }) {
+export function PostPriceDS({ data, setStage, phaseContinue }) {
     return <PostPriceScreen data={data} />
 }
 
-export function SellerIdleDS({ socket, data, setStage }) {
+export function SellerIdleDS({ data, setStage }) {
     return <SellerIdleScreen data={data} />
 }

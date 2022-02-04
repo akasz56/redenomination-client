@@ -146,7 +146,7 @@ export default function Participants() {
     }
 
     if (stage === 'ready') {
-        return <Ready socket={socket} data={{ ...phaseData, ...data }} />
+        return <Ready data={{ ...phaseData, ...data }} />
     }
     else {
         switch (phaseData.simulationType) {
@@ -166,13 +166,13 @@ export default function Participants() {
 function PostedOfferHandler(stage, timer, socket, data, phaseContinue) {
     switch (stage) {
         case "postPrice":
-            if (data.role === "seller") { return <PostPriceScreen socket={socket} data={data} timer={timer} /> }
-            else if (data.role === "buyer") { return <BuyerIdleScreen socket={socket} data={data} timer={timer} /> }
+            if (data.role === "seller") { return <PostPriceScreen data={data} timer={timer} /> }
+            else if (data.role === "buyer") { return <BuyerIdleScreen data={data} timer={timer} /> }
             else { return <BlankScreen lineNumber="183" /> }
 
         case "flashSale":
-            if (data.role === "seller") { return <SellerIdleScreen socket={socket} data={data} timer={timer} phaseContinue={phaseContinue} /> }
-            else if (data.role === "buyer") { return <FlashSaleScreen socket={socket} data={data} timer={timer} phaseContinue={phaseContinue} /> }
+            if (data.role === "seller") { return <SellerIdleScreen data={data} timer={timer} phaseContinue={phaseContinue} /> }
+            else if (data.role === "buyer") { return <FlashSaleScreen data={data} timer={timer} phaseContinue={phaseContinue} /> }
             else { return <BlankScreen lineNumber="188" /> }
 
         case "complete":
@@ -187,8 +187,8 @@ function PostedOfferHandler(stage, timer, socket, data, phaseContinue) {
 function DoubleAuctionHandler(stage, timer, socket, data, phaseContinue) {
     switch (stage) {
         case "auctionScreen":
-            if (data.role === "seller") { return <SellerAuctionScreen socket={socket} data={data} timer={timer} phaseContinue={phaseContinue} /> }
-            else if (data.role === "buyer") { return <BuyerAuctionScreen socket={socket} data={data} timer={timer} phaseContinue={phaseContinue} /> }
+            if (data.role === "seller") { return <SellerAuctionScreen data={data} timer={timer} phaseContinue={phaseContinue} /> }
+            else if (data.role === "buyer") { return <BuyerAuctionScreen data={data} timer={timer} phaseContinue={phaseContinue} /> }
             else { return <BlankScreen lineNumber="205" /> }
 
         case "complete":
@@ -203,13 +203,13 @@ function DoubleAuctionHandler(stage, timer, socket, data, phaseContinue) {
 function DecentralizedHandler(stage, timer, socket, data, phaseContinue) {
     switch (stage) {
         case "postPriceDS":
-            if (data.role === "seller") { return <PostPriceDS socket={socket} data={data} timer={timer} /> }
-            else if (data.role === "buyer") { return <BuyerIdleDS socket={socket} data={data} timer={timer} /> }
+            if (data.role === "seller") { return <PostPriceDS data={data} timer={timer} /> }
+            else if (data.role === "buyer") { return <BuyerIdleDS data={data} timer={timer} /> }
             else { return <BlankScreen lineNumber="222" /> }
 
         case "listShops":
-            if (data.role === "seller") { return <SellerIdleDS socket={socket} data={data} timer={timer} phaseContinue={phaseContinue} /> }
-            else if (data.role === "buyer") { return <Lobby socket={socket} data={data} timer={timer} phaseContinue={phaseContinue} /> }
+            if (data.role === "seller") { return <SellerIdleDS data={data} timer={timer} phaseContinue={phaseContinue} /> }
+            else if (data.role === "buyer") { return <Lobby data={data} timer={timer} phaseContinue={phaseContinue} /> }
             else { return <BlankScreen lineNumber="227" /> }
 
         case "complete":

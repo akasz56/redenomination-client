@@ -3,10 +3,8 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
-- coba lagi pake dependency array, kalo gabisa, bikin component temporary setelah match, phasecontinuenya setelah isdone
-- pake usereducer?
-- Finalisasi Double Auction (Timer, testing 4 player)
-- foto produk ditampilin di participant
+- Finalisasi Double Auction (Timer)
+- non elastis jadi inelastis
 - Decentralization
 - Summaries tambahan dibawah
 
@@ -20,5 +18,4 @@ pass: IpB_b3rc4nd4
 
 # Known issues
 
-- bidmatch sama yang udah selesai
-- satu user suka one stage/phase ahead
+- satu ketinggalan phase

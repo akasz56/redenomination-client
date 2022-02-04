@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
+import socket from "../../adapters/SocketIO";
 import { capitalize } from '../../Utils';
 import "./Ready.css";
 
-export default function Ready({ socket, data }) {
+export default function Ready({ data }) {
     const [ready, setReady] = useState(false)
 
     function btnHandler(e) {
