@@ -7,7 +7,6 @@ import Login from "./pages/Login";
 import Admin from "./pages/admin/Admin";
 
 import Simulation from "./pages/admin/Simulation/Simulation";
-import SimulationSummary from "./pages/admin/Simulation/Summary";
 import SimulationCreate from "./pages/admin/Simulation/Create";
 import SimulationEdit from "./pages/admin/Simulation/Edit";
 
@@ -39,7 +38,6 @@ export default function App() {
 					<Route path=":id">
 						<Route index element={<Simulation />} />
 						<Route path="edit" element={<SimulationEdit />} />
-						<Route path="summary" element={<SimulationSummary />} />
 					</Route>
 				</Route>
 				<Route path="sessions">
