@@ -1,28 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Button, Container, Form, Image } from 'react-bootstrap'
+import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import { capitalize, displayPrice } from '../../../Utils'
 
-export function SellerAuctionScreen({ socket, data, phaseContinue }) {
+export function SellerAuctionScreen({ data, phaseContinue }) {
+    const [resData, setResData] = useState({ isDone: false, phaseId: false });
     const [inputPrice, setInputPrice] = useState(0);
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
-    const [status, setStatus] = useState({ isDone: false, matched: false, profit: 0, resPhaseId: null, });
+    const [matched, setMatched] = useState(false);
+    const [profit, setProfit] = useState(0);
 
     useEffect(() => {
-        console.log(status);
-        if (status.isDone && status.resPhaseId === data.currentPhase.id) {
-            const myProfit = status.profit;
-            setInputPrice(0);
-            setSocketData({ minPrice: "-", maxPrice: "-" });
-            setStatus({ isDone: false, matched: false, profit: 0, resPhaseId: null });
-            phaseContinue(myProfit)
-        }
-
-        if (status.matched) {
+        if (matched) {
             socket.emit("da:isDone", { phaseId: data.currentPhase.id });
             socket.on("da:isDone", res => {
-                setStatus({ ...status, isDone: res.isDone, resPhaseId: res.phaseId })
+                setResData(res)
             })
         }
 
@@ -34,10 +28,22 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
         });
 
         return () => {
-            socket.off("doubleAuctionList")
             socket.off("da:isDone")
+            socket.off("doubleAuctionList")
         }
-    }, [status, data.currentPhase, socket, phaseContinue]);
+    })
+
+    useEffect(() => {
+        if (resData.isDone && resData.phaseId === data.currentPhase.id) {
+            console.log("pass1");
+            setResData({ isDone: false, phaseId: false });
+            phaseContinue(profit);
+            setInputPrice(0);
+            setSocketData({ minPrice: "-", maxPrice: "-" });
+            setMatched(false);
+            setProfit(0);
+        }
+    }, [resData]);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -48,10 +54,8 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
 
         socket.on("bidMatch", res => {
             if (res.match) {
-                setStatus({
-                    matched: res.match,
-                    profit: res.transaction.price - data.unitCost
-                });
+                setMatched(true)
+                setProfit(res.transaction.price - data.unitCost)
                 socket.off("bidMatch")
             }
         });
@@ -74,8 +78,8 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
                 </div>
             </section>
 
-            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} />
-            {status.matched ?
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
+            {matched ?
                 <p>menunggu partisipan lain...</p>
                 :
                 <Form onSubmit={submitHandler} className='mb-5'>
@@ -112,25 +116,18 @@ export function SellerAuctionScreen({ socket, data, phaseContinue }) {
     )
 }
 
-export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
+export function BuyerAuctionScreen({ data, phaseContinue }) {
+    const [resData, setResData] = useState({ isDone: false, phaseId: false });
     const [inputPrice, setInputPrice] = useState(0);
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
-    const [status, setStatus] = useState({ isDone: false, matched: false, profit: 0, resPhaseId: null, });
+    const [matched, setMatched] = useState(false);
+    const [profit, setProfit] = useState(0);
 
     useEffect(() => {
-        console.log(status);
-        if (status.isDone && status.resPhaseId === data.currentPhase.id) {
-            const myProfit = status.profit;
-            setInputPrice(0);
-            setSocketData({ minPrice: "-", maxPrice: "-" });
-            setStatus({ isDone: false, matched: false, profit: 0, resPhaseId: null });
-            phaseContinue(myProfit)
-        }
-
-        if (status.matched) {
+        if (matched) {
             socket.emit("da:isDone", { phaseId: data.currentPhase.id });
             socket.on("da:isDone", res => {
-                setStatus({ ...status, isDone: res.isDone, resPhaseId: res.phaseId })
+                setResData(res)
             })
         }
 
@@ -142,10 +139,22 @@ export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
         });
 
         return () => {
-            socket.off("doubleAuctionList")
             socket.off("da:isDone")
+            socket.off("doubleAuctionList")
         }
-    }, [status, data.currentPhase, socket, phaseContinue]);
+    })
+
+    useEffect(() => {
+        if (resData.isDone && resData.phaseId === data.currentPhase.id) {
+            console.log("pass1");
+            setResData({ isDone: false, phaseId: false });
+            phaseContinue(profit);
+            setInputPrice(0);
+            setSocketData({ minPrice: "-", maxPrice: "-" });
+            setMatched(false);
+            setProfit(0);
+        }
+    }, [resData]);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -156,10 +165,8 @@ export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
 
         socket.on("bidMatch", res => {
             if (res.match) {
-                setStatus({
-                    matched: res.match,
-                    profit: data.unitValue - res.transaction.price
-                });
+                setMatched(true)
+                setProfit(data.unitValue - res.transaction.price)
                 socket.off("bidMatch")
             }
         });
@@ -182,8 +189,8 @@ export function BuyerAuctionScreen({ socket, data, phaseContinue }) {
                 </div>
             </section>
 
-            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} />
-            {status.matched ?
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
+            {matched ?
                 <p>menunggu partisipan lain...</p>
                 :
                 <Form onSubmit={submitHandler} className='mb-5'>
