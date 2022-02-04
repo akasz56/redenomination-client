@@ -151,11 +151,11 @@ export default function Participants() {
     else {
         switch (phaseData.simulationType) {
             case "Posted Offer":
-                return PostedOfferHandler(stage, timer, socket, { ...phaseData, ...data }, phaseContinue)
+                return PostedOfferHandler(stage, timer, { ...phaseData, ...data }, phaseContinue)
             case "Double Auction":
-                return DoubleAuctionHandler(stage, timer, socket, { ...phaseData, ...data }, phaseContinue)
+                return DoubleAuctionHandler(stage, timer, { ...phaseData, ...data }, phaseContinue)
             case "Decentralized":
-                return DecentralizedHandler(stage, timer, socket, { ...phaseData, ...data }, phaseContinue)
+                return DecentralizedHandler(stage, timer, { ...phaseData, ...data }, phaseContinue)
             default:
                 return <BlankScreen lineNumber="172" />
         }
@@ -163,7 +163,7 @@ export default function Participants() {
 
 }
 
-function PostedOfferHandler(stage, timer, socket, data, phaseContinue) {
+function PostedOfferHandler(stage, timer, data, phaseContinue) {
     switch (stage) {
         case "postPrice":
             if (data.role === "seller") { return <PostPriceScreen data={data} timer={timer} /> }
@@ -184,7 +184,7 @@ function PostedOfferHandler(stage, timer, socket, data, phaseContinue) {
     }
 }
 
-function DoubleAuctionHandler(stage, timer, socket, data, phaseContinue) {
+function DoubleAuctionHandler(stage, timer, data, phaseContinue) {
     switch (stage) {
         case "auctionScreen":
             if (data.role === "seller") { return <SellerAuctionScreen data={data} timer={timer} phaseContinue={phaseContinue} /> }
@@ -200,7 +200,7 @@ function DoubleAuctionHandler(stage, timer, socket, data, phaseContinue) {
     }
 }
 
-function DecentralizedHandler(stage, timer, socket, data, phaseContinue) {
+function DecentralizedHandler(stage, timer, data, phaseContinue) {
     switch (stage) {
         case "postPriceDS":
             if (data.role === "seller") { return <PostPriceDS data={data} timer={timer} /> }

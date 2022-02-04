@@ -21,8 +21,9 @@ export default function Home() {
         socket.emit("loginToken", { "token": token });
         socket.emit("join", token);
         socket.on("serverMessage", res => {
+            console.log(res);
             if (res.status === 200) {
-                if (res.data.phases[0].isRunning) {
+                if (res.data.isRunning) {
                     localStorage.setItem('auth', JSON.stringify({
                         login: true,
                         role: "participant",
