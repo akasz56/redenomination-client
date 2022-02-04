@@ -10,6 +10,7 @@ import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
 import './Simulation.css'
+import UnitInput from '../../../components/UnitInput';
 
 
 export default function Simulation() {
@@ -143,6 +144,35 @@ export default function Simulation() {
                     <Button className='w-100 py-lg-2' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
 
 
+                    <section style={{ marginTop: "5rem" }} className='row'>
+                        <h1>Unit Cost dan Unit Value</h1>
+                        <hr />
+                        <div className="col-md-6">
+                            <p className="fw-bold text-center">Unit Cost</p>
+                            {dataGet.sellers.map((_, i) => (
+                                <UnitInput
+                                    disabled
+                                    key={i + 1}
+                                    id={i + 1}
+                                    role="penjual"
+                                    defaultValue={Number(dataGet.sellers[i].unitCost)}
+                                />
+                            ))}
+                        </div>
+                        <div className="col-md-6">
+                            <p className="fw-bold text-center">Unit Value</p>
+                            {dataGet.buyers.map((_, i) => (
+                                <UnitInput
+                                    disabled
+                                    key={i + 1}
+                                    id={i + 1}
+                                    role="pembeli"
+                                    defaultValue={Number(dataGet.buyers[i].unitValue)}
+                                />
+                            ))}
+                        </div>
+                    </section>
+
                     <section style={{ marginTop: "5rem" }} className='info'>
                         <h1>Detail Simulasi</h1>
                         <hr />
@@ -152,9 +182,11 @@ export default function Simulation() {
                             <p>Timer : <span className='fw-bold'>{dataGet.timer} menit</span></p>
                         </div>
                         {dataGet.goodsPic !== '' ?
-                            <figure className='info-image'>
-                                <Image src={(dataGet.goodsPic) ? imgURL + dataGet.goodsPic : ''} fluid></Image>
-                                <figcaption>Illustrasi barang</figcaption>
+                            <figure className='d-flex flex-column'>
+                                <div className='mx-auto'>
+                                    <Image src={(dataGet.goodsPic) ? imgURL + dataGet.goodsPic : ''} fluid alt={dataGet.goodsType} style={{ height: "360px" }} />
+                                    <p>Illustrasi barang</p>
+                                </div>
                             </figure>
                             :
                             <></>
