@@ -21,7 +21,6 @@ export default function Home() {
         socket.emit("loginToken", { "token": token });
         socket.emit("join", token);
         socket.on("serverMessage", res => {
-            console.log(res);
             if (res.status === 200) {
                 if (res.data.isRunning) {
                     localStorage.setItem('auth', JSON.stringify({
@@ -30,6 +29,7 @@ export default function Home() {
                         id: res.data.detail.id,
                     }));
                     navigate('/participant', { state: res.data });
+                    socket.off("serverMessage");
                 } else {
                     window.alert("Simulasi belum dijalankan");
                     window.location.reload()

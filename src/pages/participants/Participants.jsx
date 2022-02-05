@@ -10,6 +10,13 @@ import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/Double
 import { BuyerIdleDS, Lobby, PostPriceDS, SellerIdleDS } from './decentralized/Decentralized';
 import { capitalize, logout } from '../../Utils';
 
+function sortPhases(phases) {
+    const phase0 = phases.find((item) => { if (item.phaseType === "preRedenomPrice") { return item } })
+    const phase1 = phases.find((item) => { if (item.phaseType === "transitionPrice") { return item } })
+    const phase2 = phases.find((item) => { if (item.phaseType === "postRedenomPrice") { return item } })
+    return [phase0, phase1, phase2];
+}
+
 export default function Participants() {
     const { state } = useLocation();
     const [data, setData] = useState({
@@ -17,7 +24,7 @@ export default function Participants() {
         role: state.type
     });
     const [phaseData, setPhaseData] = useState({
-        currentPhase: state.phases[0],
+        currentPhase: sortPhases(state.phases),
         phaseName: "Pre-Redenominasi",
         simulationType: capitalize(state.simulationType),
         goodsType: capitalize(state.goodsType),
