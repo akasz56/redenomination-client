@@ -11,20 +11,22 @@ import { BuyerIdleDS, Lobby, PostPriceDS, SellerIdleDS } from './decentralized/D
 import { capitalize, logout } from '../../Utils';
 
 function sortPhases(phases) {
-    const phase0 = phases.find((item) => { if (item.phaseType === "preRedenomPrice") { return item } })
-    const phase1 = phases.find((item) => { if (item.phaseType === "transitionPrice") { return item } })
-    const phase2 = phases.find((item) => { if (item.phaseType === "postRedenomPrice") { return item } })
+    const phase0 = phases.find((item) => { return item.phaseType === "preRedenomPrice" })
+    const phase1 = phases.find((item) => { return item.phaseType === "transitionPrice" })
+    const phase2 = phases.find((item) => { return item.phaseType === "postRedenomPrice" })
     return [phase0, phase1, phase2];
 }
 
 export default function Participants() {
     const { state } = useLocation();
+    const phases = sortPhases(state.phases);
+    const minutes = state.timer;
     const [data, setData] = useState({
         ...state.detail,
         role: state.type
     });
     const [phaseData, setPhaseData] = useState({
-        currentPhase: sortPhases(state.phases),
+        currentPhase: phases[0],
         phaseName: "Pre-Redenominasi",
         simulationType: capitalize(state.simulationType),
         goodsType: capitalize(state.goodsType),
@@ -32,8 +34,6 @@ export default function Participants() {
         goodsName: capitalize(state.goodsName),
         inflationType: capitalize(state.inflationType)
     });
-    const phases = state.phases;
-    const minutes = state.timer;
     const [stage, setStage] = useState('ready');
     const [timer, setTimer] = useState(minutes * 60);
     const [profits, setProfits] = useState([]);
@@ -69,7 +69,7 @@ export default function Participants() {
             function readyCountHandler(res) {
                 if (res.numberOfReadyPlayer === res.totalPlayer) {
                     setData({ ...data, participantNumber: res.totalPlayer })
-                    socket.emit("startPhase", { "phaseId": state.phases[0].id })
+                    socket.emit("startPhase", { "phaseId": phases[0].id })
                     setTimer(minutes * 60);
                     setStage(firstStage);
                 }
