@@ -34,11 +34,22 @@ export function PostPriceScreen({ data, timer }) {
                 <Form onSubmit={submitHandler} className='mt-5'>
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
-                        {(data.currentPhase.phaseType !== "preRedenomPrice") ?
-                            <Form.Control type="number" min={data.unitCost / 1000} max={(data.currentPhase.phaseType === "postRedenomPrice") ? 10 : ''}
-                                step="0.001" required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost / 1000} />
+                        {(data.currentPhase.phaseType !== "postRedenomPrice") ?
+                            <Form.Control type="number"
+                                className='text-center' required
+                                onChange={e => setPrice(e.target.value)}
+                                min={data.unitCost}
+                                placeholder={data.unitCost}
+                            />
                             :
-                            <Form.Control type="number" min={data.unitCost} required onChange={e => setPrice(e.target.value)} placeholder={data.unitCost} />
+                            <Form.Control type="number"
+                                className='text-center' required
+                                onChange={e => setPrice(e.target.value)}
+                                max={10}
+                                min={data.unitCost / 1000}
+                                placeholder={data.unitCost / 1000}
+                                step={0.001}
+                            />
                         }
                     </Form.Group>
                     <Button type="submit" className='mt-3 py-3 px-5 fs-4'>Tetapkan</Button>
