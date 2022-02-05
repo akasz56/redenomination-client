@@ -57,7 +57,7 @@ export default function Summary(props) {
                         </div>
                         <div className="col-md-6 text-center">
                             <p>Rata-rata harga kesepakatan</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {Number(data.avgTrxPrice)}</h1>
+                            <h1 className='text-primary fw-bolder'>{displayPrice(data.avgTrxPrice)}</h1>
                         </div>
                     </section>
 
@@ -83,15 +83,15 @@ export default function Summary(props) {
                         <hr />
                         <div className="col-md-4 text-center">
                             <p>Pre-Redenominasi</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {displayPrice(data.phases[0].avgTrxPrice, "preRedenomPrice")}</h1>
+                            <h1 className='text-primary fw-bolder'>{displayPrice(data.phases[0].avgTrxPrice, "preRedenomPrice")}</h1>
                         </div>
                         <div className="col-md-4 text-center">
                             <p>Transisi Redenominasi</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {displayPrice(data.phases[1].avgTrxPrice, "transitionPrice")}</h1>
+                            <h1 className='text-primary fw-bolder'>{displayPrice(data.phases[1].avgTrxPrice, "transitionPrice")}</h1>
                         </div>
                         <div className="col-md-4 text-center">
                             <p>Pasca Transisi Redenominasi</p>
-                            <h1 className='text-primary fw-bolder'>Rp. {displayPrice(data.phases[2].avgTrxPrice, "postRedenomPrice")}</h1>
+                            <h1 className='text-primary fw-bolder'>{displayPrice(data.phases[2].avgTrxPrice, "postRedenomPrice")}</h1>
                         </div>
                     </section>
 

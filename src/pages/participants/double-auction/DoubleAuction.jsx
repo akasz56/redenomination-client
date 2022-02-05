@@ -66,15 +66,15 @@ export function SellerAuctionScreen({ data, phaseContinue }) {
             <section className='row my-5 py-5 border rounded-pill'>
                 <div className="col-md-4">
                     <p>Offer</p>
-                    <h1 className='text-primary fw-bolder'>Rp. {socketData.minPrice}</h1>
+                    <h1 className='text-primary fw-bolder'>{socketData.minPrice}</h1>
                 </div>
                 <div className="col-md-4">
                     <p><span className='fw-bolder'>Unit Cost</span> anda</p>
-                    <h1 className='text-primary fw-bolder'>Rp. {displayPrice(data.unitCost, data.currentPhase.phaseType)}</h1>
+                    <h1 className='text-primary fw-bolder'>{displayPrice(data.unitCost, data.currentPhase.phaseType)}</h1>
                 </div>
                 <div className="col-md-4">
                     <p>Bid</p>
-                    <h1 className='text-primary fw-bolder'>Rp. {socketData.maxPrice}</h1>
+                    <h1 className='text-primary fw-bolder'>{socketData.maxPrice}</h1>
                 </div>
             </section>
 
@@ -177,15 +177,15 @@ export function BuyerAuctionScreen({ data, phaseContinue }) {
             <section className='row my-5 py-5 border rounded-pill'>
                 <div className="col-md-4">
                     <p>Offer</p>
-                    <h1 className='text-primary fw-bolder'>Rp. {socketData.minPrice}</h1>
+                    <h1 className='text-primary fw-bolder'>{socketData.minPrice}</h1>
                 </div>
                 <div className="col-md-4">
                     <p><span className='fw-bolder'>Unit Value</span> anda</p>
-                    <h1 className='text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+                    <h1 className='text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
                 </div>
                 <div className="col-md-4">
                     <p>Bid</p>
-                    <h1 className='text-primary fw-bolder'>Rp. {socketData.maxPrice}</h1>
+                    <h1 className='text-primary fw-bolder'>{socketData.maxPrice}</h1>
                 </div>
             </section>
 

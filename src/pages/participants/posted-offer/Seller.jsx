@@ -24,7 +24,7 @@ export function PostPriceScreen({ data, timer }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Cost</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitCost, data.currentPhase.phaseType)}
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitCost, data.currentPhase.phaseType)}
             </h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
@@ -114,7 +114,7 @@ export function SellerIdleScreen({ data, timer, phaseContinue }) {
                         className="mb-3"
                         role={item.role}
                     >
-                        Rp. {displayPrice(item.price, data.currentPhase.phaseType)}
+                        {displayPrice(item.price, data.currentPhase.phaseType)}
                     </Card>
                 ))}
             </section>

@@ -12,7 +12,7 @@ export function BuyerIdleScreen({ data, timer }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
             <p className='mt-5'>menunggu penjual memasang harga......</p>
@@ -79,7 +79,7 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
 
@@ -92,7 +92,7 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
                         role={item.role}
                         onBtnClick={(e) => { buyHandler(e, item) }}
                     >
-                        Rp. {displayPrice(item.price, data.currentPhase.phaseType)}
+                        {displayPrice(item.price, data.currentPhase.phaseType)}
                     </Card>
                 ))}
             </section>
