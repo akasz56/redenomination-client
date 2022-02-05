@@ -22,7 +22,7 @@ export default function Home() {
         socket.emit("join", token);
         socket.on("serverMessage", res => {
             if (res.status === 200) {
-                if (res.data.phases[0].isRunning) {
+                if (res.data.isSessionRunning) {
                     localStorage.setItem('auth', JSON.stringify({
                         login: true,
                         role: "participant",
