@@ -49,7 +49,7 @@ export default function Edit() {
             goodsPic: (fileName) ? fileName : data.goodsPic,
             inflationType: data.inflationType,
             participantNumber: data.participantNumber,
-            timer: data.timer
+            simulationBudget: data.simulationBudget
         });
         if (res.status === 200) {
             window.alert("Data berhasil diubah");
@@ -154,12 +154,12 @@ export default function Edit() {
                                 </Form.Group>
                             </div>
                             <div className="col-md-6">
-                                <Form.Group controlId="timer">
-                                    <Form.Label className="required d-block">Timer</Form.Label>
-                                    <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
-                                        defaultValue={data.timer} required
-                                        onChange={(e) => { setData({ ...data, timer: e.target.value }) }} />
-                                    &nbsp;Menit
+                                <Form.Group controlId="simulationBudget">
+                                    <Form.Label className='required'>Anggaran Simulasi</Form.Label>
+                                    <br />
+                                    <Form.Control type="number" min={0} step={1}
+                                        defaultValue={data.simulationBudget} required
+                                        onChange={(e) => { setData({ ...data, simulationBudget: e.target.value }) }} />
                                 </Form.Group>
                             </div>
                         </section>

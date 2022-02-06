@@ -29,6 +29,7 @@ export default function Simulation() {
             const res = await readSimulation(urlParams.id);
             if (res.status === 200) {
                 setDataGet(res.data);
+                console.log(res.data);
                 setDataPost({
                     "simulationID": res.data.id,
                     "sessionType": "Ulangan Kesekian",
@@ -179,7 +180,7 @@ export default function Simulation() {
                         <div className="details">
                             <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
                             <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
-                            <p>Timer : <span className='fw-bold'>{dataGet.timer} menit</span></p>
+                            <p>Anggaran Simulasi : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
                         </div>
                         {dataGet.goodsPic !== '' ?
                             <figure className='d-flex flex-column'>
@@ -192,29 +193,6 @@ export default function Simulation() {
                             <></>
                         }
                     </section>
-
-                    {/* <section style={{ marginTop: "5rem" }} >
-                        <h1>Ringkasan Simulasi</h1>
-                        <hr />
-                        <Link to={'./summary'}>rincian simulasi...</Link>
-                        <div className='d-flex flex-column flex-xl-row justify-content-around'>
-                            <SummaryComponent
-                                title="Rata-Rata Jumlah transaksi"
-                                src="https://via.placeholder.com/400x360"
-                                download=""
-                            />
-                            <SummaryComponent
-                                title="Rata-rata Harga kesepakatan"
-                                src="https://via.placeholder.com/400x360"
-                                download=""
-                            />
-                            <SummaryComponent
-                                title="Log Tawar-Menawar"
-                                src="https://via.placeholder.com/400x360"
-                                download=""
-                            />
-                        </div>
-                    </section> */}
 
                     <section style={{ marginTop: "5rem" }} className='mb-5' >
                         <h1>Hapus Simulasi</h1>

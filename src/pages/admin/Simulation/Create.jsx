@@ -16,7 +16,7 @@ export default function Create() {
         goodsName: '',
         inflationType: "Inflasi Rendah",
         participantNumber: 20,
-        timer: 1,
+        simulationBudget: 1,
     });
 
     useEffect(() => {
@@ -151,13 +151,12 @@ export default function Create() {
                             </Form.Group>
                         </div>
                         <div className="col-md-6">
-                            <Form.Group controlId="timer">
-                                <Form.Label className='required'>Timer</Form.Label>
+                            <Form.Group controlId="simulationBudget">
+                                <Form.Label className='required'>Anggaran Simulasi</Form.Label>
                                 <br />
-                                <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
-                                    defaultValue={formData.timer} required
-                                    onChange={(e) => { setFormData({ ...formData, timer: e.target.value }) }} />
-                                &nbsp;Menit
+                                <Form.Control type="number" min={0} step={1}
+                                    defaultValue={formData.simulationBudget} required
+                                    onChange={(e) => { setFormData({ ...formData, simulationBudget: e.target.value }) }} />
                             </Form.Group>
                         </div>
                     </section>
