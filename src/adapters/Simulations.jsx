@@ -1,17 +1,27 @@
 import { apiURL } from "./serverURL";
 import { myToken } from '../Utils';
 
-export async function createSimulation(body) {
+export async function createSimulation(body, additionalPlayer) {
     body.simulationType = body.simulationType.toLowerCase()
     body.participantNumber = parseInt(body.participantNumber)
     body.timer = parseInt(body.timer)
 
     body.buyer = Object.keys(body.unitValue).map((key) => { return { "unitValue": parseInt(body.unitValue[key]) } });
-    body.buyer = body.buyer.splice(0, body.participantNumber / 2);
-    delete body.unitValue
-
     body.seller = Object.keys(body.unitCost).map((key) => { return { "unitCost": parseInt(body.unitCost[key]) } });
-    body.seller = body.seller.splice(0, body.participantNumber / 2);
+
+    if (additionalPlayer === "seller") {
+        body.buyer = body.buyer.splice(0, body.participantNumber / 2);
+        body.seller = body.seller.splice(0, body.participantNumber / 2 + 1);
+    }
+    else if (additionalPlayer === "buyer") {
+        body.buyer = body.buyer.splice(0, body.participantNumber / 2 + 1);
+        body.seller = body.seller.splice(0, body.participantNumber / 2);
+    }
+    else {
+        body.buyer = body.buyer.splice(0, body.participantNumber / 2);
+        body.seller = body.seller.splice(0, body.participantNumber / 2);
+    }
+    delete body.unitValue
     delete body.unitCost
 
     return await fetch(apiURL + "simulations/", {

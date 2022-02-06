@@ -3,6 +3,7 @@ pass: IpB_b3rc4nd4
 
 # Doing
 
+- jumlah penjual pembeli bisa ganjil
 - Finalisasi Double Auction (Timer)
 - non elastis jadi inelastis
 - Decentralization

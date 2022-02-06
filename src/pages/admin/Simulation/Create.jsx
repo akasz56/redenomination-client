@@ -6,6 +6,7 @@ import UnitInput from '../../../components/UnitInput';
 
 export default function Create() {
     const [loading, setLoading] = useState(false);
+    const [togglePlayer, setTogglePlayer] = useState(true);
     const [fileSend, setFileSend] = useState(null);
     const [unitValues, setUnitValues] = useState({});
     const [unitCosts, setUnitCosts] = useState({});
@@ -20,7 +21,23 @@ export default function Create() {
 
     useEffect(() => {
         document.title = "Buat Simulasi baru";
-    })
+    }, [])
+
+    function togglePlayerHandler(e) {
+        e.preventDefault();
+        setTogglePlayer(prev => !prev);
+    }
+
+    function additionalPlayerHandler(e, isSeller) {
+        e.preventDefault();
+        if (isSeller) {
+            setUnitValues({ ...unitValues, ["pembeli" + (formData.participantNumber / 2 + 0.5)]: undefined });
+            setUnitCosts({ ...unitCosts, ["penjual" + (formData.participantNumber / 2 + 0.5)]: e.target.value });
+        } else {
+            setUnitCosts({ ...unitCosts, ["penjual" + (formData.participantNumber / 2 + 0.5)]: undefined });
+            setUnitValues({ ...unitValues, ["pembeli" + (formData.participantNumber / 2 + 0.5)]: e.target.value });
+        }
+    }
 
     function fileHandler(e) {
         e.preventDefault();
@@ -29,15 +46,10 @@ export default function Create() {
 
     async function submitForm(e) {
         e.preventDefault();
-
-        if (formData.participantNumber % 2) {
-            alert("Jumlah responden tidak bisa ganjil atau kosong");
-            document.getElementById('participantNumber').scrollIntoView();
-            return;
-        }
+        const additionalPlayer = ((formData.participantNumber % 2) ? (togglePlayer ? "seller" : "buyer") : false)
 
         setLoading(true)
-        const res = await createSimulation({ ...formData, unitCost: unitValues, unitValue: unitCosts });
+        const res = await createSimulation({ ...formData, unitCost: unitCosts, unitValue: unitValues }, additionalPlayer);
         if (res.status === 201) {
             await uploadPic(res.data.id);
             window.location.href = "/simulations/" + res.data.id;
@@ -129,13 +141,10 @@ export default function Create() {
                                 <Form.Control type="number" style={{ width: "5em", display: "inline" }}
                                     defaultValue={formData.participantNumber} required
                                     onChange={(e) => { setFormData({ ...formData, participantNumber: e.target.value }) }} />
-                                {formData.participantNumber % 2 === 0 ?
-                                    <>
-                                        &nbsp;Maka, <span className='fw-bold'>{formData.participantNumber / 2} Penjual</span> dan <span className='fw-bold'>{formData.participantNumber / 2} Pembeli</span>
-                                    </>
-                                    :
-                                    <span style={{ color: "red", fontWeight: "bold" }}>&nbsp;Jumlah responden ganjil!</span>
-                                }
+                                &nbsp;Maka,
+                                <span className='fw-bold'> {(togglePlayer) ? Math.floor(formData.participantNumber / 2) + (formData.participantNumber % 2) : Math.floor(formData.participantNumber / 2)} Penjual </span>
+                                dan
+                                <span className='fw-bold'> {(!togglePlayer) ? Math.floor(formData.participantNumber / 2) + (formData.participantNumber % 2) : Math.floor(formData.participantNumber / 2)} Pembeli </span>
                             </Form.Group>
                         </div>
                         <div className="col-md-6">
@@ -159,9 +168,26 @@ export default function Create() {
                                     id={i + 1}
                                     required
                                     role="penjual"
-                                    onChange={(e) => { setUnitValues({ ...unitValues, ["penjual" + (i + 1)]: e.target.value }); }}
+                                    onChange={(e) => { setUnitCosts({ ...unitCosts, ["penjual" + (i + 1)]: e.target.value }); }}
                                 />
                             ))}
+                            {(formData.participantNumber % 2) ?
+                                (togglePlayer ?
+                                    <UnitInput
+                                        key={formData.participantNumber / 2 + 0.5}
+                                        id={formData.participantNumber / 2 + 0.5}
+                                        required
+                                        role="penjual"
+                                        onChange={(e) => { additionalPlayerHandler(e, true) }}
+                                    />
+                                    :
+                                    <div className="d-flex">
+                                        <Button className='mx-auto' variant="primary" onClick={togglePlayerHandler}>Lebihkkan penjual</Button>
+                                    </div>
+                                )
+                                :
+                                ''
+                            }
                         </div>
                         <div className="col-md-6">
                             <p className="fw-bold text-center">Unit Value</p>
@@ -171,9 +197,26 @@ export default function Create() {
                                     id={i + 1}
                                     required
                                     role="pembeli"
-                                    onChange={(e) => { setUnitCosts({ ...unitCosts, ["pembeli" + (i + 1)]: e.target.value }); }}
+                                    onChange={(e) => { setUnitValues({ ...unitValues, ["pembeli" + (i + 1)]: e.target.value }); }}
                                 />
                             ))}
+                            {(formData.participantNumber % 2) ?
+                                (!togglePlayer ?
+                                    <UnitInput
+                                        key={formData.participantNumber / 2 + 0.5}
+                                        id={formData.participantNumber / 2 + 0.5}
+                                        required
+                                        role="pembeli"
+                                        onChange={(e) => { additionalPlayerHandler(e, false) }}
+                                    />
+                                    :
+                                    <div className="d-flex">
+                                        <Button className='mx-auto' variant="primary" onClick={togglePlayerHandler}>Lebihkkan pembeli</Button>
+                                    </div>
+                                )
+                                :
+                                ''
+                            }
                         </div>
                     </section>
 

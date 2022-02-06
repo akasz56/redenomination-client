@@ -167,7 +167,7 @@ export default function Edit() {
                         <section className="row mt-5">
                             <div className="col-md-6">
                                 <p className="fw-bold text-center">Unit Cost</p>
-                                {Array.from({ length: data.participantNumber / 2 }).map((_, i) => (
+                                {data.sellers.map((_, i) => (
                                     <UnitInput
                                         disabled
                                         key={i + 1}
@@ -179,7 +179,7 @@ export default function Edit() {
                             </div>
                             <div className="col-md-6">
                                 <p className="fw-bold text-center">Unit Value</p>
-                                {Array.from({ length: data.participantNumber / 2 }).map((_, i) => (
+                                {data.buyers.map((_, i) => (
                                     <UnitInput
                                         disabled
                                         key={i + 1}
