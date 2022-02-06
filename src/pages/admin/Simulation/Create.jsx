@@ -48,8 +48,11 @@ export default function Create() {
         e.preventDefault();
         const additionalPlayer = ((formData.participantNumber % 2) ? (togglePlayer ? "seller" : "buyer") : false)
 
+        const temp = JSON.stringify({ ...formData, unitCost: unitCosts, unitValue: unitValues })
+        const body = JSON.parse(temp)
+
         setLoading(true)
-        const res = await createSimulation({ ...formData, unitCost: unitCosts, unitValue: unitValues }, additionalPlayer);
+        const res = await createSimulation(body, additionalPlayer);
         if (res.status === 201) {
             await uploadPic(res.data.id);
             window.location.href = "/simulations/" + res.data.id;

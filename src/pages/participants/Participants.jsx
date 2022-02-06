@@ -94,26 +94,23 @@ export default function Participants() {
 
         else if (stage === 'postPrice' && phaseData.simulationType === "Posted Offer") {
             function postedOfferListHandler(res) {
-                if (res.length === (data.participantNumber / 2)) {
-                    setData({
-                        ...data, seller: res.map((item, i) => {
-                            return {
-                                sellerId: item.sellerId,
-                                role: "Penjual " + (i + 1),
-                                price: item.price,
-                                status: (item.isSold) ? "done" : "",
-                                postedOfferId: item.id
-                            }
-                        })
-                    });
-                    setStage("flashSale");
-                } else if (res.length > (data.participantNumber / 2)) {
-                    // test purposes
-                    socket.emit("finishPhase", { "phaseId": phaseData.currentPhase.id })
-                    logout(() => { window.location.href = "/"; });
-                }
+                setData({
+                    ...data, seller: res.map((item, i) => {
+                        return {
+                            sellerId: item.sellerId,
+                            role: "Penjual " + (i + 1),
+                            price: item.price,
+                            status: (item.isSold) ? "done" : "",
+                            postedOfferId: item.id
+                        }
+                    })
+                });
+                setStage("flashSale");
             }
-            socket.on("postedOfferList", postedOfferListHandler);
+            function isDonePOHandler(res) {
+                if (res) { socket.on("postedOfferList", postedOfferListHandler); }
+            }
+            socket.on("po:isDone", isDonePOHandler);
         }
 
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
