@@ -33,7 +33,7 @@ export default function Simulation() {
                 setDataPost({
                     "simulationID": res.data.id,
                     "sessionType": "Ulangan Kesekian",
-                    "timer": res.data.timer
+                    "timer": Number(2)
                 });
                 setLoading(false)
                 document.title = "Simulasi " + res.data.id;

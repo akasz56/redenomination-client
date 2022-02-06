@@ -4,8 +4,9 @@ import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import { capitalize, displayPrice } from '../../../Utils'
+import Timer from '../../../components/Timer';
 
-export function SellerAuctionScreen({ data, phaseContinue }) {
+export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     const [resData, setResData] = useState({ isDone: false, phaseId: false });
     const [inputPrice, setInputPrice] = useState(0);
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
@@ -13,11 +14,13 @@ export function SellerAuctionScreen({ data, phaseContinue }) {
     const [profit, setProfit] = useState(0);
 
     useEffect(() => {
-        if (matched) {
-            socket.emit("da:isDone", { phaseId: data.currentPhase.id });
-            socket.on("da:isDone", res => {
-                setResData(res)
-            })
+        socket.emit("da:isDone", { phaseId: data.currentPhase.id });
+        socket.on("da:isDone", res => {
+            setResData(res)
+        })
+
+        if (timer <= 0) {
+            setResData({ isDone: true, phaseId: data.currentPhase.id })
         }
 
         socket.on("doubleAuctionList", res => {
@@ -43,7 +46,7 @@ export function SellerAuctionScreen({ data, phaseContinue }) {
             setMatched(false);
             setProfit(0);
         }
-    }, [resData]);
+    }, [resData, data.currentPhase.id, phaseContinue, profit]);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -63,6 +66,7 @@ export function SellerAuctionScreen({ data, phaseContinue }) {
 
     return (
         <Container className='text-center d-flex flex-column'>
+            <Timer minutes={timer} />
             <section className='row my-5 py-5 border rounded-pill'>
                 <div className="col-md-4">
                     <p>Offer</p>
@@ -116,7 +120,7 @@ export function SellerAuctionScreen({ data, phaseContinue }) {
     )
 }
 
-export function BuyerAuctionScreen({ data, phaseContinue }) {
+export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     const [resData, setResData] = useState({ isDone: false, phaseId: false });
     const [inputPrice, setInputPrice] = useState(0);
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
@@ -124,11 +128,13 @@ export function BuyerAuctionScreen({ data, phaseContinue }) {
     const [profit, setProfit] = useState(0);
 
     useEffect(() => {
-        if (matched) {
-            socket.emit("da:isDone", { phaseId: data.currentPhase.id });
-            socket.on("da:isDone", res => {
-                setResData(res)
-            })
+        socket.emit("da:isDone", { phaseId: data.currentPhase.id });
+        socket.on("da:isDone", res => {
+            setResData(res)
+        })
+
+        if (timer <= 0) {
+            setResData({ isDone: true, phaseId: data.currentPhase.id })
         }
 
         socket.on("doubleAuctionList", res => {
@@ -174,6 +180,7 @@ export function BuyerAuctionScreen({ data, phaseContinue }) {
 
     return (
         <Container className='text-center d-flex flex-column'>
+            <Timer minutes={timer} />
             <section className='row my-5 py-5 border rounded-pill'>
                 <div className="col-md-4">
                     <p>Offer</p>

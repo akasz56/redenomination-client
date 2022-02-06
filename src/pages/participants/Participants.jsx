@@ -88,7 +88,7 @@ export default function Participants() {
                     setStage("complete");
                 }
             }
-            socket.emit("collectProfit", { "myProfit": myTotalProfit })
+            socket.emit("collectProfit", { "myProfit": myTotalProfit, "phaseId": phaseData.currentPhase.id })
             socket.on("collectedProfit", collectedProfitHandler);
         }
 
