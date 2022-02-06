@@ -109,7 +109,7 @@ export default function Edit() {
                                     <Form.Select
                                         value={data.goodsType}
                                         onChange={(e) => { setData({ ...data, goodsType: e.target.value }) }}>
-                                        <option value={"Non-Elastis"}>Non-Elastis</option>
+                                        <option value={"Inelastis"}>Inelastis</option>
                                         <option value={"Elastis"}>Elastis</option>
                                     </Form.Select>
                                 </Form.Group>

@@ -12,7 +12,7 @@ export default function Create() {
     const [unitCosts, setUnitCosts] = useState({});
     const [formData, setFormData] = useState({
         simulationType: "Posted Offer",
-        goodsType: "Non-Elastis",
+        goodsType: "Inelastis",
         goodsName: '',
         inflationType: "Inflasi Rendah",
         participantNumber: 20,
@@ -103,7 +103,7 @@ export default function Create() {
                                 <Form.Label className='required'>Jenis barang</Form.Label>
                                 <Form.Select value={formData.goodsType}
                                     onChange={(e) => { setFormData({ ...formData, goodsType: e.target.value }) }}>
-                                    <option value={"Non-Elastis"}>Non-Elastis</option>
+                                    <option value={"Inelastis"}>Inelastis</option>
                                     <option value={"Elastis"}>Elastis</option>
                                 </Form.Select>
                             </Form.Group>
