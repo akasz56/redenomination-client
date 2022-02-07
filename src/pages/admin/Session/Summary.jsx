@@ -14,7 +14,6 @@ export default function Summary(props) {
         async function fetchSummary(sessionId) {
             const res = await readSessionSummary(sessionId)
             if (res.status === 200) {
-                console.log(res.data.phaseSummary)
                 const randomColor = getRandomColor();
                 setDataSummary({
                     price: {
@@ -35,10 +34,18 @@ export default function Summary(props) {
                             backgroundColor: randomColor,
                         }]
                     },
-                    // bargainList: res.data.phaseSummary.map((phase) => phase.bargainList.reduce((prev, bargain) => [...prev, bargain.price], [])),
-                    // trxList: res.data.phaseSummary.map((phase) => phase.transactionList.reduce((prev, transaction) => [...prev, transaction.price], [])),
-                    bargainList: res.data.phaseSummary.bargainList,
-                    trxList: res.data.phaseSummary.transactionList,
+                    bargainList: res.data.phaseSummary.map((phase) => {
+                        return phase.bargainList.map((bargain, idx) => ({
+                            x: idx + 1,
+                            y: bargain.price,
+                        }))
+                    }),
+                    trxList: res.data.phaseSummary.map((phase) => {
+                        return phase.transactionList.map((trx, idx) => ({
+                            x: idx + 1,
+                            y: trx.price,
+                        }))
+                    }),
                 });
             } else {
                 console.log(res);
@@ -51,8 +58,8 @@ export default function Summary(props) {
     }, [props])
 
     useEffect(() => {
-        console.log(dataSummary)
-    }, [dataSummary])
+        console.log(data)
+    }, [data])
 
     return (
         <>
@@ -85,9 +92,52 @@ export default function Summary(props) {
                         </div>
                     </section>
 
-                    <section className='mt-5'>
+                    {data.simulation.simulationType === "double auction" ?
+                        <section className='mt-5'>
+                            <Scatter data={{
+                                datasets: [
+                                    {
+                                        label: 'Pre-Redenominasi',
+                                        data: dataSummary.bargainList[0],
+                                        backgroundColor: getRandomColor(),
+                                    },
+                                    {
+                                        label: 'Transisi Redenominasi',
+                                        data: dataSummary.bargainList[1],
+                                        backgroundColor: getRandomColor(),
+                                    },
+                                    {
+                                        label: 'Pasca Transisi Redenominasi',
+                                        data: dataSummary.bargainList[2],
+                                        backgroundColor: getRandomColor(),
+                                    },
+                                ],
+                            }} />
+                        </section>
+                        :
+                        <section className='mt-5'>
+                            <Scatter data={{
+                                datasets: [
+                                    {
+                                        label: 'Pre-Redenominasi',
+                                        data: dataSummary.trxList[0],
+                                        backgroundColor: getRandomColor(),
+                                    },
+                                    {
+                                        label: 'Transisi Redenominasi',
+                                        data: dataSummary.trxList[1],
+                                        backgroundColor: getRandomColor(),
+                                    },
+                                    {
+                                        label: 'Pasca Transisi Redenominasi',
+                                        data: dataSummary.trxList[2],
+                                        backgroundColor: getRandomColor(),
+                                    },
+                                ],
+                            }} />
+                        </section>
+                    }
 
-                    </section>
                 </>
                 :
                 ""
