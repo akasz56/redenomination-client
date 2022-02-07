@@ -105,12 +105,29 @@ export default function Participants() {
                         }
                     })
                 });
-                setStage("flashSale");
             }
-            function isDonePOHandler(res) {
-                if (res) { socket.on("postedOfferList", postedOfferListHandler); }
-            }
+            function isDonePOHandler(res) { if (res) { setStage("flashSale"); } }
             socket.on("po:isDone", isDonePOHandler);
+            socket.on("postedOfferList", postedOfferListHandler);
+        }
+
+        else if (stage === 'postPriceDS' && phaseData.simulationType === "Decentralized") {
+            function decentralizedListHandler(res) {
+                setData({
+                    ...data, seller: res.map((item, i) => {
+                        return {
+                            sellerId: item.sellerId,
+                            role: "Penjual " + (i + 1),
+                            price: item.price,
+                            isSold: item.isSold,
+                            decentralizedId: item.id
+                        }
+                    })
+                });
+            }
+            function isDonePOHandler(res) { if (res) { setStage("listShops"); } }
+            socket.on("decentralizedList", decentralizedListHandler);
+            socket.on("ds:isDone", isDonePOHandler);
         }
 
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);

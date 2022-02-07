@@ -16,7 +16,3 @@ pass: IpB_b3rc4nd4
 - Download Rerata jumlah trx
 - Download Rerata harga
 - Download Selisih price dgn Unit Value/Cost
-
-# Known issues
-
-- broken di deploy heroku

@@ -16,7 +16,7 @@ export default function Create() {
         goodsName: '',
         inflationType: "Inflasi Rendah",
         participantNumber: 20,
-        simulationBudget: 1,
+        simulationBudget: 200000,
     });
 
     useEffect(() => {
