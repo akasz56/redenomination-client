@@ -8,7 +8,7 @@ import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
-import { capitalize } from '../../../Utils';
+import { capitalize, getRandomColor } from '../../../Utils';
 import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
@@ -35,21 +35,27 @@ export default function Simulation() {
                     setDataSummary({
                         price: {
                             labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
-                            datasets: res1.data.sessionSummary.map((session, idx) => ({
-                                label: 'Ulangan ' + (idx + 1),
-                                data: session.phaseSummary.map((phase) => phase.avgTrxPrice),
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            }))
+                            datasets: res1.data.sessionSummary.map((session, idx) => {
+                                const randomColor = getRandomColor();
+                                return {
+                                    label: 'Ulangan ' + (idx + 1),
+                                    data: session.phaseSummary.map((phase) => phase.avgTrxPrice),
+                                    borderColor: randomColor,
+                                    backgroundColor: randomColor,
+                                }
+                            })
                         },
                         trx: {
                             labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
-                            datasets: res1.data.sessionSummary.map((session, idx) => ({
-                                label: 'Ulangan ' + (idx + 1),
-                                data: session.phaseSummary.map((phase) => phase.avgTrxOccurrence),
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            }))
+                            datasets: res1.data.sessionSummary.map((session, idx) => {
+                                const randomColor = getRandomColor();
+                                return {
+                                    label: 'Ulangan ' + (idx + 1),
+                                    data: session.phaseSummary.map((phase) => phase.avgTrxOccurrence),
+                                    borderColor: randomColor,
+                                    backgroundColor: randomColor,
+                                }
+                            })
                         }
                     });
                 }
