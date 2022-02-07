@@ -82,4 +82,10 @@ export async function uploadPicture(id, formData) {
     }).then(response => response.json());
 }
 
-export async function readUnitCostValue(id) { }
+export async function readSimulationSummary(id) {
+    return await fetch(apiURL + "simulations/" + id + "/summary", {
+        headers: {
+            'Authorization': myToken()
+        },
+    }).then(response => response.json());
+}

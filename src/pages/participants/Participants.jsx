@@ -144,19 +144,19 @@ export default function Participants() {
                 socket.emit("finishPhase", { "phaseId": phases[0].id })
                 socket.emit("startPhase", { "phaseId": phases[1].id })
                 setPhaseData({ ...phaseData, currentPhase: phases[1], phaseName: "Transisi Redenominasi" })
-                setProfits([profit]);
+                setProfits(profit);
                 setStage(firstStage);
                 break;
             case "transitionPrice":
                 socket.emit("finishPhase", { "phaseId": phases[1].id })
                 socket.emit("startPhase", { "phaseId": phases[2].id })
                 setPhaseData({ ...phaseData, currentPhase: phases[2], phaseName: "Pasca Transisi Redenominasi" })
-                setProfits([...profits, profit]);
+                setProfits(prev => [prev, profit]);
                 setStage(firstStage);
                 break;
             case "postRedenomPrice":
                 socket.emit("finishPhase", { "phaseId": phases[2].id })
-                setProfits([...profits, profit]);
+                setProfits(prev => [...prev, profit]);
                 setStage("otwComplete");
                 break;
 

@@ -107,7 +107,7 @@ export function EnterShop({ data, timer, setIsInside, seller, setMyProfit }) {
         document.title = seller.role + " - Decentralized";
         if (seller.isSold) { setIsInside(false) }
 
-    }, [seller])
+    })
 
     function clickBack() {
         setIsInside(false)

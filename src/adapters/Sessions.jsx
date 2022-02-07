@@ -61,3 +61,11 @@ export async function finishSession(id) {
         }
     }).then(response => response.json());
 }
+
+export async function readSessionSummary(id) {
+    return await fetch(apiURL + "sessions/" + id + "/summary", {
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
+}

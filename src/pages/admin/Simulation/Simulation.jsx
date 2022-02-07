@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button, Container, Form, Image, Modal, Table } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { deleteSimulation, readSimulation } from '../../../adapters/Simulations'
+import { deleteSimulation, readSimulation, readSimulationSummary } from '../../../adapters/Simulations'
 import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
 import LoadingComponent from '../../../components/Loading';
@@ -11,12 +11,15 @@ import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
 import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
+import 'chart.js/auto';
+import { Line } from 'react-chartjs-2';
 
 
 export default function Simulation() {
     const [loading, setLoading] = useState(true);
     const [dataGet, setDataGet] = useState(false);
     const [dataPost, setDataPost] = useState(false);
+    const [dataSummary, setDataSummary] = useState(false);
     const [modalCreate, setModalCreate] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const navigate = useNavigate();
@@ -25,16 +28,47 @@ export default function Simulation() {
     useEffect(() => {
         document.title = "Tidak ada Data";
 
+        async function fetchSummary() {
+            const res1 = await readSimulationSummary(urlParams.id)
+            if (res1.status === 200) {
+                if (res1.data.sessionSummary.length >= 1) {
+                    setDataSummary({
+                        price: {
+                            labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                            datasets: res1.data.sessionSummary.map((session, idx) => ({
+                                label: 'Ulangan ' + (idx + 1),
+                                data: session.phaseSummary.map((phase) => phase.avgTrxPrice),
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            }))
+                        },
+                        trx: {
+                            labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                            datasets: res1.data.sessionSummary.map((session, idx) => ({
+                                label: 'Ulangan ' + (idx + 1),
+                                data: session.phaseSummary.map((phase) => phase.avgTrxOccurrence),
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            }))
+                        }
+                    });
+                }
+            } else {
+                console.log(res1);
+                alert("fetch Summary Fail");
+            }
+        }
+
         async function fetchData() {
             const res = await readSimulation(urlParams.id);
             if (res.status === 200) {
                 setDataGet(res.data);
-                console.log(res.data);
                 setDataPost({
                     "simulationID": res.data.id,
                     "sessionType": "Ulangan Kesekian",
                     "timer": Number(2)
                 });
+                fetchSummary();
                 setLoading(false)
                 document.title = "Simulasi " + res.data.id;
             } else if (res.status === 401) {
@@ -144,6 +178,60 @@ export default function Simulation() {
                     </Table>
                     <Button className='w-100 py-lg-2' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
 
+                    {dataSummary ?
+                        <section style={{ marginTop: "5rem" }} className="row">
+                            <h1>Ringkasan Simulasi</h1>
+                            <hr />
+                            <div className='col-md-6'>
+                                <Line data={dataSummary.trx} width={"100px"} height={"50px"}
+                                    options={{
+                                        plugins: {
+                                            title: {
+                                                display: true,
+                                                text: 'Jumlah Transaksi',
+                                            },
+                                        },
+                                    }}
+                                />
+                                {/* <a href="/" className='btn btn-primary'>Download</a> */}
+                            </div>
+                            <div className='col-md-6'>
+                                <Line data={dataSummary.price} width={"100px"} height={"50px"}
+                                    options={{
+                                        plugins: {
+                                            title: {
+                                                display: true,
+                                                text: 'Harga kesepakatan',
+                                            },
+                                        },
+                                    }}
+                                />
+                                {/* <a href="/" className='btn btn-primary'>Download</a> */}
+                            </div>
+                        </section>
+                        :
+                        <></>
+                    }
+
+                    <section style={{ marginTop: "5rem" }} className='info'>
+                        <h1>Detail Simulasi</h1>
+                        <hr />
+                        <div className="details">
+                            <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
+                            <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
+                            <p>Anggaran Simulasi : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
+                        </div>
+                        {dataGet.goodsPic !== '' ?
+                            <figure className='d-flex flex-column'>
+                                <div className='mx-auto'>
+                                    <Image src={(dataGet.goodsPic) ? imgURL + dataGet.goodsPic : ''} fluid alt={dataGet.goodsType} style={{ height: "360px" }} />
+                                    <p>Illustrasi barang</p>
+                                </div>
+                            </figure>
+                            :
+                            <></>
+                        }
+                    </section>
 
                     <section style={{ marginTop: "5rem" }} className='row'>
                         <h1>Unit Cost dan Unit Value</h1>
@@ -172,26 +260,6 @@ export default function Simulation() {
                                 />
                             ))}
                         </div>
-                    </section>
-
-                    <section style={{ marginTop: "5rem" }} className='info'>
-                        <h1>Detail Simulasi</h1>
-                        <hr />
-                        <div className="details">
-                            <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
-                            <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
-                            <p>Anggaran Simulasi : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
-                        </div>
-                        {dataGet.goodsPic !== '' ?
-                            <figure className='d-flex flex-column'>
-                                <div className='mx-auto'>
-                                    <Image src={(dataGet.goodsPic) ? imgURL + dataGet.goodsPic : ''} fluid alt={dataGet.goodsType} style={{ height: "360px" }} />
-                                    <p>Illustrasi barang</p>
-                                </div>
-                            </figure>
-                            :
-                            <></>
-                        }
                     </section>
 
                     <section style={{ marginTop: "5rem" }} className='mb-5' >

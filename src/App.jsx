@@ -11,7 +11,6 @@ import SimulationCreate from "./pages/admin/Simulation/Create";
 import SimulationEdit from "./pages/admin/Simulation/Edit";
 
 import Session from "./pages/admin/Session/Session";
-import SessionSummary from "./pages/admin/Session/Summary";
 
 import Participants from './pages/participants/Participants';
 
@@ -44,7 +43,6 @@ export default function App() {
 					<Route index element={<Navigate to='/admin' />} />
 					<Route path=":id">
 						<Route index element={<Session />} />
-						<Route path="summary" element={<SessionSummary />} />
 					</Route>
 				</Route>
 				<Route path="participant/*" element={<Participants />} />

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Button, Container, Form, Modal } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { readSession, deleteSession, updateSession, runSession, finishSession } from '../../../adapters/Sessions';
+import { readSession, deleteSession, updateSession, runSession, finishSession, readSessionSummary } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
@@ -13,6 +13,7 @@ export default function Session() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
     const [dataPost, setDataPost] = useState(null);
+    const [dataSummary, setDataSummary] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
@@ -20,6 +21,36 @@ export default function Session() {
 
     useEffect(() => {
         document.title = "Tidak ada Data";
+
+        async function fetchSummary() {
+            const res1 = await readSessionSummary(urlParams.id)
+            if (res1.status === 200) {
+                setDataSummary({
+                    price: {
+                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                        datasets: [{
+                            label: 'Rata-rata Harga kesepakatan',
+                            data: res1.data.phaseSummary.map((phase) => phase.avgTrxPrice),
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        }]
+                    },
+                    trx: {
+                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                        datasets: [{
+                            label: 'Jumlah Transaksi',
+                            data: res1.data.phaseSummary.map((phase) => phase.avgTrxOccurrence),
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        }]
+                    }
+                });
+            } else {
+                setLoading(false)
+                console.log(res1);
+                alert("fetch Summary Fail");
+            }
+        }
 
         async function fetchData() {
             const res = await readSession(urlParams.id)
@@ -30,6 +61,7 @@ export default function Session() {
                     sessionType: res.data.sessionType,
                     timer: res.data.timer
                 })
+                fetchSummary();
                 setLoading(false)
                 document.title = "Ulangan " + res.data.id;
             } else if (res.status === 401) {
@@ -196,7 +228,7 @@ export default function Session() {
                     {(data.timeLastRun === data.timeCreated) ?
                         (isRunning ? <ViewRun /> : <ViewStart />)
                         :
-                        <Summary data={data} />
+                        <Summary data={data} dataSummary={dataSummary} />
                     }
 
                     <Modal show={modalEdit} onHide={showEditSessionForm}>
