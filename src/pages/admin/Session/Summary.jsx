@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
+import { readSessionSummary } from '../../../adapters/Sessions';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { readSimulation } from '../../../adapters/Simulations'
-import UnitInput from '../../../components/UnitInput';
-import LoadingComponent from '../../../components/Loading';
-import Error404 from '../../errors/Error404';
 import { displayPrice } from '../../../Utils';
 import 'chart.js/auto';
 import { Bar } from 'react-chartjs-2';
@@ -14,8 +11,37 @@ export default function Summary(props) {
     const [dataSummary, setDataSummary] = useState(props.dataSummary);
 
     useEffect(() => {
+        async function fetchSummary(sessionId) {
+            const res = await readSessionSummary(sessionId)
+            if (res.status === 200) {
+                setDataSummary({
+                    price: {
+                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                        datasets: [{
+                            label: 'Rata-rata Harga kesepakatan',
+                            data: res.data.phaseSummary.map((phase) => phase.avgTrxPrice),
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        }]
+                    },
+                    trx: {
+                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                        datasets: [{
+                            label: 'Jumlah Transaksi',
+                            data: res.data.phaseSummary.map((phase) => phase.avgTrxOccurrence),
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        }]
+                    }
+                });
+            } else {
+                console.log(res);
+                alert("fetch Summary Fail");
+            }
+        }
+
         setData(props.data)
-        setDataSummary(props.dataSummary)
+        fetchSummary(props.data.id)
     }, [props])
 
     return (
@@ -30,7 +56,7 @@ export default function Summary(props) {
             <section className='row'>
                 <div className="col-md-6 text-center">
                     <p>Rata-rata jumlah transaksi</p>
-                    <h1 className='text-primary fw-bolder'>{Number(data.avgTrxOccurrence)}</h1>
+                    <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
                 </div>
                 <div className="col-md-6 text-center">
                     <p>Rata-rata harga kesepakatan</p>
