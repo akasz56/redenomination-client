@@ -94,6 +94,7 @@ export default function Edit() {
                         <Form.Group controlId='type' className="mb-3">
                             <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
                             <Form.Select
+                                disabled
                                 value={data.simulationType}
                                 onChange={(e) => { setData({ ...data, simulationType: e.target.value }) }}>
                                 <option value="Posted Offer">Posted Offer</option>
@@ -158,7 +159,7 @@ export default function Edit() {
                                     <Form.Label className='required'>Anggaran Simulasi</Form.Label>
                                     <br />
                                     <Form.Control type="number" min={0} step={1}
-                                        defaultValue={data.simulationBudget} required
+                                        defaultValue={data.simulationBudget} required disabled
                                         onChange={(e) => { setData({ ...data, simulationBudget: e.target.value }) }} />
                                 </Form.Group>
                             </div>
