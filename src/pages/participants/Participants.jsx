@@ -9,6 +9,7 @@ import { BuyerIdleScreen, FlashSaleScreen } from './posted-offer/Buyer';
 import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/DoubleAuction';
 import { BuyerIdleDS, Lobby, PostPriceDS, SellerIdleDS } from './decentralized/Decentralized';
 import { capitalize, logout } from '../../Utils';
+import { useCallback } from 'react';
 
 function sortPhases(phases) {
     const phase0 = phases.find((item) => { return item.phaseType === "preRedenomPrice" })
@@ -53,18 +54,21 @@ export default function Participants() {
             break;
     }
 
+    // All Use Effect
     useEffect(() => {
         document.title = phaseData.simulationType;
 
+        // Message from Server Handler
         socket.on("serverMessage", res => {
             if (res.status === 401) {
                 window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
                 logout(() => { window.location.reload("/"); });
-            } else {
+            } else if (res.status !== 200) {
                 console.log(res)
             }
         })
 
+        // Ready Count Handler
         if (stage === 'ready') {
             function readyCountHandler(res) {
                 if (res.numberOfReadyPlayer === res.totalPlayer) {
@@ -77,6 +81,7 @@ export default function Participants() {
             socket.on("readyCount", readyCountHandler);
         }
 
+        // Profit Calculator
         else if (stage === 'otwComplete') {
             const myTotalProfit = profits.reduce((partialSum, a) => partialSum + a, 0);
             function collectedProfitHandler(res) {
@@ -92,6 +97,7 @@ export default function Participants() {
             socket.on("collectedProfit", collectedProfitHandler);
         }
 
+        // Check if all Seller has inputted (Posted Offer)
         else if (stage === 'postPrice' && phaseData.simulationType === "Posted Offer") {
             function postedOfferListHandler(res) {
                 setData({
@@ -111,6 +117,7 @@ export default function Participants() {
             socket.on("postedOfferList", postedOfferListHandler);
         }
 
+        // Check if all Seller has inputted (Decentralized)
         else if (stage === 'postPriceDS' && phaseData.simulationType === "Decentralized") {
             function decentralizedListHandler(res) {
                 setData({
@@ -130,6 +137,7 @@ export default function Participants() {
             socket.on("ds:isDone", isDonePOHandler);
         }
 
+        // Timer
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
         return () => {
             clearInterval(interval);
@@ -137,7 +145,7 @@ export default function Participants() {
         }
     });
 
-    function phaseContinue(profit = 0) {
+    const phaseContinue = useCallback((profit = 0) => {
         setTimer(minutes * 60);
         switch (phaseData.currentPhase.phaseType) {
             case "preRedenomPrice":
@@ -163,7 +171,8 @@ export default function Participants() {
             default:
                 break;
         }
-    }
+    }, [firstStage, minutes, phaseData, phases]);
+
 
     if (stage === 'ready') {
         return <Ready data={{ ...phaseData, ...data }} />

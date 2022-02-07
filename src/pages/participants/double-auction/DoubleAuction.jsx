@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Button, Container, Form, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import { capitalize, displayPrice } from '../../../Utils'
 import Timer from '../../../components/Timer';
+import { useCallback } from 'react';
 
 export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     const [resData, setResData] = useState({ isDone: false, phaseId: false });
@@ -12,21 +13,26 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
     const [matched, setMatched] = useState(false);
     const [profit, setProfit] = useState(0);
+    const currentPhase = useMemo(() => ({ ...data.currentPhase }), [data.currentPhase]);
 
+    // tiap saat
     useEffect(() => {
-        socket.emit("da:isDone", { phaseId: data.currentPhase.id });
+        socket.emit("da:isDone", { phaseId: currentPhase.id });
         socket.on("da:isDone", res => {
-            setResData(res)
+            console.log(res)
+            if (res.phaseId === currentPhase.id) {
+                setResData(res)
+            }
         })
 
         if (timer <= 0) {
-            setResData({ isDone: true, phaseId: data.currentPhase.id })
+            setResData({ isDone: true, phaseId: currentPhase.id })
         }
 
         socket.on("doubleAuctionList", res => {
             setSocketData({
-                minPrice: displayPrice(res.minPrice, data.currentPhase.phaseType),
-                maxPrice: displayPrice(res.maxPrice, data.currentPhase.phaseType)
+                minPrice: displayPrice(res.minPrice, currentPhase.phaseType),
+                maxPrice: displayPrice(res.maxPrice, currentPhase.phaseType)
             });
         });
 
@@ -34,33 +40,44 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
-    })
+    }, [currentPhase, timer])
 
+    // sekali listen
     useEffect(() => {
-        if (resData.isDone && resData.phaseId === data.currentPhase.id) {
+        socket.on("bidMatch", res => {
+            console.log(res)
+            if (res.match) {
+                setMatched(true)
+                setProfit(res.transaction.price - data.unitCost)
+            }
+        });
+
+        return () => { socket.off("bidMatch") }
+    }, [data.unitCost])
+
+    const cleanUp = useCallback(() => {
+        setResData({ isDone: false, phaseId: false });
+        phaseContinue(profit);
+        setInputPrice(0);
+        setSocketData({ minPrice: "-", maxPrice: "-" });
+        setMatched(false);
+        setProfit(0);
+    }, [phaseContinue, profit]);
+
+    // tiap resdata berubah
+    useEffect(() => {
+        console.log(resData)
+        if (resData.isDone && resData.phaseId === currentPhase.id) {
             console.log("pass1");
-            setResData({ isDone: false, phaseId: false });
-            phaseContinue(profit);
-            setInputPrice(0);
-            setSocketData({ minPrice: "-", maxPrice: "-" });
-            setMatched(false);
-            setProfit(0);
+            cleanUp()
         }
-    }, [resData, data.currentPhase.id, phaseContinue, profit]);
+    }, [resData, cleanUp, currentPhase]);
 
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postSeller", {
             sellerBargain: Number(inputPrice),
-            phaseId: data.currentPhase.id
-        });
-
-        socket.on("bidMatch", res => {
-            if (res.match) {
-                setMatched(true)
-                setProfit(res.transaction.price - data.unitCost)
-                socket.off("bidMatch")
-            }
+            phaseId: currentPhase.id
         });
     }
 
@@ -74,7 +91,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                 </div>
                 <div className="col-md-4">
                     <p><span className='fw-bolder'>Unit Cost</span> anda</p>
-                    <h1 className='text-primary fw-bolder'>{displayPrice(data.unitCost, data.currentPhase.phaseType)}</h1>
+                    <h1 className='text-primary fw-bolder'>{displayPrice(data.unitCost, currentPhase.phaseType)}</h1>
                 </div>
                 <div className="col-md-4">
                     <p>Bid</p>
@@ -89,7 +106,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                 <Form onSubmit={submitHandler} className='mb-5'>
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda ajukan</Form.Label>
-                        {(data.currentPhase.phaseType !== "postRedenomPrice") ?
+                        {(currentPhase.phaseType !== "postRedenomPrice") ?
                             <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
                                 onChange={e => { setInputPrice(e.target.value) }}
                                 min={data.unitCost}
@@ -126,21 +143,26 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
     const [matched, setMatched] = useState(false);
     const [profit, setProfit] = useState(0);
+    const currentPhase = useMemo(() => ({ ...data.currentPhase }), [data.currentPhase]);
 
+    // tiap saat
     useEffect(() => {
-        socket.emit("da:isDone", { phaseId: data.currentPhase.id });
+        socket.emit("da:isDone", { phaseId: currentPhase.id });
         socket.on("da:isDone", res => {
-            setResData(res)
+            console.log(res)
+            if (res.phaseId === currentPhase.id) {
+                setResData(res)
+            }
         })
 
         if (timer <= 0) {
-            setResData({ isDone: true, phaseId: data.currentPhase.id })
+            setResData({ isDone: true, phaseId: currentPhase.id })
         }
 
         socket.on("doubleAuctionList", res => {
             setSocketData({
-                minPrice: displayPrice(res.minPrice, data.currentPhase.phaseType),
-                maxPrice: displayPrice(res.maxPrice, data.currentPhase.phaseType)
+                minPrice: displayPrice(res.minPrice, currentPhase.phaseType),
+                maxPrice: displayPrice(res.maxPrice, currentPhase.phaseType)
             });
         });
 
@@ -148,33 +170,44 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
-    })
+    }, [currentPhase, timer])
 
+    // sekali listen
     useEffect(() => {
-        if (resData.isDone && resData.phaseId === data.currentPhase.id) {
+        socket.on("bidMatch", res => {
+            console.log(res)
+            if (res.match) {
+                setMatched(true)
+                setProfit(data.unitValue - res.transaction.price)
+            }
+        });
+
+        return () => { socket.off("bidMatch") }
+    }, [data.unitValue])
+
+    const cleanUp = useCallback(() => {
+        setResData({ isDone: false, phaseId: false });
+        phaseContinue(profit);
+        setInputPrice(0);
+        setSocketData({ minPrice: "-", maxPrice: "-" });
+        setMatched(false);
+        setProfit(0);
+    }, [phaseContinue, profit]);
+
+    // tiap resdata berubah
+    useEffect(() => {
+        console.log(resData)
+        if (resData.isDone && resData.phaseId === currentPhase.id) {
             console.log("pass1");
-            setResData({ isDone: false, phaseId: false });
-            phaseContinue(profit);
-            setInputPrice(0);
-            setSocketData({ minPrice: "-", maxPrice: "-" });
-            setMatched(false);
-            setProfit(0);
+            cleanUp()
         }
-    }, [resData]);
+    }, [resData, cleanUp, currentPhase]);
 
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postBuyer", {
             buyerBargain: Number(inputPrice),
-            phaseId: data.currentPhase.id
-        });
-
-        socket.on("bidMatch", res => {
-            if (res.match) {
-                setMatched(true)
-                setProfit(data.unitValue - res.transaction.price)
-                socket.off("bidMatch")
-            }
+            phaseId: currentPhase.id
         });
     }
 
@@ -188,7 +221,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                 </div>
                 <div className="col-md-4">
                     <p><span className='fw-bolder'>Unit Value</span> anda</p>
-                    <h1 className='text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+                    <h1 className='text-primary fw-bolder'>{displayPrice(data.unitValue, currentPhase.phaseType)}</h1>
                 </div>
                 <div className="col-md-4">
                     <p>Bid</p>
@@ -203,7 +236,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                 <Form onSubmit={submitHandler} className='mb-5'>
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda ajukan</Form.Label>
-                        {(data.currentPhase.phaseType !== "postRedenomPrice") ?
+                        {(currentPhase.phaseType !== "postRedenomPrice") ?
                             <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
                                 onChange={e => { setInputPrice(e.target.value) }}
                                 max={data.unitValue}
