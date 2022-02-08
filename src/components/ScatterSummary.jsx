@@ -39,7 +39,7 @@ export default function ScatterSummary({ data, labels, nameArr }) {
                         backgroundColor: getRandomColor(),
                     }],
                 }} />
-                <CSVLink {...csvArr[index]}>Download {labels[index]}</CSVLink>
+                <CSVLink {...csvArr[index]}>Download CSV</CSVLink>
             </div>
         )
     }
