@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { readSessionSummary } from '../../../adapters/Sessions';
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { displayPrice, getRandomColor } from '../../../Utils';
-import 'chart.js/auto';
-import { Bar, Scatter } from 'react-chartjs-2';
+import { capitalize, displayPrice, getRandomColor } from '../../../Utils';
+import ScatterSummary from '../../../components/ScatterSummary';
 
 export default function Summary(props) {
     const [data, setData] = useState(props.data);
@@ -37,13 +38,13 @@ export default function Summary(props) {
                     bargainList: res.data.phaseSummary.map((phase) => {
                         return phase.bargainList.map((bargain, idx) => ({
                             x: idx + 1,
-                            y: bargain.price,
+                            y: Number(bargain.price),
                         }))
                     }),
                     trxList: res.data.phaseSummary.map((phase) => {
                         return phase.transactionList.map((trx, idx) => ({
                             x: idx + 1,
-                            y: trx.price,
+                            y: Number(trx.price),
                         }))
                     }),
                 });
@@ -54,12 +55,16 @@ export default function Summary(props) {
         }
 
         setData(props.data)
-        fetchSummary(props.data.id)
+        if (props.data.id) {
+            fetchSummary(props.data.id)
+        }
     }, [props])
 
-    useEffect(() => {
-        console.log(data)
-    }, [data])
+    const nameArr = useMemo(() => [
+        dayjs(data.timeLastRun).locale("id").format("dddd, D MMM YYYY"),
+        capitalize(data.simulation.simulationType),
+        data.sessionType
+    ], [data])
 
     return (
         <>
@@ -94,47 +99,11 @@ export default function Summary(props) {
 
                     {data.simulation.simulationType === "double auction" ?
                         <section className='mt-5'>
-                            <Scatter data={{
-                                datasets: [
-                                    {
-                                        label: 'Pre-Redenominasi',
-                                        data: dataSummary.bargainList[0],
-                                        backgroundColor: getRandomColor(),
-                                    },
-                                    {
-                                        label: 'Transisi Redenominasi',
-                                        data: dataSummary.bargainList[1],
-                                        backgroundColor: getRandomColor(),
-                                    },
-                                    {
-                                        label: 'Pasca Transisi Redenominasi',
-                                        data: dataSummary.bargainList[2],
-                                        backgroundColor: getRandomColor(),
-                                    },
-                                ],
-                            }} />
+                            <ScatterSummary data={dataSummary.bargainList} labels={dataSummary.price.labels} nameArr={nameArr} />
                         </section>
                         :
                         <section className='mt-5'>
-                            <Scatter data={{
-                                datasets: [
-                                    {
-                                        label: 'Pre-Redenominasi',
-                                        data: dataSummary.trxList[0],
-                                        backgroundColor: getRandomColor(),
-                                    },
-                                    {
-                                        label: 'Transisi Redenominasi',
-                                        data: dataSummary.trxList[1],
-                                        backgroundColor: getRandomColor(),
-                                    },
-                                    {
-                                        label: 'Pasca Transisi Redenominasi',
-                                        data: dataSummary.trxList[2],
-                                        backgroundColor: getRandomColor(),
-                                    },
-                                ],
-                            }} />
+                            <ScatterSummary data={dataSummary.trxList} labels={dataSummary.price.labels} nameArr={nameArr} />
                         </section>
                     }
 
