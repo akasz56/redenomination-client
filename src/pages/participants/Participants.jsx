@@ -54,11 +54,13 @@ export default function Participants() {
             break;
     }
 
-    // All Use Effect
+    // Tab Title
     useEffect(() => {
         document.title = phaseData.simulationType;
+    }, [phaseData]);
 
-        // Message from Server Handler
+    // Message from Server Handler
+    useEffect(() => {
         socket.on("serverMessage", res => {
             if (res.status === 401) {
                 window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
@@ -68,27 +70,42 @@ export default function Participants() {
             }
         })
 
+        return () => {
+            console.log("returned")
+            socket.off("serverMessage")
+        }
+    }, []);
+
+    useEffect(() => {
         // Ready Count Handler
         if (stage === 'ready') {
             function readyCountHandler(res) {
                 if (res.numberOfReadyPlayer === res.totalPlayer) {
-                    setData({ ...data, participantNumber: res.totalPlayer })
+                    setData((prev) => ({ ...prev, participantNumber: res.totalPlayer }))
                     socket.emit("startPhase", { "phaseId": phases[0].id })
                     setTimer(minutes * 60);
                     setStage(firstStage);
+                    socket.off("readyCount");
                 }
             }
             socket.on("readyCount", readyCountHandler);
         }
+    }, [firstStage, minutes, phases, stage]);
 
-        // Profit Calculator
-        else if (stage === 'otwComplete') {
-            const myTotalProfit = profits.reduce((partialSum, a) => partialSum + a, 0);
+    const calcProfit = (myProfit, profitCollection, budget) => {
+        const secondaryReward = budget - (5000 * profitCollection.length);
+        const totalProfit = profitCollection.reduce((prev, profit) => prev + profit.value, 0);
+        return ((myProfit / totalProfit) * secondaryReward) + 5000;
+    }
+
+    // Profit Handler
+    useEffect(() => {
+        if (stage === 'otwComplete') {
+            const myTotalProfit = profits.reduce((sum, value) => sum + value, 0);
             function collectedProfitHandler(res) {
                 if (res.profitCollection.length === data.participantNumber) {
-                    const allProfit = res.profitCollection.reduce((prev, profit) => prev + profit.value, 0)
-                    const myReward = 5000 + Math.round((myTotalProfit / allProfit) * res.simulationBudget)
-                    setData({ ...data, rewards: myReward })
+                    const myReward = calcProfit(myTotalProfit, res.profitCollection, res.simulationBudget);
+                    setData((prev) => ({ ...prev, rewards: myReward }))
                     socket.off("collectedProfit")
                     setStage("complete");
                 }
@@ -96,56 +113,67 @@ export default function Participants() {
             socket.emit("collectProfit", { "myProfit": myTotalProfit, "phaseId": phaseData.currentPhase.id })
             socket.on("collectedProfit", collectedProfitHandler);
         }
+    }, [data.participantNumber, phaseData.currentPhase.id, profits, stage]);
 
+    useEffect(() => {
         // Check if all Seller has inputted (Posted Offer)
-        else if (stage === 'postPrice' && phaseData.simulationType === "Posted Offer") {
+        if (stage === 'postPrice') {
             function postedOfferListHandler(res) {
-                setData({
-                    ...data, seller: res.map((item, i) => {
-                        return {
-                            sellerId: item.sellerId,
-                            role: "Penjual " + (i + 1),
-                            price: item.price,
-                            status: (item.isSold) ? "done" : "",
-                            postedOfferId: item.id
-                        }
-                    })
-                });
+                setData((prev) => ({
+                    ...prev,
+                    seller: res.map((item, i) => ({
+                        sellerId: item.sellerId,
+                        role: "Penjual " + (i + 1),
+                        price: item.price,
+                        status: (item.isSold) ? "done" : "",
+                        postedOfferId: item.id
+                    }))
+                }));
             }
-            function isDonePOHandler(res) { if (res) { setStage("flashSale"); } }
+            function isDonePOHandler(res) {
+                if (res) {
+                    socket.off("po:isDone")
+                    setStage("flashSale");
+                }
+            }
             socket.on("po:isDone", isDonePOHandler);
             socket.on("postedOfferList", postedOfferListHandler);
         }
 
         // Check if all Seller has inputted (Decentralized)
-        else if (stage === 'postPriceDS' && phaseData.simulationType === "Decentralized") {
+        else if (stage === 'postPriceDS') {
             function decentralizedListHandler(res) {
-                setData({
-                    ...data, seller: res.map((item, i) => {
-                        return {
-                            sellerId: item.sellerId,
-                            role: "Penjual " + (i + 1),
-                            price: item.price,
-                            isSold: item.isSold,
-                            decentralizedId: item.id
-                        }
-                    })
-                });
+                setData((prev) => ({
+                    ...prev,
+                    seller: res.map((item, i) => ({
+                        sellerId: item.sellerId,
+                        role: "Penjual " + (i + 1),
+                        price: item.price,
+                        isSold: item.isSold,
+                        decentralizedId: item.id
+                    }))
+                }));
             }
-            function isDonePOHandler(res) { if (res) { setStage("listShops"); } }
+            function isDoneDSHandler(res) {
+                if (res) {
+                    socket.off("ds:isDone")
+                    setStage("listShops");
+                }
+            }
+            socket.on("ds:isDone", isDoneDSHandler);
             socket.on("decentralizedList", decentralizedListHandler);
-            socket.on("ds:isDone", isDonePOHandler);
         }
+    }, [stage])
 
-        // Timer
+    // Timer
+    useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
         return () => {
             clearInterval(interval);
-            socket.off("serverMessage")
         }
     });
 
-    const phaseContinue = useCallback((profit = 0) => {
+    const phaseContinue = useCallback((profit) => {
         setTimer(minutes * 60);
         switch (phaseData.currentPhase.phaseType) {
             case "preRedenomPrice":

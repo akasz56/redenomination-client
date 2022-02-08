@@ -19,15 +19,10 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     useEffect(() => {
         socket.emit("da:isDone", { phaseId: currentPhase.id });
         socket.on("da:isDone", res => {
-            console.log(res)
             if (res.phaseId === currentPhase.id) {
                 setResData(res)
             }
         })
-
-        if (timer <= 0) {
-            setResData({ isDone: true, phaseId: currentPhase.id })
-        }
 
         socket.on("doubleAuctionList", res => {
             setSocketData({
@@ -40,35 +35,38 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
+    })
+
+    // timer
+    useEffect(() => {
+        if (timer <= 0) {
+            setResData({ isDone: true, phaseId: currentPhase.id })
+        }
     }, [currentPhase, timer])
 
     // sekali listen
     useEffect(() => {
         socket.on("bidMatch", res => {
-            console.log(res)
             if (res.match) {
                 setMatched(true)
                 setProfit(res.transaction.price - data.unitCost)
+                socket.off("bidMatch")
             }
         });
-
-        return () => { socket.off("bidMatch") }
     }, [data.unitCost])
 
     const cleanUp = useCallback(() => {
         setResData({ isDone: false, phaseId: false });
-        phaseContinue(profit);
         setInputPrice(0);
         setSocketData({ minPrice: "-", maxPrice: "-" });
         setMatched(false);
-        setProfit(0);
-    }, [phaseContinue, profit]);
+        console.log(profit);
+        phaseContinue(profit);
+    }, [profit]);
 
     // tiap resdata berubah
     useEffect(() => {
-        console.log(resData)
         if (resData.isDone && resData.phaseId === currentPhase.id) {
-            console.log("pass1");
             cleanUp()
         }
     }, [resData, cleanUp, currentPhase]);
@@ -149,15 +147,10 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     useEffect(() => {
         socket.emit("da:isDone", { phaseId: currentPhase.id });
         socket.on("da:isDone", res => {
-            console.log(res)
             if (res.phaseId === currentPhase.id) {
                 setResData(res)
             }
         })
-
-        if (timer <= 0) {
-            setResData({ isDone: true, phaseId: currentPhase.id })
-        }
 
         socket.on("doubleAuctionList", res => {
             setSocketData({
@@ -170,35 +163,38 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
+    })
+
+    // timer
+    useEffect(() => {
+        if (timer <= 0) {
+            setResData({ isDone: true, phaseId: currentPhase.id })
+        }
     }, [currentPhase, timer])
 
     // sekali listen
     useEffect(() => {
         socket.on("bidMatch", res => {
-            console.log(res)
             if (res.match) {
                 setMatched(true)
                 setProfit(data.unitValue - res.transaction.price)
+                socket.off("bidMatch")
             }
         });
-
-        return () => { socket.off("bidMatch") }
     }, [data.unitValue])
 
     const cleanUp = useCallback(() => {
         setResData({ isDone: false, phaseId: false });
-        phaseContinue(profit);
         setInputPrice(0);
         setSocketData({ minPrice: "-", maxPrice: "-" });
         setMatched(false);
-        setProfit(0);
-    }, [phaseContinue, profit]);
+        console.log(profit);
+        phaseContinue(profit);
+    }, [profit]);
 
     // tiap resdata berubah
     useEffect(() => {
-        console.log(resData)
         if (resData.isDone && resData.phaseId === currentPhase.id) {
-            console.log("pass1");
             cleanUp()
         }
     }, [resData, cleanUp, currentPhase]);
