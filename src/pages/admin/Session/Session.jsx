@@ -8,6 +8,7 @@ import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
 import { capitalize } from '../../../Utils';
 import Summary from './Summary';
+import UnitPlayer from '../../../components/UnitPlayer';
 
 export default function Session() {
     const [loading, setLoading] = useState(true);
@@ -25,6 +26,7 @@ export default function Session() {
             const res = await readSession(urlParams.id)
             if (res.status === 200) {
                 setData(res.data);
+                console.log(res.data);
                 setIsRunning(res.data.isRunning);
                 setDataPost({
                     sessionType: res.data.sessionType,
@@ -156,16 +158,50 @@ export default function Session() {
     }
 
     function ViewRun() {
+        const [participant, setParticipant] = useState({
+            sellers: data.simulation.sellers,
+            buyers: data.simulation.buyers
+        });
+
         return (
-            <section>
-                <hr />
-                <div className='text-center mb-3'>
-                    <p>Token Partisipan:</p>
-                    <p className='fw-bold text-primary fs-3'>{data.simulation.token}</p>
-                </div>
-                <Link to='#' className="btn btn-danger w-100 p-4" onClick={completeSession} >Hentikan Ulangan</Link>
-                <hr />
-            </section>
+            <>
+                <section>
+                    <hr />
+                    <div className='text-center mb-3'>
+                        <p>Token Partisipan:</p>
+                        <p className='fw-bold text-primary fs-3'>{data.simulation.token}</p>
+                    </div>
+                    <Link to='#' className="btn btn-danger w-100 p-4" onClick={completeSession} >Hentikan Ulangan</Link>
+                    <hr />
+                </section>
+
+                <section style={{ marginTop: "5rem" }} className='row'>
+                    <h1>Peserta</h1>
+                    <hr />
+                    <div className="col-md-6">
+                        <p className="fw-bold text-center">Daftar Penjual</p>
+                        {participant.sellers.map((item, i) => (
+                            <UnitPlayer
+                                key={i + 1}
+                                id={i + 1}
+                                role="penjual"
+                                item={item}
+                            />
+                        ))}
+                    </div>
+                    <div className="col-md-6">
+                        <p className="fw-bold text-center">Daftar Pembeli</p>
+                        {participant.buyers.map((item, i) => (
+                            <UnitPlayer
+                                key={i + 1}
+                                id={i + 1}
+                                role="pembeli"
+                                item={item}
+                            />
+                        ))}
+                    </div>
+                </section>
+            </>
         )
     }
 
