@@ -82,7 +82,7 @@ export function ListShops({ data, timer, setIsInside, sellers }) {
                 {sellers.map((item, i) => (
                     <Card
                         key={i}
-                        variant={(item.isSold) ? "done" : "decentralized"}
+                        variant={(item.isSold) ? "done" : (myProfit > 0 ? "wait" : "decentralized")}
                         className="mb-3"
                         role={item.role}
                         onBtnClick={(e) => { clickHandler(item) }}
