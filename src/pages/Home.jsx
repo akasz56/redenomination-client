@@ -4,6 +4,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import socket from '../adapters/SocketIO';
 import LoadingComponent from '../components/Loading';
 import './Home.css';
+import { saveAuth } from '../Utils';
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
@@ -24,11 +25,7 @@ export default function Home() {
         socket.on("serverMessage", res => {
             if (res.status === 200) {
                 if (res.data.isSessionRunning) {
-                    localStorage.setItem('auth', JSON.stringify({
-                        login: true,
-                        role: "participant",
-                        id: res.data.detail.id,
-                    }));
+                    saveAuth("participant", res.data.detail.id)
                     navigate('/participant', { state: res.data });
                     socket.off("serverMessage");
                 } else {

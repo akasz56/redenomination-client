@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
 import { connectAsAdmin } from "../adapters/Authentication";
 import LoadingComponent from '../components/Loading';
-import { myRole } from '../Utils';
+import { myRole, saveAuth } from '../Utils';
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
@@ -23,11 +23,7 @@ export default function Login() {
         setLoading(true)
         const res = await connectAsAdmin(password);
         if (res.status === 200) {
-            localStorage.setItem('auth', JSON.stringify({
-                login: true,
-                role: "admin",
-                token: "Bearer " + res.data.jwtToken
-            }));
+            saveAuth('admin', "Bearer " + res.data.jwtToken)
             window.location.href = "/admin";
         } else if (res.status === 401) {
             setLoading(false)

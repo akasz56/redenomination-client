@@ -16,6 +16,35 @@ export function myToken() {
     if (jwt) { return jwt.token; }
 }
 
+export function saveAuth(role, idtoken) {
+    if (localStorage.getItem("auth") === null) {
+        switch (role) {
+            case "participant":
+                localStorage.setItem('auth', JSON.stringify({
+                    login: true,
+                    role: role,
+                    id: idtoken,
+                }));
+                break;
+            case "admin":
+                localStorage.setItem('auth', JSON.stringify({
+                    login: true,
+                    role: role,
+                    token: idtoken,
+                }));
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
+export function getParticipantId() {
+    let savedAuth = JSON.parse(localStorage.getItem("auth"));
+    return savedAuth.id;
+}
+
 export function logout(next) {
     localStorage.removeItem('auth');
     next()

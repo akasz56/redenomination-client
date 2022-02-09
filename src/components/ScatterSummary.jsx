@@ -27,7 +27,7 @@ export default function ScatterSummary({ data, labels, nameArr }) {
             headers: headers,
             filename: fileName + "_" + labels[2] + '.csv'
         }
-    ]), [data, labels, headers])
+    ]), [data, labels, fileName, headers])
 
     function ScatterElement({ index }) {
         return (

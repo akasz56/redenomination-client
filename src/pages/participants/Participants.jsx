@@ -93,9 +93,8 @@ export default function Participants() {
     }, [firstStage, minutes, phases, stage]);
 
     const calcProfit = (myProfit, profitCollection, budget) => {
-        const secondaryReward = budget - (5000 * profitCollection.length);
         const totalProfit = profitCollection.reduce((prev, profit) => prev + profit.value, 0);
-        return ((myProfit / totalProfit) * secondaryReward) + 5000;
+        return ((myProfit / totalProfit) * budget) + 5000;
     }
 
     // Profit Handler
@@ -113,7 +112,7 @@ export default function Participants() {
             socket.emit("collectProfit", { "myProfit": myTotalProfit, "phaseId": phaseData.currentPhase.id })
             socket.on("collectedProfit", collectedProfitHandler);
         }
-    }, [data.participantNumber, phaseData.currentPhase.id, profits, stage]);
+    });
 
     useEffect(() => {
         // Check if all Seller has inputted (Posted Offer)
