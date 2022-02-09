@@ -61,10 +61,10 @@ export function Lobby({ data, timer, phaseContinue }) {
     })
 
     if (isInside) { return <EnterShop data={data} timer={timer} setIsInside={setIsInside} seller={seller.find((item) => item.decentralizedId === isInside)} setMyProfit={setMyProfit} /> }
-    else { return <ListShops data={data} timer={timer} setIsInside={setIsInside} sellers={seller} /> }
+    else { return <ListShops data={data} timer={timer} setIsInside={setIsInside} sellers={seller} myProfit={myProfit} /> }
 }
 
-export function ListShops({ data, timer, setIsInside, sellers }) {
+export function ListShops({ data, timer, setIsInside, sellers, myProfit }) {
 
     useEffect(() => {
         document.title = "Decentralized"
