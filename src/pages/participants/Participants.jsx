@@ -71,13 +71,12 @@ export default function Participants() {
         })
 
         return () => {
-            console.log("returned")
             socket.off("serverMessage")
         }
     }, []);
 
+    // Ready Count Handler
     useEffect(() => {
-        // Ready Count Handler
         if (stage === 'ready') {
             function readyCountHandler(res) {
                 if (res.numberOfReadyPlayer === res.totalPlayer) {
@@ -92,22 +91,14 @@ export default function Participants() {
         }
     }, [firstStage, minutes, phases, stage]);
 
-    const calcProfit = (myProfit, profitCollection, budget) => {
-        const totalProfit = profitCollection.reduce((prev, profit) => prev + profit.value, 0);
-        return ((myProfit / totalProfit) * budget) + 5000;
-    }
-
     // Profit Handler
     useEffect(() => {
         if (stage === 'otwComplete') {
             const myTotalProfit = profits.reduce((sum, value) => sum + value, 0);
             function collectedProfitHandler(res) {
-                if (res.profitCollection.length === data.participantNumber) {
-                    const myReward = calcProfit(myTotalProfit, res.profitCollection, res.simulationBudget);
-                    setData((prev) => ({ ...prev, rewards: myReward }))
-                    socket.off("collectedProfit")
-                    setStage("complete");
-                }
+                setData((prev) => ({ ...prev, rewards: res.myCollectedProfit }))
+                socket.off("collectedProfit")
+                setStage("complete");
             }
             socket.emit("collectProfit", { "myProfit": myTotalProfit, "phaseId": phaseData.currentPhase.id })
             socket.on("collectedProfit", collectedProfitHandler);
@@ -167,6 +158,7 @@ export default function Participants() {
     // Timer
     useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+
         return () => {
             clearInterval(interval);
         }

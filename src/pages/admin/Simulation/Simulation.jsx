@@ -199,7 +199,6 @@ export default function Simulation() {
                                         },
                                     }}
                                 />
-                                {/* <a href="/" className='btn btn-primary'>Download</a> */}
                             </div>
                             <div className='col-md-6'>
                                 <Line data={dataSummary.price} width={"100px"} height={"50px"}
@@ -212,7 +211,6 @@ export default function Simulation() {
                                         },
                                     }}
                                 />
-                                {/* <a href="/" className='btn btn-primary'>Download</a> */}
                             </div>
                         </section>
                         :
