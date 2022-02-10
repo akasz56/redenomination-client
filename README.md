@@ -3,4 +3,4 @@ pass: IpB_b3rc4nd4
 
 # Known Issues
 
-- profit suka ngilang anying
+- tinggal collect calculate profit gannnnnnnnn

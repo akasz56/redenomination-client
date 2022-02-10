@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useReducer } from 'react';
+import { useEffect, useState, useReducer } from 'react';
 import { Button, Container, Form, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
@@ -23,6 +23,9 @@ const initialState = {
 
 function buyerReducer(prevState, action) {
     switch (action.type) {
+        case RED_ACT.BID_MATCH:
+            return { ...prevState, matched: true, profit: prevState.unitValue - action.payload };
+
         case RED_ACT.PHASE_DONE:
             return {
                 ...initialState,
@@ -32,13 +35,10 @@ function buyerReducer(prevState, action) {
 
         case RED_ACT.BREAK:
             return {
-                ...initialState,
+                ...prevState,
                 unitValue: prevState.unitValue,
                 waitBreak: true
             };
-
-        case RED_ACT.BID_MATCH:
-            return { ...prevState, matched: true, profit: prevState.unitValue - action.payload };
 
         case RED_ACT.UPDATE_SOCKET:
             return { ...prevState, socketData: action.payload };
@@ -51,22 +51,22 @@ function buyerReducer(prevState, action) {
 
 function sellerReducer(prevState, action) {
     switch (action.type) {
+        case RED_ACT.BID_MATCH:
+            return { ...prevState, matched: true, profit: action.payload - prevState.unitCost };
+
         case RED_ACT.PHASE_DONE:
             return {
                 ...initialState,
-                unitValue: prevState.unitValue,
+                unitCost: prevState.unitCost,
                 waitBreak: false
             };
 
         case RED_ACT.BREAK:
             return {
-                ...initialState,
-                unitValue: prevState.unitValue,
+                ...prevState,
+                unitCost: prevState.unitCost,
                 waitBreak: true
             };
-
-        case RED_ACT.BID_MATCH:
-            return { ...prevState, matched: true, profit: action.payload - prevState.unitCost };
 
         case RED_ACT.UPDATE_SOCKET:
             return { ...prevState, socketData: action.payload };
@@ -87,11 +87,8 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
 
     // tiap saat
     useEffect(() => {
-        socket.emit("da:isDone", { phaseId: data.currentPhase.id });
         socket.once("da:isDone", res => {
             if (res.isDone && res.phaseId === data.currentPhase.id) {
-                console.log("from res is done")
-                phaseContinue(currentState.profit)
                 dispatch({ type: RED_ACT.BREAK })
             }
         })
@@ -115,7 +112,6 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     // timer
     useEffect(() => {
         if (timer <= 0) {
-            phaseContinue(currentState.profit)
             dispatch({ type: RED_ACT.BREAK })
         }
     }, [timer])
@@ -124,11 +120,12 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     useEffect(() => {
         if (currentState.waitBreak) {
             const breakTimeout = setTimeout(() => {
+                phaseContinue(currentState.profit)
                 dispatch({ type: RED_ACT.PHASE_DONE })
                 clearTimeout(breakTimeout);
             }, 3000);
         }
-    })
+    }, [currentState.waitBreak])
 
     function submitHandler(e) {
         e.preventDefault();
@@ -137,9 +134,8 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
             phaseId: data.currentPhase.id
         });
 
-        socket.on("bidMatch", res => {
+        socket.once("bidMatch", res => {
             dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
-            socket.off("bidMatch")
         });
     }
 
@@ -211,11 +207,8 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
 
     // tiap saat
     useEffect(() => {
-        socket.emit("da:isDone", { phaseId: data.currentPhase.id });
         socket.once("da:isDone", res => {
             if (res.isDone && res.phaseId === data.currentPhase.id) {
-                console.log("from res is done")
-                phaseContinue(currentState.profit)
                 dispatch({ type: RED_ACT.BREAK })
             }
         })
@@ -239,7 +232,6 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     // timer
     useEffect(() => {
         if (timer <= 0) {
-            phaseContinue(currentState.profit)
             dispatch({ type: RED_ACT.BREAK })
         }
     }, [timer])
@@ -248,11 +240,12 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     useEffect(() => {
         if (currentState.waitBreak) {
             const breakTimeout = setTimeout(() => {
+                phaseContinue(currentState.profit)
                 dispatch({ type: RED_ACT.PHASE_DONE })
                 clearTimeout(breakTimeout);
             }, 3000);
         }
-    })
+    }, [currentState.waitBreak])
 
     function submitHandler(e) {
         e.preventDefault();
@@ -261,9 +254,8 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
             phaseId: data.currentPhase.id
         });
 
-        socket.on("bidMatch", res => {
+        socket.once("bidMatch", res => {
             dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
-            socket.off("bidMatch")
         });
     }
 

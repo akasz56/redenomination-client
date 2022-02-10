@@ -63,7 +63,7 @@ export default function Participants() {
     useEffect(() => {
         socket.on("serverMessage", res => {
             if (res.status === 401) {
-                window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
+                // window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
                 logout(() => { window.location.reload("/"); });
             } else if (res.status !== 200) {
                 console.log(res)
@@ -95,15 +95,17 @@ export default function Participants() {
     useEffect(() => {
         if (stage === 'otwComplete') {
             const myTotalProfit = profits.reduce((sum, value) => sum + value, 0);
-            function collectedProfitHandler(res) {
-                setData((prev) => ({ ...prev, rewards: res.myCollectedProfit }))
-                socket.off("collectedProfit")
-                setStage("complete");
-            }
-            socket.emit("collectProfit", { "myProfit": myTotalProfit, "phaseId": phaseData.currentPhase.id })
-            socket.on("collectedProfit", collectedProfitHandler);
+            // function collectedProfitHandler(res) {
+            //     setData((prev) => ({ ...prev, rewards: res.myCollectedProfit }))
+            //     socket.off("collectedProfit")
+            //     setStage("complete");
+            // }
+            // socket.emit("collectProfit", { "myProfit": myTotalProfit, "phaseId": phaseData.currentPhase.id })
+            // socket.on("collectedProfit", collectedProfitHandler);
+            setData((prev) => ({ ...prev, rewards: myTotalProfit }));
+            setStage("complete");
         }
-    });
+    }, [stage, profits]);
 
     useEffect(() => {
         // Check if all Seller has inputted (Posted Offer)
