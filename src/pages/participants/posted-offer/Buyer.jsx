@@ -50,14 +50,17 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
             setCountSold(count)
         })
 
-        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
-            phaseContinue(myProfit);
-        }
-
         return () => {
             socket.off("postedOfferList")
         }
     })
+
+    useEffect(() => {
+        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
+            console.log(myProfit);
+            phaseContinue(myProfit);
+        }
+    }, [timer, myProfit])
 
     function buyHandler(e, item) {
         e.preventDefault();
@@ -67,8 +70,15 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
                     postedOfferId: item.postedOfferId,
                     phaseId: data.currentPhase.id
                 })
-                setMyProfit(data.unitValue - item.price);
-                setHasBought(true)
+                socket.on("serverMessage", (res) => {
+                    if (
+                        res.status === 200 &&
+                        res.message === "Successfully buy transaction"
+                    ) {
+                        setMyProfit(data.unitValue - item.price);
+                        setHasBought(true)
+                    }
+                })
             }
         } else {
             alert("harga melebihi unit value anda!")
