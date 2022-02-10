@@ -5,7 +5,7 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice } from '../../../Utils';
+import { capitalize, displayPrice, getParticipantId } from '../../../Utils';
 
 // ---------------------------------------------BUYER
 export function BuyerIdleDS({ data, timer }) {
@@ -223,15 +223,16 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
     const [seller, setSeller] = useState(data.seller);
     const [countSold, setCountSold] = useState(0);
     const [myProfit, setMyProfit] = useState(0);
-    let myID = JSON.parse(localStorage.getItem("auth"));
-    myID = myID.id;
+    const [myID] = useState(getParticipantId());
 
     useEffect(() => {
         socket.on("decentralizedList", (res) => {
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
-                if (item.sellerId === myID) setMyProfit(item.price - data.unitCost)
+                if (item.sellerId === myID) {
+                    setMyProfit(item.price - data.unitCost);
+                }
                 return {
                     sellerId: item.sellerId,
                     role: "Penjual " + (i + 1),
@@ -244,14 +245,16 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
             setCountSold(count)
         })
 
-        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
-            phaseContinue(myProfit);
-        }
-
         return () => {
             socket.off("decentralizedList")
         }
-    })
+    }, [data.unitCost, myID])
+
+    useEffect(() => {
+        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
+            phaseContinue(myProfit);
+        }
+    }, [timer, data.participantNumber, myProfit, countSold, phaseContinue])
 
     return (
         <Container className='text-center d-flex flex-column'>

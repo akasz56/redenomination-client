@@ -26,7 +26,6 @@ export default function Session() {
             const res = await readSession(urlParams.id)
             if (res.status === 200) {
                 setData(res.data);
-                console.log(res.data);
                 setIsRunning(res.data.isRunning);
                 setDataPost({
                     sessionType: res.data.sessionType,
