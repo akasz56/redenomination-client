@@ -59,7 +59,7 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
         if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
-    }, [timer, myProfit])
+    }, [timer, data.participantNumber, myProfit, countSold, phaseContinue])
 
     function buyHandler(e, item) {
         e.preventDefault();

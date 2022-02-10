@@ -157,7 +157,7 @@ export default function Session() {
     }
 
     function ViewRun() {
-        const [participant, setParticipant] = useState({
+        const [participant] = useState({
             sellers: data.simulation.sellers,
             buyers: data.simulation.buyers
         });
