@@ -73,6 +73,7 @@ export default function Session() {
 
     async function confirmDelete(e) {
         e.preventDefault();
+        setLoading(true)
         setModalDelete(prev => !prev);
 
         if (e.target.elements.confirm.value === capitalize(data.sessionType)) {
@@ -80,9 +81,11 @@ export default function Session() {
             if (res.status === 200) {
                 window.location.href = '/simulations/' + data.simulation.id;
             } else if (res.status === 401) {
+                setLoading(false)
                 console.log(res);
                 window.alert("Tidak diizinkan mengakses");
             } else {
+                setLoading(false)
                 console.log(res);
                 alert("Terjadi Kesalahan, mohon coba lagi")
             }
