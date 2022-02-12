@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Container, Button, Table } from 'react-bootstrap'
+import { CSVLink } from 'react-csv';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { readAllSimulations } from '../../adapters/Simulations';
+import { readAllSimulations, readAnovaCSV } from '../../adapters/Simulations';
 import LoadingComponent from '../../components/Loading';
 import { capitalize, logout } from '../../Utils';
 import './Admin.css'
@@ -11,6 +12,7 @@ import './Admin.css'
 export default function Admin() {
     const [loading, setLoading] = useState(true);
     const [simulations, setSimulations] = useState(null);
+    const [summary, setSummary] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,8 +35,26 @@ export default function Admin() {
                 window.alert("Terjadi Kesalahan");
             }
         }
+        async function fetchAnova() {
+            const res = await readAnovaCSV();
+            if (res.status === 200) {
+                setSummary(res.data);
+                setLoading(false)
+            } else if (res.status === 401) {
+                logout(window.location.href = "/");
+            } else if (res.status === 404) {
+                setLoading(false)
+                console.log(res);
+                window.alert("Data tidak ditemukan");
+            } else {
+                setLoading(false)
+                console.log(res);
+                window.alert("Terjadi Kesalahan");
+            }
+        }
 
         fetchData();
+        fetchAnova();
     }, []);
 
     function addBtnHandler(e) {
@@ -60,6 +80,10 @@ export default function Admin() {
             <section className="mt-5 header">
                 <span className="fs-1">Daftar Simulasi</span>
                 <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
+            </section>
+
+            <section>
+                <CSVLink data={summary}>Download Tabel ANOVA</CSVLink>
             </section>
 
             <Table responsive hover className="mt-3">

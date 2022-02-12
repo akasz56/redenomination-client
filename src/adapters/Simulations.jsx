@@ -89,3 +89,11 @@ export async function readSimulationSummary(id) {
         },
     }).then(response => response.json());
 }
+
+export async function readAnovaCSV() {
+    return await fetch(apiURL + "anova", {
+        headers: {
+            'Authorization': myToken()
+        }
+    }).then(response => response.json());
+}
