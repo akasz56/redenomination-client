@@ -82,9 +82,11 @@ export default function Admin() {
                 <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
             </section>
 
-            <section>
-                <CSVLink data={summary}>Download Tabel ANOVA</CSVLink>
-            </section>
+            {summary ?
+                <CSVLink filename={"Output ANOVA " + dayjs().locale("id").format("dddd, D MMM YYYY")} data={summary}>Download Tabel ANOVA</CSVLink>
+                :
+                <></>
+            }
 
             <Table responsive hover className="mt-3">
                 <thead>
