@@ -13,6 +13,7 @@ import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
+import { CSVLink } from 'react-csv';
 
 
 export default function Simulation() {
@@ -199,6 +200,12 @@ export default function Simulation() {
                                         },
                                     }}
                                 />
+                                <CSVLink
+                                    filename={'Jumlah Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                    data={[
+                                        ["Ulangan"].concat(dataSummary.trx.labels),
+                                        ...dataSummary.trx.datasets.map(dataset => [dataset.label, ...dataset.data])
+                                    ]}>Download Jumlah Transaksi</CSVLink>
                             </div>
                             <div className='col-md-6'>
                                 <Line data={dataSummary.price} width={"100px"} height={"50px"}
@@ -211,6 +218,12 @@ export default function Simulation() {
                                         },
                                     }}
                                 />
+                                <CSVLink
+                                    filename={'Harga Kesepakatan Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                    data={[
+                                        ["Ulangan"].concat(dataSummary.price.labels),
+                                        ...dataSummary.price.datasets.map(dataset => [dataset.label, ...dataset.data])
+                                    ]}>Download Harga Kesepakatan Transaksi</CSVLink>
                             </div>
                         </section>
                         :

@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { capitalize, displayPrice, getRandomColor } from '../../../Utils';
 import ScatterSummary from '../../../components/ScatterSummary';
+import UnitProfit from '../../../components/UnitProfit';
+import { CSVLink } from 'react-csv';
 
 export default function Summary(props) {
     const [data, setData] = useState(props.data);
@@ -66,6 +68,10 @@ export default function Summary(props) {
         data.sessionType
     ], [data])
 
+    useEffect(() => {
+        console.log(dataSummary)
+    }, [dataSummary])
+
     return (
         <>
             <section className='text-center'>
@@ -91,9 +97,21 @@ export default function Summary(props) {
                     <section className="row mt-5">
                         <div className="col-md-6">
                             <Bar data={dataSummary.trx} />
+                            <CSVLink
+                                filename={'Jumlah Transaksi ' + capitalize(data.simulation.simulationType) + " " + dayjs(data.simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                data={[
+                                    dataSummary.trx.labels,
+                                    ...dataSummary.trx.datasets.map(dataset => [...dataset.data])
+                                ]}>Download CSV</CSVLink>
                         </div>
                         <div className="col-md-6">
                             <Bar data={dataSummary.price} />
+                            <CSVLink
+                                filename={'Harga Kesepakatan Transaksi ' + capitalize(data.simulation.simulationType) + " " + dayjs(data.simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                data={[
+                                    dataSummary.price.labels,
+                                    ...dataSummary.price.datasets.map(dataset => [...dataset.data])
+                                ]}>Download CSV</CSVLink>
                         </div>
                     </section>
 
@@ -106,11 +124,12 @@ export default function Summary(props) {
                             <ScatterSummary data={dataSummary.trxList} labels={dataSummary.price.labels} nameArr={nameArr} />
                         </section>
                     }
-
                 </>
                 :
                 ""
             }
+
+            <UnitProfit buyers={data.simulation.buyers} sellers={data.simulation.sellers} />
         </>
     )
 }
