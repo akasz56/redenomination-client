@@ -1,5 +1,5 @@
 import { useEffect, useState, useReducer } from 'react';
-import { Button, Container, Form, Image } from 'react-bootstrap'
+import { Button, Container, Form, Image, Modal } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
@@ -80,6 +80,7 @@ function sellerReducer(prevState, action) {
 
 export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     const [inputPrice, setInputPrice] = useState(0);
+    const [showModal, setShowModal] = useState(false);
     const [currentState, dispatch] = useReducer(sellerReducer, {
         ...initialState,
         unitCost: data.unitCost
@@ -123,9 +124,18 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                 phaseContinue(currentState.profit)
                 dispatch({ type: RED_ACT.PHASE_DONE })
                 clearTimeout(breakTimeout);
-            }, 3000);
+            }, 5000);
         }
     }, [currentState.waitBreak])
+
+    useEffect(() => {
+        if (showModal) {
+            const notifTimeout = setTimeout(() => {
+                setShowModal(false)
+                clearTimeout(notifTimeout);
+            }, 3000);
+        }
+    }, [showModal])
 
     function submitHandler(e) {
         e.preventDefault();
@@ -135,18 +145,33 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
         });
 
         socket.once("bidMatch", res => {
+            setShowModal(true)
             dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
         });
     }
 
-    if (currentState.waitBreak === true) return (<LoadingComponent className='child' />)
+    if (currentState.waitBreak === true) return (<>
+        <LoadingComponent className='child' />
+
+        <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
+            <Modal.Header>
+                <Modal.Title>Notifikasi</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
+            <Modal.Footer>
+                <Button variant="primary" onClick={() => { setShowModal(false) }}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    </>)
     else {
         return (
             <Container className='text-center d-flex flex-column'>
                 <Timer minutes={timer} />
                 <section className='row my-5 py-5 border rounded-pill'>
                     <div className="col-md-4">
-                        <p>Offer</p>
+                        <p>Bid</p>
                         <h1 className='text-primary fw-bolder'>{currentState.socketData.minPrice}</h1>
                     </div>
                     <div className="col-md-4">
@@ -154,7 +179,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                         <h1 className='text-primary fw-bolder'>{displayPrice(data.unitCost, data.currentPhase.phaseType)}</h1>
                     </div>
                     <div className="col-md-4">
-                        <p>Bid</p>
+                        <p>Offer</p>
                         <h1 className='text-primary fw-bolder'>{currentState.socketData.maxPrice}</h1>
                     </div>
                 </section>
@@ -193,6 +218,19 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                     goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                     inflation={data.inflationType}
                 />
+
+                <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Notifikasi</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Terdapat match harga dengan Pembeli</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={() => { setShowModal(false) }}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
             </Container>
         )
     }
@@ -200,6 +238,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
 
 export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     const [inputPrice, setInputPrice] = useState(0);
+    const [showModal, setShowModal] = useState(false);
     const [currentState, dispatch] = useReducer(buyerReducer, {
         ...initialState,
         unitValue: data.unitValue
@@ -243,9 +282,18 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                 phaseContinue(currentState.profit)
                 dispatch({ type: RED_ACT.PHASE_DONE })
                 clearTimeout(breakTimeout);
-            }, 3000);
+            }, 5000);
         }
     }, [currentState.waitBreak])
+
+    useEffect(() => {
+        if (showModal) {
+            const notifTimeout = setTimeout(() => {
+                setShowModal(false)
+                clearTimeout(notifTimeout);
+            }, 3000);
+        }
+    }, [showModal])
 
     function submitHandler(e) {
         e.preventDefault();
@@ -255,18 +303,33 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
         });
 
         socket.once("bidMatch", res => {
+            setShowModal(true)
             dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
         });
     }
 
-    if (currentState.waitBreak === true) return (<LoadingComponent className='child' />)
+    if (currentState.waitBreak === true) return (<>
+        <LoadingComponent className='child' />
+
+        <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
+            <Modal.Header>
+                <Modal.Title>Notifikasi</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
+            <Modal.Footer>
+                <Button variant="primary" onClick={() => { setShowModal(false) }}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    </>)
     else {
         return (
             <Container className='text-center d-flex flex-column'>
                 <Timer minutes={timer} />
                 <section className='row my-5 py-5 border rounded-pill'>
                     <div className="col-md-4">
-                        <p>Offer</p>
+                        <p>Bid</p>
                         <h1 className='text-primary fw-bolder'>{currentState.socketData.minPrice}</h1>
                     </div>
                     <div className="col-md-4">
@@ -274,7 +337,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                         <h1 className='text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
                     </div>
                     <div className="col-md-4">
-                        <p>Bid</p>
+                        <p>Offer</p>
                         <h1 className='text-primary fw-bolder'>{currentState.socketData.maxPrice}</h1>
                     </div>
                 </section>
@@ -312,6 +375,19 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                     goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                     inflation={data.inflationType}
                 />
+
+                <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
+                    <Modal.Header>
+                        <Modal.Title>Notifikasi</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={() => { setShowModal(false) }}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
             </Container>
         )
     }
