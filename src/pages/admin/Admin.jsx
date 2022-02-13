@@ -12,6 +12,7 @@ import './Admin.css'
 export default function Admin() {
     const [loading, setLoading] = useState(true);
     const [simulations, setSimulations] = useState(null);
+    const [noData, setNoData] = useState(true);
     const [summary, setSummary] = useState(null);
     const navigate = useNavigate();
 
@@ -57,6 +58,14 @@ export default function Admin() {
         fetchAnova();
     }, []);
 
+    useEffect(() => {
+        if (simulations) {
+            if (simulations.length !== 0) {
+                setNoData(false)
+            }
+        }
+    }, [simulations])
+
     function addBtnHandler(e) {
         e.preventDefault();
         navigate('/simulations/create');
@@ -100,7 +109,14 @@ export default function Admin() {
                     {loading ?
                         <tr><td colSpan={3}><LoadingComponent className="mx-auto my-5" /></td></tr>
                         :
-                        (simulations.length !== 0 ?
+                        (noData ?
+                            <tr>
+                                <td colSpan={3} className='text-center py-5'>
+                                    <h1>No Data</h1>
+                                    <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
+                                </td>
+                            </tr>
+                            :
                             (simulations.map((simulation, i) => (
                                 <tr key={i} className='simulations' onClick={e => rowHandler(e, simulation.id)}>
                                     <td className='number'>{i + 1}</td>
@@ -111,13 +127,6 @@ export default function Admin() {
                                     <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                                 </tr>
                             )))
-                            :
-                            <tr>
-                                <td colSpan={3} className='text-center py-5'>
-                                    <h1>No Data</h1>
-                                    <Button variant="primary" onClick={addBtnHandler}>Tambah Simulasi</Button>
-                                </td>
-                            </tr>
                         )
                     }
                 </tbody>
