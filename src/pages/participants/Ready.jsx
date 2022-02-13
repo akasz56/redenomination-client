@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import socket from "../../adapters/SocketIO";
@@ -6,6 +7,17 @@ import "./Ready.css";
 
 export default function Ready({ data }) {
     const [ready, setReady] = useState(false)
+
+    useEffect(() => {
+        socket.emit("isClientReady")
+        socket.on("isClientReady", (res) => {
+            setReady(res.isReady);
+        })
+
+        return () => {
+            socket.off("isClientReady")
+        }
+    }, [])
 
     function btnHandler(e) {
         e.preventDefault()

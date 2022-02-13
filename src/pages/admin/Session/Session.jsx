@@ -165,6 +165,10 @@ export default function Session() {
             buyers: data.simulation.buyers
         });
 
+        // useEffect(() => {
+        //     socket
+        // })
+
         return (
             <>
                 <section>
@@ -284,11 +288,6 @@ export default function Session() {
                             </Modal.Footer>
                         </form>
                     </Modal>
-
-                    <section className='my-5'>
-                        <h1>Hapus Ulangan</h1>
-                        <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
-                    </section>
                 </Container>
             )
         } else { return <Error404 /> }
