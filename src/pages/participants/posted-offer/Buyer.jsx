@@ -56,7 +56,7 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
     })
 
     useEffect(() => {
-        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
     }, [timer, data.participantNumber, myProfit, countSold, phaseContinue])
