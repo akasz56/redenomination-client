@@ -51,7 +51,7 @@ export function Lobby({ data, timer, phaseContinue }) {
             setCountSold(count)
         })
 
-        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
 
@@ -251,7 +251,7 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
     }, [data.unitCost, myID])
 
     useEffect(() => {
-        if (timer <= 0 || (countSold === (data.participantNumber / 2))) {
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
     }, [timer, data.participantNumber, myProfit, countSold, phaseContinue])
