@@ -68,10 +68,6 @@ export default function Summary(props) {
         data.sessionType
     ], [data])
 
-    useEffect(() => {
-        console.log(dataSummary)
-    }, [dataSummary])
-
     return (
         <>
             <section className='text-center'>
@@ -129,7 +125,7 @@ export default function Summary(props) {
                 ""
             }
 
-            <UnitProfit buyers={data.simulation.buyers} sellers={data.simulation.sellers} />
+            <UnitProfit buyers={data.simulation.buyers} sellers={data.simulation.sellers} budget={data.simulation.simulationBudget} />
         </>
     )
 }

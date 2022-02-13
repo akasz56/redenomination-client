@@ -18,7 +18,7 @@ export default function CompleteScreen({ data }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <h1 className='text-center mt-5'>Simulasi Selesai</h1>
-            {(data.rewards) ?
+            {(data.rewards >= 0) ?
                 <p className='mt-5'>
                     Selamat, anda mendapatkan hadiah sebesar
                     <span className='text-primary fw-bolder fs-1 d-block'>Rp. {roundNumber(data.rewards)}</span>
