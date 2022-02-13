@@ -95,6 +95,7 @@ export default function Participants() {
     useEffect(() => {
         if (stage === 'otwComplete') {
             function collectedProfitHandler(res) {
+                console.log("profit", res)
                 setData((prev) => ({ ...prev, rewards: res }))
                 socket.off("collectedProfit")
                 setStage("complete");
@@ -123,6 +124,7 @@ export default function Participants() {
                 if (res) {
                     socket.off("po:isDone")
                     setStage("flashSale");
+                    setTimer(minutes * 60);
                 }
             }
             socket.on("po:isDone", isDonePOHandler);
@@ -147,6 +149,7 @@ export default function Participants() {
                 if (res) {
                     socket.off("ds:isDone")
                     setStage("listShops");
+                    setTimer(minutes * 60);
                 }
             }
             socket.on("ds:isDone", isDoneDSHandler);
