@@ -1,1 +1,9 @@
-pass: IpB_b3rc4nd4
+pass: ekonomi123
+
+# known issues & todos
+
+## frontend
+
+- socket admin
+
+## backend

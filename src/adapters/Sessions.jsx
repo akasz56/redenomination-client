@@ -2,8 +2,6 @@ import { apiURL } from "./serverURL";
 import { myToken } from '../Utils';
 
 export async function createSession(body) {
-    body.timer = parseInt(body.timer)
-
     return await fetch(apiURL + "sessions/", {
         method: "POST",
         headers: {
