@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Button, Container, Form, Modal } from 'react-bootstrap';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
+import socket from "../../../adapters/SocketIO";
 import { readSession, deleteSession, updateSession, runSession, finishSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
@@ -98,7 +99,6 @@ export default function Session() {
 
         if (window.confirm("Jalankan sesi sekarang?")) {
             const res = await runSession(urlParams.id)
-            console.log(res)
             if (res.status === 200) {
                 setIsRunning(true)
             } else if (res.status === 401) {
@@ -160,14 +160,33 @@ export default function Session() {
     }
 
     function ViewRun() {
-        const [participant] = useState({
+        const [isLive, setIsLive] = useState(false);
+        const [participant, setParticipant] = useState({
             sellers: data.simulation.sellers,
             buyers: data.simulation.buyers
         });
 
-        // useEffect(() => {
-        //     socket
-        // })
+        useEffect(() => {
+            socket.emit("adminLoginToken", { "token": data.simulation.token })
+            socket.on("adminLoginToken", res => {
+                setIsLive(true)
+                socket.off("adminLoginToken")
+            })
+
+            socket.on("admin:activePlayers", res => {
+                setParticipant({
+                    sellers: res.sellers,
+                    buyers: res.buyers
+                });
+            })
+            socket.on("admin:isSessionDone",)
+        }, [])
+
+        useEffect(() => {
+            socket.on("serverMessage", res => {
+                console.log(res)
+            })
+        })
 
         return (
             <>
@@ -219,7 +238,7 @@ export default function Session() {
                     <section className="header mt-5 row">
                         <div className="col-9">
                             <h1>{data.sessionType}</h1>
-                            <p className='mb-0'>SimulationID: <Link to={'/simulations/' + data.simulation.id}>{data.simulation.id}</Link></p>
+                            <Link className='btn btn-primary' to={'/simulations/' + data.simulation.id}> {"<"} Kembali</Link>
                         </div>
                         <div className="col-3 text-end">
                             <div>{dayjs(data.timeCreated).locale("id").format("dddd, D MMM YYYY")}</div>
