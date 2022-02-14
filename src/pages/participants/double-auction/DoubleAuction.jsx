@@ -89,14 +89,12 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     // socket listen
     useEffect(() => {
         socket.on("da:isDone", res => {
-            console.log("da:isDone")
-            if (res.isDone && res.phaseId === data.currentPhase.id) {
-                dispatch({ type: RED_ACT.BREAK })
-            }
+            console.log("da:isDone", res)
+            dispatch({ type: RED_ACT.BREAK })
         })
 
         socket.on("doubleAuctionList", res => {
-            console.log("doubleAuctionList")
+            console.log("doubleAuctionList", res)
             dispatch({
                 type: RED_ACT.UPDATE_SOCKET,
                 payload: {
@@ -110,14 +108,14 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
-    }, [])
+    }, [data.currentPhase.phaseType])
 
     // timer
     useEffect(() => {
         if (timer <= 0) {
             dispatch({ type: RED_ACT.BREAK })
         }
-    }, [timer])
+    })
 
     // Break Function
     useEffect(() => {
@@ -128,7 +126,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                 clearTimeout(breakTimeout);
             }, 5000);
         }
-    }, [currentState.waitBreak])
+    }, [currentState.waitBreak, currentState.profit, phaseContinue])
 
     useEffect(() => {
         if (showModal) {
@@ -153,7 +151,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
         });
     }
 
-    if (currentState.waitBreak === true) return (<>
+    if (currentState.waitBreak) return (<>
         <LoadingComponent className='child' />
 
         <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
@@ -246,17 +244,15 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
         unitValue: data.unitValue
     });
 
-    // tiap saat
+    // socket listen
     useEffect(() => {
         socket.on("da:isDone", res => {
-            console.log("da:isDone")
-            if (res.isDone && res.phaseId === data.currentPhase.id) {
-                dispatch({ type: RED_ACT.BREAK })
-            }
+            console.log("da:isDone", res)
+            dispatch({ type: RED_ACT.BREAK })
         })
 
         socket.on("doubleAuctionList", res => {
-            console.log("da:doubleAuctionList")
+            console.log("doubleAuctionList", res)
             dispatch({
                 type: RED_ACT.UPDATE_SOCKET,
                 payload: {
@@ -270,14 +266,14 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
-    })
+    }, [data.currentPhase.phaseType])
 
     // timer
     useEffect(() => {
         if (timer <= 0) {
             dispatch({ type: RED_ACT.BREAK })
         }
-    }, [timer])
+    })
 
     // Break Function
     useEffect(() => {
@@ -288,7 +284,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                 clearTimeout(breakTimeout);
             }, 5000);
         }
-    }, [currentState.waitBreak])
+    }, [currentState.waitBreak, currentState.profit, phaseContinue])
 
     useEffect(() => {
         if (showModal) {
@@ -313,7 +309,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
         });
     }
 
-    if (currentState.waitBreak === true) return (<>
+    if (currentState.waitBreak) return (<>
         <LoadingComponent className='child' />
 
         <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>

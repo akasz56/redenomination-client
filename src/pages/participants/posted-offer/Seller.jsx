@@ -92,16 +92,14 @@ export function SellerIdleScreen({ data, timer, phaseContinue }) {
             setCountSold(count)
         })
 
-        return () => {
-            socket.off("postedOfferList")
-        }
+        return () => { socket.off("postedOfferList") }
     }, [data.unitCost, myID])
 
     useEffect(() => {
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
-    }, [timer, countSold])
+    })
 
     return (
         <Container className='text-center d-flex flex-column'>

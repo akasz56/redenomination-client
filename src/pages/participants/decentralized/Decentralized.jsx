@@ -35,9 +35,9 @@ export function Lobby({ data, timer, phaseContinue }) {
     const [isInside, setIsInside] = useState(false);
 
     useEffect(() => {
-        let count = 0;
         socket.on("decentralizedList", (res) => {
             console.log("decentralizedList")
+            let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
                 return {
@@ -52,12 +52,14 @@ export function Lobby({ data, timer, phaseContinue }) {
             setCountSold(count)
         })
 
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            phaseContinue(myProfit);
-        }
-
         return () => {
             socket.off("decentralizedList")
+        }
+    }, [])
+
+    useEffect(() => {
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+            phaseContinue(myProfit);
         }
     })
 
@@ -107,7 +109,6 @@ export function EnterShop({ data, timer, setIsInside, seller, setMyProfit }) {
     useEffect(() => {
         document.title = seller.role + " - Decentralized";
         if (seller.isSold) { setIsInside(false) }
-
     })
 
     function clickBack() {
@@ -255,7 +256,7 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
-    }, [timer, data.participantNumber, myProfit, countSold, phaseContinue])
+    })
 
     return (
         <Container className='text-center d-flex flex-column'>

@@ -158,7 +158,14 @@ export default function Participants() {
             socket.on("decentralizedList", decentralizedListHandler);
             socket.on("ds:isDone", isDoneDSHandler);
         }
-    }, [stage])
+
+        return () => {
+            socket.off("postedOfferList");
+            socket.off("decentralizedList");
+            socket.off("po:isDone");
+            socket.off("ds:isDone");
+        }
+    }, [stage, minutes])
 
     // Timer
     useEffect(() => {
