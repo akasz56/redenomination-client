@@ -120,7 +120,7 @@ export function EnterShop({ data, timer, setIsInside, seller, setMyProfit }) {
                 decentralizedId: seller.decentralizedId,
                 phaseId: data.currentPhase.id
             })
-            setMyProfit(Number(data.unitValue) - Number(seller.price))
+            setMyProfit(parseInt(data.unitValue) - parseInt(seller.price))
             setStatus(true)
         }
     }
@@ -168,7 +168,7 @@ export function PostPriceDS({ data, timer }) {
     function submitHandler(e) {
         e.preventDefault()
         socket.emit("ds:inputSellerPrice", {
-            price: Number(price),
+            price: parseInt(price),
             phaseId: data.currentPhase.id
         })
         setStatus(true);
@@ -199,7 +199,6 @@ export function PostPriceDS({ data, timer }) {
                             <Form.Control type="number"
                                 className='text-center' required
                                 onChange={e => setPrice(e.target.value)}
-                                max={10}
                                 min={data.unitCost / 1000}
                                 placeholder={data.unitCost / 1000}
                                 step={0.001}

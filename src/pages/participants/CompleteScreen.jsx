@@ -6,7 +6,7 @@ import { capitalize } from "../../Utils";
 export default function CompleteScreen({ data }) {
     const kontak = "6289608703393"
 
-    function roundNumber(number) {
+    function roundparseInt(number) {
         const rounding = 100
         return Math.floor(number / rounding) * rounding;
     }
@@ -21,7 +21,7 @@ export default function CompleteScreen({ data }) {
             {(data.rewards >= 0) ?
                 <p className='mt-5'>
                     Selamat, anda mendapatkan hadiah sebesar
-                    <span className='text-primary fw-bolder fs-1 d-block'>Rp. {roundNumber(data.rewards)}</span>
+                    <span className='text-primary fw-bolder fs-1 d-block'>Rp. {roundparseInt(data.rewards)}</span>
                     Silahkan klik tombol dibawah untuk menghubungi peneliti
                 </p>
                 :

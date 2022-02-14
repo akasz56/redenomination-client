@@ -142,7 +142,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postSeller", {
-            sellerBargain: Number(inputPrice),
+            sellerBargain: parseInt(inputPrice),
             phaseId: data.currentPhase.id
         });
 
@@ -302,7 +302,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postBuyer", {
-            buyerBargain: Number(inputPrice),
+            buyerBargain: parseInt(inputPrice),
             phaseId: data.currentPhase.id
         });
 

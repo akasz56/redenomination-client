@@ -40,13 +40,13 @@ export default function Summary(props) {
                     bargainList: res.data.phaseSummary.map((phase) => {
                         return phase.bargainList.map((bargain, idx) => ({
                             x: idx + 1,
-                            y: Number(bargain.price),
+                            y: parseInt(bargain.price),
                         }))
                     }),
                     trxList: res.data.phaseSummary.map((phase) => {
                         return phase.transactionList.map((trx, idx) => ({
                             x: idx + 1,
-                            y: Number(trx.price),
+                            y: parseInt(trx.price),
                         }))
                     }),
                 });

@@ -73,7 +73,7 @@ export default function Simulation() {
                 setDataPost({
                     "simulationID": res.data.id,
                     "sessionType": "Ulangan Kesekian",
-                    "timer": Number(2)
+                    "timer": parseInt(2)
                 });
                 fetchSummary();
                 setLoading(false)
@@ -261,7 +261,7 @@ export default function Simulation() {
                                     key={i + 1}
                                     id={i + 1}
                                     role="penjual"
-                                    defaultValue={Number(dataGet.sellers[i].unitCost)}
+                                    defaultValue={parseInt(dataGet.sellers[i].unitCost)}
                                 />
                             ))}
                         </div>
@@ -273,7 +273,7 @@ export default function Simulation() {
                                     key={i + 1}
                                     id={i + 1}
                                     role="pembeli"
-                                    defaultValue={Number(dataGet.buyers[i].unitValue)}
+                                    defaultValue={parseInt(dataGet.buyers[i].unitValue)}
                                 />
                             ))}
                         </div>
@@ -302,7 +302,7 @@ export default function Simulation() {
                                     <Form.Label className='required'>Timer</Form.Label>
                                     <br />
                                     <Form.Control type="number" style={{ width: "3.8em", display: "inline" }}
-                                        required
+                                        required min={0} step={1}
                                         defaultValue={dataPost.timer}
                                         onChange={(e) => { setDataPost({ ...dataPost, timer: e.target.value }) }} />
                                     &nbsp;Menit

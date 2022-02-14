@@ -14,7 +14,7 @@ export function PostPriceScreen({ data, timer }) {
     function submitHandler(e) {
         e.preventDefault()
         socket.emit("po:inputSellerPrice", {
-            price: Number(price),
+            price: parseInt(price),
             phaseId: data.currentPhase.id
         })
         setStatus(true);
@@ -45,7 +45,6 @@ export function PostPriceScreen({ data, timer }) {
                             <Form.Control type="number"
                                 className='text-center' required
                                 onChange={e => setPrice(e.target.value)}
-                                max={10}
                                 min={data.unitCost / 1000}
                                 placeholder={data.unitCost / 1000}
                                 step={0.001}
