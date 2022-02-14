@@ -36,6 +36,7 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
     useEffect(() => {
         let count = 0;
         socket.on("postedOfferList", (res) => {
+            console.log("postedOfferList, buyer")
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
                 return {
@@ -70,12 +71,17 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
                     phaseId: data.currentPhase.id
                 })
                 socket.on("serverMessage", (res) => {
+                    console.log("serverMessage")
                     if (
                         res.status === 200 &&
                         res.message === "Successfully buy transaction"
                     ) {
                         setMyProfit(data.unitValue - item.price);
                         setHasBought(true)
+                    } else {
+                        const msg = "(" + res.status + ") " + res.message;
+                        window.alert(msg);
+                        console.log(res)
                     }
                 })
             }

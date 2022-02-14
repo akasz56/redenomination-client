@@ -86,15 +86,17 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
         unitCost: data.unitCost
     });
 
-    // tiap saat
+    // socket listen
     useEffect(() => {
-        socket.once("da:isDone", res => {
+        socket.on("da:isDone", res => {
+            console.log("da:isDone")
             if (res.isDone && res.phaseId === data.currentPhase.id) {
                 dispatch({ type: RED_ACT.BREAK })
             }
         })
 
         socket.on("doubleAuctionList", res => {
+            console.log("doubleAuctionList")
             dispatch({
                 type: RED_ACT.UPDATE_SOCKET,
                 payload: {
@@ -108,7 +110,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
             socket.off("da:isDone")
             socket.off("doubleAuctionList")
         }
-    })
+    }, [])
 
     // timer
     useEffect(() => {
@@ -145,6 +147,7 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
         });
 
         socket.once("bidMatch", res => {
+            console.log("bidMatch")
             setShowModal(true)
             dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
         });
@@ -200,7 +203,6 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                                 :
                                 <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
                                     onChange={e => { setInputPrice(e.target.value) }}
-                                    max={10}
                                     min={data.unitCost / 1000}
                                     placeholder={data.unitCost / 1000}
                                     step={0.001}
@@ -246,13 +248,15 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
 
     // tiap saat
     useEffect(() => {
-        socket.once("da:isDone", res => {
+        socket.on("da:isDone", res => {
+            console.log("da:isDone")
             if (res.isDone && res.phaseId === data.currentPhase.id) {
                 dispatch({ type: RED_ACT.BREAK })
             }
         })
 
         socket.on("doubleAuctionList", res => {
+            console.log("da:doubleAuctionList")
             dispatch({
                 type: RED_ACT.UPDATE_SOCKET,
                 payload: {
@@ -303,6 +307,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
         });
 
         socket.once("bidMatch", res => {
+            console.log("bidMatch")
             setShowModal(true)
             dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
         });

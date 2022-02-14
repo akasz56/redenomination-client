@@ -109,6 +109,7 @@ export default function Participants() {
         // Check if all Seller has inputted (Posted Offer)
         if (stage === 'postPrice') {
             function postedOfferListHandler(res) {
+                console.log("postedOfferList, participant")
                 setData((prev) => ({
                     ...prev,
                     seller: res.map((item, i) => ({
@@ -122,13 +123,14 @@ export default function Participants() {
             }
             function isDonePOHandler(res) {
                 if (res) {
-                    socket.off("po:isDone")
-                    setStage("flashSale");
                     setTimer(minutes * 60);
+                    socket.off("postedOfferList");
+                    socket.off("po:isDone");
+                    setStage("flashSale");
                 }
             }
-            socket.on("po:isDone", isDonePOHandler);
             socket.on("postedOfferList", postedOfferListHandler);
+            socket.on("po:isDone", isDonePOHandler);
         }
 
         // Check if all Seller has inputted (Decentralized)
@@ -147,13 +149,14 @@ export default function Participants() {
             }
             function isDoneDSHandler(res) {
                 if (res) {
-                    socket.off("ds:isDone")
-                    setStage("listShops");
                     setTimer(minutes * 60);
+                    socket.off("decentralizedList");
+                    socket.off("ds:isDone");
+                    setStage("listShops");
                 }
             }
-            socket.on("ds:isDone", isDoneDSHandler);
             socket.on("decentralizedList", decentralizedListHandler);
+            socket.on("ds:isDone", isDoneDSHandler);
         }
     }, [stage])
 

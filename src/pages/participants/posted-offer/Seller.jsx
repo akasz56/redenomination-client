@@ -74,6 +74,7 @@ export function SellerIdleScreen({ data, timer, phaseContinue }) {
 
     useEffect(() => {
         socket.on("postedOfferList", (res) => {
+            console.log("postedOfferList, seller")
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
@@ -101,7 +102,7 @@ export function SellerIdleScreen({ data, timer, phaseContinue }) {
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             phaseContinue(myProfit);
         }
-    }, [timer, data.participantNumber, myProfit, countSold, phaseContinue])
+    }, [timer, countSold])
 
     return (
         <Container className='text-center d-flex flex-column'>
