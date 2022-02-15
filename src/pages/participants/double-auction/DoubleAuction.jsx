@@ -4,7 +4,7 @@ import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice } from '../../../Utils'
+import { capitalize, displayPrice, printLog } from '../../../Utils'
 import LoadingComponent from '../../../components/Loading';
 
 const RED_ACT = {
@@ -12,11 +12,13 @@ const RED_ACT = {
     BREAK: "BREAK",
     BID_MATCH: "BID_MATCH",
     UPDATE_SOCKET: "UPDATE_SOCKET",
+    HAS_INPUTTED_ONCE: "HAS_INPUTTED_ONCE",
 }
 
 const initialState = {
-    waitBreak: false,
     socketData: { minPrice: "-", maxPrice: "-" },
+    inputtedOnce: false,
+    waitBreak: false,
     matched: false,
     profit: 0,
 }
@@ -43,8 +45,11 @@ function buyerReducer(prevState, action) {
         case RED_ACT.UPDATE_SOCKET:
             return { ...prevState, socketData: action.payload };
 
+        case RED_ACT.HAS_INPUTTED_ONCE:
+            return { ...prevState, inputtedOnce: true };
+
         default:
-            console.log("unhandled reduce")
+            printLog("unhandled reduce")
             return prevState;
     }
 }
@@ -71,8 +76,11 @@ function sellerReducer(prevState, action) {
         case RED_ACT.UPDATE_SOCKET:
             return { ...prevState, socketData: action.payload };
 
+        case RED_ACT.HAS_INPUTTED_ONCE:
+            return { ...prevState, inputtedOnce: true };
+
         default:
-            console.log("unhandled reduce")
+            printLog("unhandled reduce")
             return prevState;
     }
 }
@@ -83,18 +91,12 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
     const [showModal, setShowModal] = useState(false);
     const [currentState, dispatch] = useReducer(sellerReducer, {
         ...initialState,
-        unitCost: data.unitCost
+        unitCost: data.unitCost,
     });
 
-    // socket listen
+    // doubleAuctionListListener
     useEffect(() => {
-        socket.on("da:isDone", res => {
-            console.log("da:isDone", res)
-            dispatch({ type: RED_ACT.BREAK })
-        })
-
         socket.on("doubleAuctionList", res => {
-            console.log("doubleAuctionList", res)
             dispatch({
                 type: RED_ACT.UPDATE_SOCKET,
                 payload: {
@@ -103,12 +105,16 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                 }
             })
         });
-
-        return () => {
-            socket.off("da:isDone")
-            socket.off("doubleAuctionList")
-        }
+        return () => { socket.off("doubleAuctionList") }
     }, [data.currentPhase.phaseType])
+
+    // isDoneListener
+    useEffect(() => {
+        socket.on("da:isDone", res => {
+            dispatch({ type: RED_ACT.BREAK })
+        })
+        return () => { socket.off("da:isDone") }
+    }, [])
 
     // timer
     useEffect(() => {
@@ -126,8 +132,9 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
                 clearTimeout(breakTimeout);
             }, 5000);
         }
-    }, [currentState.waitBreak, currentState.profit, phaseContinue])
+    }, [currentState])
 
+    // Notification
     useEffect(() => {
         if (showModal) {
             const notifTimeout = setTimeout(() => {
@@ -137,18 +144,23 @@ export function SellerAuctionScreen({ data, timer, phaseContinue }) {
         }
     }, [showModal])
 
+    // bidMatch
+    useEffect(() => {
+        socket.on("bidMatch", res => {
+            setShowModal(true)
+            dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
+        });
+
+        return () => { socket.off("bidMatch") }
+    }, [currentState.inputtedOnce])
+
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postSeller", {
             sellerBargain: parseInt(inputPrice),
             phaseId: data.currentPhase.id
         });
-
-        socket.once("bidMatch", res => {
-            console.log("bidMatch")
-            setShowModal(true)
-            dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
-        });
+        dispatch({ type: RED_ACT.HAS_INPUTTED_ONCE })
     }
 
     if (currentState.waitBreak) return (<>
@@ -244,15 +256,9 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
         unitValue: data.unitValue
     });
 
-    // socket listen
+    // doubleAuctionListListener
     useEffect(() => {
-        socket.on("da:isDone", res => {
-            console.log("da:isDone", res)
-            dispatch({ type: RED_ACT.BREAK })
-        })
-
         socket.on("doubleAuctionList", res => {
-            console.log("doubleAuctionList", res)
             dispatch({
                 type: RED_ACT.UPDATE_SOCKET,
                 payload: {
@@ -261,12 +267,16 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                 }
             })
         });
-
-        return () => {
-            socket.off("da:isDone")
-            socket.off("doubleAuctionList")
-        }
+        return () => { socket.off("doubleAuctionList") }
     }, [data.currentPhase.phaseType])
+
+    // isDoneListener
+    useEffect(() => {
+        socket.on("da:isDone", res => {
+            dispatch({ type: RED_ACT.BREAK })
+        })
+        return () => { socket.off("da:isDone") }
+    }, [])
 
     // timer
     useEffect(() => {
@@ -284,7 +294,7 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
                 clearTimeout(breakTimeout);
             }, 5000);
         }
-    }, [currentState.waitBreak, currentState.profit, phaseContinue])
+    }, [currentState])
 
     useEffect(() => {
         if (showModal) {
@@ -295,18 +305,21 @@ export function BuyerAuctionScreen({ data, timer, phaseContinue }) {
         }
     }, [showModal])
 
+    useEffect(() => {
+        socket.on("bidMatch", res => {
+            setShowModal(true)
+            dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
+        });
+        return () => { socket.off("bidMatch") }
+    }, [currentState.inputtedOnce])
+
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postBuyer", {
             buyerBargain: parseInt(inputPrice),
             phaseId: data.currentPhase.id
         });
-
-        socket.once("bidMatch", res => {
-            console.log("bidMatch")
-            setShowModal(true)
-            dispatch({ type: RED_ACT.BID_MATCH, payload: res.transaction.price })
-        });
+        dispatch({ type: RED_ACT.HAS_INPUTTED_ONCE })
     }
 
     if (currentState.waitBreak) return (<>

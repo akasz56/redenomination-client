@@ -36,7 +36,6 @@ export function Lobby({ data, timer, phaseContinue }) {
 
     useEffect(() => {
         socket.on("decentralizedList", (res) => {
-            console.log("decentralizedList")
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
@@ -228,7 +227,6 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
 
     useEffect(() => {
         socket.on("decentralizedList", (res) => {
-            console.log("decentralizedList")
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;

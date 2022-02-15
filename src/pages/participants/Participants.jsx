@@ -8,7 +8,7 @@ import { PostPriceScreen, SellerIdleScreen } from './posted-offer/Seller';
 import { BuyerIdleScreen, FlashSaleScreen } from './posted-offer/Buyer';
 import { SellerAuctionScreen, BuyerAuctionScreen } from './double-auction/DoubleAuction';
 import { BuyerIdleDS, Lobby, PostPriceDS, SellerIdleDS } from './decentralized/Decentralized';
-import { capitalize, logout } from '../../Utils';
+import { capitalize, logout, printLog } from '../../Utils';
 import { useCallback } from 'react';
 
 function sortPhases(phases) {
@@ -66,7 +66,7 @@ export default function Participants() {
                 window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
                 logout(() => { window.location.reload("/"); });
             } else if (res.status !== 200) {
-                console.log(res)
+                printLog(res)
             }
         })
 
@@ -95,7 +95,6 @@ export default function Participants() {
     useEffect(() => {
         if (stage === 'otwComplete') {
             function collectedProfitHandler(res) {
-                console.log("profit", res)
                 setData((prev) => ({ ...prev, rewards: res }))
                 socket.off("collectedProfit")
                 setStage("complete");
@@ -109,7 +108,6 @@ export default function Participants() {
         // Check if all Seller has inputted (Posted Offer)
         if (stage === 'postPrice') {
             function postedOfferListHandler(res) {
-                console.log("postedOfferList, participant")
                 setData((prev) => ({
                     ...prev,
                     seller: res.map((item, i) => ({
