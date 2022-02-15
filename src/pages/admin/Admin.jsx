@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { readAllSimulations, readAnovaCSV } from '../../adapters/Simulations';
 import LoadingComponent from '../../components/Loading';
-import { capitalize, logout } from '../../Utils';
+import { capitalize, logout, printLog } from '../../Utils';
 import './Admin.css'
 
 export default function Admin() {
@@ -28,11 +28,11 @@ export default function Admin() {
                 logout(window.location.href = "/");
             } else if (res.status === 404) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Data tidak ditemukan");
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Terjadi Kesalahan");
             }
         }
@@ -45,11 +45,11 @@ export default function Admin() {
                 logout(window.location.href = "/");
             } else if (res.status === 404) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Data tidak ditemukan");
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Terjadi Kesalahan");
             }
         }

@@ -6,6 +6,7 @@ import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
 import Error404 from '../../errors/Error404';
 import { imgURL } from '../../../adapters/serverURL';
+import { printLog } from '../../../Utils';
 
 export default function Edit() {
     const [loading, setLoading] = useState(true);
@@ -23,14 +24,14 @@ export default function Edit() {
                 document.title = "Edit " + res.data.id;
             } else if (res.status === 401) {
                 setLoading(false);
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
             } else if (res.status === 404) {
                 window.alert("Simulasi tidak ditemukan");
                 window.location.href = "/admin";
             } else {
                 setLoading(false);
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan");
             }
         }
@@ -55,13 +56,13 @@ export default function Edit() {
             window.alert("Data berhasil diubah");
             window.location.href = "/simulations/" + data.id;
         } else if (res.status === 401) {
-            console.log(res);
+            printLog(res);
             window.alert("Tidak diizinkan mengakses");
         } else if (res.status === 404) {
             window.alert("Simulasi tidak ditemukan");
             window.location.href = "/admin";
         } else {
-            console.log(res);
+            printLog(res);
             alert("Terjadi Kesalahan");
         }
         setLoading(false);
@@ -76,7 +77,7 @@ export default function Edit() {
             if (res.status === 201) {
                 return res.data.goodsPic;
             } else {
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan dalam mengupload foto");
             }
         }

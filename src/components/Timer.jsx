@@ -4,9 +4,9 @@ export default function Timer({ minutes }) {
             <section className="p-3 rounded shadow text-center">
                 <span>Timer</span>
                 <h1>
-                    {(parseInt(minutes) / 60)}
+                    {Math.floor(Number(minutes) / 60)}
                     :
-                    {(parseInt(minutes) % 60)}
+                    {Math.floor(Number(minutes) % 60)}
                 </h1>
             </section>
         </div>

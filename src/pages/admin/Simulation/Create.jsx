@@ -3,6 +3,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import { createSimulation, uploadPicture } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
+import { printLog } from '../../../Utils';
 
 export default function Create() {
     const [loading, setLoading] = useState(false);
@@ -57,11 +58,11 @@ export default function Create() {
             await uploadPic(res.data.id);
             window.location.href = "/simulations/" + res.data.id;
         } else if (res.status === 401) {
-            console.log(res);
+            printLog(res);
             setLoading(false)
             window.alert("Tidak diizinkan mengakses");
         } else {
-            console.log(res);
+            printLog(res);
             setLoading(false)
             alert("Terjadi Kesalahan, mohon coba lagi")
         }
@@ -74,7 +75,7 @@ export default function Create() {
         if (res.status === 201) {
             return res.data.goodsPic;
         } else {
-            console.log(res);
+            printLog(res);
             window.alert("Foto gagal diupload");
             return null;
         }

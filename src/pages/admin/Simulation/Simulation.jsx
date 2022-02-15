@@ -8,7 +8,7 @@ import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
-import { capitalize, getRandomColor } from '../../../Utils';
+import { capitalize, getRandomColor, printLog } from '../../../Utils';
 import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
@@ -61,7 +61,7 @@ export default function Simulation() {
                     });
                 }
             } else {
-                console.log(res1);
+                printLog(res1);
                 alert("fetch Summary Fail");
             }
         }
@@ -80,14 +80,14 @@ export default function Simulation() {
                 document.title = "Simulasi " + res.data.id;
             } else if (res.status === 401) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
             } else if (res.status === 404) {
                 window.alert("Simulasi tidak ditemukan");
                 window.location.href = "/admin";
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan");
             }
         }
@@ -106,11 +106,11 @@ export default function Simulation() {
         if (res.status === 201) {
             window.location.href = "/sessions/" + res.data.id;
         } else if (res.status === 401) {
-            console.log(res);
+            printLog(res);
             window.alert("Tidak diizinkan mengakses");
             setLoading(false)
         } else {
-            console.log(res);
+            printLog(res);
             alert("Terjadi Kesalahan, mohon coba lagi");
             setLoading(false)
         }
@@ -126,11 +126,11 @@ export default function Simulation() {
             if (res.status === 200) {
                 window.location.href = "/admin";
             } else if (res.status === 401) {
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
                 setLoading(false)
             } else {
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan, mohon coba lagi")
                 setLoading(false)
             }

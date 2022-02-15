@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Container, Form, Button } from 'react-bootstrap';
 import { connectAsAdmin } from "../adapters/Authentication";
 import LoadingComponent from '../components/Loading';
-import { myRole, saveAuth } from '../Utils';
+import { myRole, printLog, saveAuth } from '../Utils';
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export default function Login() {
             alert("Password Salah");
         } else {
             setLoading(false)
-            console.log(res);
+            printLog(res);
             alert("Terdapat kesalahan");
         }
     }

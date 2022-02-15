@@ -56,7 +56,7 @@ export function displayPrice(price, phaseType = "preRedenomPrice") {
             return "Rp. " + parseInt(price)
 
         case "transitionPrice":
-            return "Rp. " + parseInt(price) + " / Rp. " + (parseInt(price) / 1000)
+            return "Rp. " + parseInt(price) + " / Rp. " + parseInt(parseInt(price) / 1000)
 
         case "postRedenomPrice":
             return "Rp. " + parseInt(price) / 1000;
@@ -82,4 +82,8 @@ export function adjustPrice(price, phaseType = "preRedenomPrice") {
 
 export function getRandomColor() {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
+
+export function printLog({ msg }) {
+    console.log(msg)
 }

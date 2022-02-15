@@ -7,7 +7,7 @@ import socket from "../../../adapters/SocketIO";
 import { readSession, deleteSession, updateSession, runSession, finishSession } from '../../../adapters/Sessions';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
-import { capitalize } from '../../../Utils';
+import { capitalize, printLog } from '../../../Utils';
 import Summary from './Summary';
 import UnitPlayer from '../../../components/UnitPlayer';
 
@@ -36,14 +36,14 @@ export default function Session() {
                 document.title = "Ulangan " + res.data.id;
             } else if (res.status === 401) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
             } else if (res.status === 404) {
                 window.alert("Ulangan tidak ditemukan");
                 window.location.href = "/admin";
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan");
             }
         }
@@ -63,10 +63,10 @@ export default function Session() {
             alert("Ulangan berhasil diubah");
             window.location.reload();
         } else if (res.status === 401) {
-            console.log(res);
+            printLog(res);
             window.alert("Tidak diizinkan mengakses");
         } else {
-            console.log(res);
+            printLog(res);
             alert("Terjadi Kesalahan, mohon coba lagi");
         }
         setLoading(false)
@@ -83,11 +83,11 @@ export default function Session() {
                 window.location.href = '/simulations/' + data.simulation.id;
             } else if (res.status === 401) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan, mohon coba lagi")
             }
         }
@@ -103,14 +103,14 @@ export default function Session() {
                 setIsRunning(true)
             } else if (res.status === 401) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
             } else if (res.status === 404) {
                 window.alert("Ulangan tidak ditemukan");
                 window.location.href = "/admin";
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan");
             }
         }
@@ -119,20 +119,20 @@ export default function Session() {
     async function completeSession(e) {
         if (window.confirm("Yakin ingin menghentikan sesi?")) {
             const res = await finishSession(urlParams.id)
-            console.log(res)
+            printLog(res)
             if (res.status === 200) {
                 setIsRunning(false)
                 window.location.reload()
             } else if (res.status === 401) {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 window.alert("Tidak diizinkan mengakses");
             } else if (res.status === 404) {
                 window.alert("Ulangan tidak ditemukan");
                 window.location.href = "/admin";
             } else {
                 setLoading(false)
-                console.log(res);
+                printLog(res);
                 alert("Terjadi Kesalahan");
             }
         }
@@ -184,7 +184,7 @@ export default function Session() {
 
         useEffect(() => {
             socket.on("serverMessage", res => {
-                console.log(res)
+                printLog(res)
             })
         })
 
