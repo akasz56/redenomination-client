@@ -1,9 +1,27 @@
+import { useState } from "react";
+import { useEffect } from "react";
 import { Container } from "react-bootstrap";
+import socket from "../../adapters/SocketIO";
 import Label from "../../components/Label";
 import LoadingComponent from "../../components/Loading";
 import { capitalize } from "../../Utils";
 
-export default function CompleteScreen({ data }) {
+export default function CompleteScreenHandler({ data, setStateStage }) {
+    const [rewards, setRewards] = useState(0)
+
+    useEffect(() => {
+        function collectedProfitHandler(res) {
+            setRewards(res);
+            socket.off("collectedProfit");
+        }
+        socket.emit("collectProfit", { participantId: data.detail.id })
+        socket.once("collectedProfit", collectedProfitHandler);
+    }, [])
+
+    return <CompleteScreen data={{ ...data, rewards: rewards }} />
+}
+
+function CompleteScreen({ data }) {
     const kontak = "6289608703393"
 
     function roundparseInt(number) {

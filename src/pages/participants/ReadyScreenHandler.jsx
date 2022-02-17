@@ -3,9 +3,27 @@ import { useState } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import socket from "../../adapters/SocketIO";
 import { capitalize } from '../../Utils';
+import { participantStage } from './Participants';
 import "./Ready.css";
 
-export default function Ready({ data }) {
+export default function ReadyScreenHandler({ data, setStateStage, setStateData }) {
+    useEffect(() => {
+        function readyCountHandler(res) {
+            if (res.numberOfReadyPlayer === res.totalPlayer) {
+                setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
+                setStateStage(participantStage.SIMULATION);
+                socket.off("readyCount");
+            }
+        }
+        socket.on("readyCount", readyCountHandler);
+
+        return () => { socket.off("readyCount"); }
+    }, [setStateData, setStateStage])
+
+    return <ReadyScreen data={data} />
+}
+
+function ReadyScreen({ data }) {
     const [ready, setReady] = useState(false)
 
     useEffect(() => {
@@ -14,9 +32,7 @@ export default function Ready({ data }) {
             setReady(res.isReady);
         })
 
-        return () => {
-            socket.off("isClientReady")
-        }
+        return () => { socket.off("isClientReady") }
     }, [])
 
     function btnHandler(e) {
@@ -30,7 +46,7 @@ export default function Ready({ data }) {
         <Container className='text-center'>
             <section className='mt-5 pt-5'>
                 <p>Anda berperan sebagai</p>
-                <h1 className='text-primary fw-bolder'>{capitalize(data.role)}</h1>
+                <h1 className='text-primary fw-bolder'>{capitalize(data.type)}</h1>
             </section>
 
             <section className='mt-3'>

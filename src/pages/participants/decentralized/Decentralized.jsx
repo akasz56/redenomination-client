@@ -13,14 +13,14 @@ export function BuyerIdleDS({ data, timer }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}</h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
             <p className='mt-5'>menunggu penjual memasang harga......</p>
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -94,7 +94,7 @@ export function ListShops({ data, timer, setIsInside, sellers, myProfit }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + data.goodsName + ")"}
                 inflation={data.inflationType}
             />
@@ -120,12 +120,12 @@ export function EnterShop({ data, timer, setIsInside, seller, setMyProfit }) {
                 decentralizedId: seller.decentralizedId,
                 phaseId: data.currentPhase.id
             })
-            setMyProfit(parseInt(data.unitValue) - parseInt(seller.price))
+            setMyProfit(parseInt(data.detail.unitValue) - parseInt(seller.price))
             setStatus(true)
         }
     }
 
-    const block = (seller.price > data.unitValue) ?
+    const block = (seller.price > data.detail.unitValue) ?
         <>
             <p className='mb-3'>Harga tersebut melebihi Unit Value anda</p>
             <div className='mt-3'>
@@ -134,7 +134,7 @@ export function EnterShop({ data, timer, setIsInside, seller, setMyProfit }) {
         </>
         :
         <>
-            <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>Rp. {data.unitValue}</span></p>
+            <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>Rp. {data.detail.unitValue}</span></p>
             <div className='mt-3'>
                 <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i className='bx bx-arrow-back'></i> Kembali</Button>
                 <Button onClick={clickBuy} className='fs-4 py-2 px-4 ms-3'> <i className='bx bxs-cart-add' ></i> Beli</Button>
@@ -152,7 +152,7 @@ export function EnterShop({ data, timer, setIsInside, seller, setMyProfit }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -178,7 +178,7 @@ export function PostPriceDS({ data, timer }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Cost</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitCost, data.currentPhase.phaseType)}
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.detail.unitCost, data.currentPhase.phaseType)}
             </h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
@@ -192,15 +192,15 @@ export function PostPriceDS({ data, timer }) {
                             <Form.Control type="number"
                                 className='text-center' required
                                 onChange={e => setPrice(e.target.value)}
-                                min={data.unitCost}
-                                placeholder={data.unitCost}
+                                min={data.detail.unitCost}
+                                placeholder={data.detail.unitCost}
                             />
                             :
                             <Form.Control type="number"
                                 className='text-center' required
                                 onChange={e => setPrice(e.target.value)}
-                                min={data.unitCost / 1000}
-                                placeholder={data.unitCost / 1000}
+                                min={data.detail.unitCost / 1000}
+                                placeholder={data.detail.unitCost / 1000}
                                 step={0.001}
                             />
                         }
@@ -211,7 +211,7 @@ export function PostPriceDS({ data, timer }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -231,7 +231,7 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
                 if (item.sellerId === myID) {
-                    setMyProfit(item.price - data.unitCost);
+                    setMyProfit(item.price - data.detail.unitCost);
                 }
                 return {
                     sellerId: item.sellerId,
@@ -248,7 +248,7 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
         return () => {
             socket.off("decentralizedList")
         }
-    }, [data.unitCost, myID])
+    }, [data.detail.unitCost, myID])
 
     useEffect(() => {
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
@@ -277,7 +277,7 @@ export function SellerIdleDS({ data, timer, phaseContinue }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />

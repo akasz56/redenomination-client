@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Container, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
@@ -12,14 +12,14 @@ export function BuyerIdleScreen({ data, timer }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}</h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
             <p className='mt-5'>menunggu penjual memasang harga......</p>
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -27,52 +27,16 @@ export function BuyerIdleScreen({ data, timer }) {
     )
 }
 
-export function FlashSaleScreen({ data, timer, phaseContinue }) {
-    const [seller, setSeller] = useState(data.seller);
+export function FlashSaleScreen({ data, timer }) {
     const [hasBought, setHasBought] = useState(false);
-    const [countSold, setCountSold] = useState(0);
-    const [myProfit, setMyProfit] = useState(0);
-
-    useEffect(() => {
-        socket.on("postedOfferList", (res) => {
-            let count = 0;
-            const temp = res.map((item, i) => {
-                count = (item.isSold) ? (count + 1) : count;
-                return {
-                    sellerId: item.sellerId,
-                    role: "Penjual " + (i + 1),
-                    price: item.price,
-                    status: (item.isSold) ? "done" : "",
-                    postedOfferId: item.id
-                }
-            })
-            setSeller(temp)
-            setCountSold(count)
-        })
-
-        return () => { socket.off("postedOfferList") }
-    }, [])
-
-    useEffect(() => {
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            phaseContinue(myProfit);
-        }
-    })
 
     function buyHandler(e, item) {
         e.preventDefault();
-        if (item.price <= data.unitValue) {
+        if (item.price <= data.detail.unitValue) {
             if (window.confirm("yakin membeli?")) {
-                socket.emit("po:buy", {
-                    postedOfferId: item.postedOfferId,
-                    phaseId: data.currentPhase.id
-                })
-                socket.on("serverMessage", (res) => {
-                    if (
-                        res.status === 200 &&
-                        res.message === "Successfully buy transaction"
-                    ) {
-                        setMyProfit(data.unitValue - item.price);
+                socket.emit("po:buy", { postedOfferId: item.postedOfferId, phaseId: data.currentPhase.id })
+                socket.once("serverMessage", (res) => {
+                    if (res.status === 200 && res.message === "Successfully buy transaction") {
                         setHasBought(true)
                     }
                 })
@@ -86,12 +50,12 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Value</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitValue, data.currentPhase.phaseType)}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}</h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {seller.map((item, i) => (
+                {data.seller.map((item, i) => (
                     <Card
                         key={i}
                         variant={(item.status === "done") ? "done" : ((hasBought) ? 'wait' : '')}
@@ -106,7 +70,7 @@ export function FlashSaleScreen({ data, timer, phaseContinue }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />

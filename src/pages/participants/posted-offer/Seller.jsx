@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Container, Form, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
@@ -24,7 +24,7 @@ export function PostPriceScreen({ data, timer }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Anda mendapat <span className='fw-bolder'>Unit Cost</span> sebesar</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.unitCost, data.currentPhase.phaseType)}
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.detail.unitCost, data.currentPhase.phaseType)}
             </h1>
 
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
@@ -38,15 +38,15 @@ export function PostPriceScreen({ data, timer }) {
                             <Form.Control type="number"
                                 className='text-center' required
                                 onChange={e => setPrice(e.target.value)}
-                                min={data.unitCost}
-                                placeholder={data.unitCost}
+                                min={data.detail.unitCost}
+                                placeholder={data.detail.unitCost}
                             />
                             :
                             <Form.Control type="number"
                                 className='text-center' required
                                 onChange={e => setPrice(e.target.value)}
-                                min={data.unitCost / 1000}
-                                placeholder={data.unitCost / 1000}
+                                min={data.detail.unitCost / 1000}
+                                placeholder={data.detail.unitCost / 1000}
                                 step={0.001}
                             />
                         }
@@ -57,7 +57,7 @@ export function PostPriceScreen({ data, timer }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
@@ -65,41 +65,7 @@ export function PostPriceScreen({ data, timer }) {
     )
 }
 
-export function SellerIdleScreen({ data, timer, phaseContinue }) {
-    const [seller, setSeller] = useState(data.seller);
-    const [countSold, setCountSold] = useState(0);
-    const [myProfit, setMyProfit] = useState(0);
-    const [myID] = useState(getParticipantId());
-
-    useEffect(() => {
-        socket.on("postedOfferList", (res) => {
-            let count = 0;
-            const temp = res.map((item, i) => {
-                count = (item.isSold) ? (count + 1) : count;
-                if (item.sellerId === myID) {
-                    setMyProfit(item.price - data.unitCost);
-                }
-                return {
-                    sellerId: item.sellerId,
-                    role: "Penjual " + (i + 1),
-                    price: item.price,
-                    status: (item.isSold) ? "done" : "",
-                    postedOfferId: item.id
-                }
-            })
-            setSeller(temp)
-            setCountSold(count)
-        })
-
-        return () => { socket.off("postedOfferList") }
-    }, [data.unitCost, myID])
-
-    useEffect(() => {
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            phaseContinue(myProfit);
-        }
-    })
-
+export function SellerIdleScreen({ data, timer }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
@@ -107,7 +73,7 @@ export function SellerIdleScreen({ data, timer, phaseContinue }) {
             <p className='mt-5'>menunggu...</p>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {seller.map((item, i) => (
+                {data.seller.map((item, i) => (
                     <Card
                         key={i}
                         variant={(item.status === "done") ? "done" : "wait"}
@@ -121,7 +87,7 @@ export function SellerIdleScreen({ data, timer, phaseContinue }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.phaseName}
+                phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />
