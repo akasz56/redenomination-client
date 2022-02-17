@@ -1,5 +1,7 @@
 pass: ekonomi123
 
-# known issues & todos
+# todos
 
-- testing di server
+- username list in simulation.jsx
+
+# known issues

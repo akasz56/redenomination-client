@@ -4,16 +4,16 @@ import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
-import Timer from '../../../components/Timer'
-import { capitalize, displayPrice } from '../../../Utils'
+import Timer from '../../../components/Timer';
+import { capitalize, displayPrice } from '../../../Utils';
 
-export function PostPriceScreen({ data, timer }) {
+export function PostPriceDS({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
     function submitHandler(e) {
         e.preventDefault()
-        socket.emit("po:inputSellerPrice", {
+        socket.emit("ds:inputSellerPrice", {
             price: parseInt(price),
             phaseId: data.currentPhase.id
         })
@@ -35,8 +35,8 @@ export function PostPriceScreen({ data, timer }) {
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
                         {(data.currentPhase.phaseType !== "postRedenomPrice") ?
-                            <Form.Control className='text-center'
-                                required
+                            <Form.Control
+                                className='text-center' required
                                 onChange={e => {
                                     const value = numberInputFormat(e, e.target.value)
                                     setPrice(value)
@@ -45,8 +45,8 @@ export function PostPriceScreen({ data, timer }) {
                                 placeholder={data.detail.unitCost}
                             />
                             :
-                            <Form.Control className='text-center'
-                                required
+                            <Form.Control
+                                className='text-center' required
                                 onChange={e => {
                                     const value = numberInputFormat(e, e.target.value)
                                     setPrice(value)
@@ -71,7 +71,7 @@ export function PostPriceScreen({ data, timer }) {
     )
 }
 
-export function SellerIdleScreen({ data, timer }) {
+export function SellerIdleDS({ data, timer }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />

@@ -1,9 +1,27 @@
+import { useState } from "react";
+import { useEffect } from "react";
 import { Container } from "react-bootstrap";
+import socket from "../../adapters/SocketIO";
 import Label from "../../components/Label";
 import LoadingComponent from "../../components/Loading";
 import { capitalize } from "../../Utils";
 
-export default function CompleteScreen({ data }) {
+export default function CompleteScreenHandler({ data }) {
+    const [rewards, setRewards] = useState(0)
+
+    useEffect(() => {
+        function collectedProfitHandler(res) {
+            setRewards(res);
+            socket.off("collectedProfit");
+        }
+        socket.emit("collectProfit", { participantId: data.detail.id })
+        socket.once("collectedProfit", collectedProfitHandler);
+    }, [])
+
+    return <CompleteScreen data={{ ...data, rewards: rewards }} />
+}
+
+function CompleteScreen({ data }) {
     const kontak = "6289608703393"
 
     function roundparseInt(number) {
@@ -12,7 +30,7 @@ export default function CompleteScreen({ data }) {
     }
 
     function generateLink() {
-        return "https://wa.me/" + kontak + "?text=Saya menerima reward sebesar " + data.rewards + " dalam simulasi " + data.simulationType + " (" + data.loginToken + ")"
+        return "https://wa.me/" + kontak + "?text=Saya menerima reward sebesar " + data.rewards + " dalam simulasi " + data.simulationType + " (" + data.detail.loginToken + ")"
     }
 
     return (
@@ -34,7 +52,7 @@ export default function CompleteScreen({ data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.simulationType + " (" + data.loginToken + ")"}
+                phase={data.simulationType + " (" + data.detail.loginToken + ")"}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />

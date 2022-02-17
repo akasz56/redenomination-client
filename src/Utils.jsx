@@ -50,6 +50,13 @@ export function logout(next) {
     next()
 }
 
+export function sortPhases(phases) {
+    const phase0 = phases.find((item) => { return item.phaseType === "preRedenomPrice" })
+    const phase1 = phases.find((item) => { return item.phaseType === "transitionPrice" })
+    const phase2 = phases.find((item) => { return item.phaseType === "postRedenomPrice" })
+    return [phase0, phase1, phase2];
+}
+
 export function displayPrice(price, phaseType = "preRedenomPrice") {
     switch (phaseType) {
         case "preRedenomPrice":
@@ -86,4 +93,29 @@ export function getRandomColor() {
 
 export function printLog({ msg }) {
     console.log(msg)
+}
+
+export function priceMask(num) {
+    if (isNaN(num)) {
+        return 0;
+    } else {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+}
+
+function priceUnMask(str) {
+    let parts = (1234.5).toLocaleString().match(/(\D+)/g);
+    let unformatted = str;
+
+    unformatted = unformatted.split(parts[0]).join("");
+    unformatted = unformatted.split(parts[1]).join(".");
+
+    return parseFloat(unformatted);
+}
+
+export function numberInputFormat(e, str) {
+    const value = priceUnMask(str);
+    const maskedValue = priceMask(value);
+    e.target.value = maskedValue;
+    return value
 }
