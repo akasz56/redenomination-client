@@ -4,6 +4,8 @@ import { useReducer } from "react"
 import socket from "../../adapters/SocketIO"
 import { capitalize, printLog, sortPhases } from "../../Utils"
 import BlankScreen from "./BlankScreen"
+import { BuyerIdleDS, ShopHandler } from "./decentralized/Buyer"
+import { PostPriceDS, SellerIdleDS } from "./decentralized/Seller"
 import { participantStage } from "./Participants"
 import { BuyerIdleScreen, FlashSaleScreen } from "./posted-offer/Buyer"
 import { PostPriceScreen, SellerIdleScreen } from "./posted-offer/Seller"
@@ -165,19 +167,90 @@ function POHandler({ data, dispatch }) {
         case postedOfferStages.POST_PRICE:
             if (data.type === "seller") { return <PostPriceScreen data={{ ...data, seller: sellers }} timer={timer} /> }
             else if (data.type === "buyer") { return <BuyerIdleScreen data={{ ...data, seller: sellers }} timer={timer} /> }
-            else { return <BlankScreen lineNumber="011" /> }
+            else { return <BlankScreen lineNumber="021" /> }
 
         case postedOfferStages.FLASH_SALE:
             if (data.type === "seller") { return <SellerIdleScreen data={{ ...data, seller: sellers }} timer={timer} /> }
             else if (data.type === "buyer") { return <FlashSaleScreen data={{ ...data, seller: sellers }} timer={timer} /> }
-            else { return <BlankScreen lineNumber="012" /> }
+            else { return <BlankScreen lineNumber="022" /> }
 
         default:
-            return <BlankScreen lineNumber="010" />
+            return <BlankScreen lineNumber="020" />
     }
 }
+
+
+const decentralizedStages = {
+    POST_PRICE: "POST_PRICE",
+    FLASH_SALE: "FLASH_SALE",
+}
 function DSHandler({ data, dispatch }) {
-    return <BlankScreen lineNumber="DS DONE" />
-    // initialize Stage
-    // listen socket
+    const [sellers, setSellers] = useState({});
+    const [countSold, setCountSold] = useState(0);
+    const [stage, setStage] = useState(decentralizedStages.POST_PRICE);
+    const [timer, setTimer] = useState(data.timer * 60);
+
+    // eventListener
+    useEffect(() => {
+        function decentralizedListHandler(res) {
+            let count = 0;
+            const temp = res.map((item, i) => {
+                count = (item.isSold) ? (count + 1) : count;
+                return {
+                    sellerId: item.sellerId,
+                    role: "Penjual " + (i + 1),
+                    price: item.price,
+                    status: (item.isSold) ? "done" : "",
+                    decentralizedId: item.id
+                }
+            })
+            setSellers(temp)
+            setCountSold(count)
+        }
+        socket.on("decentralizedList", decentralizedListHandler);
+
+        function isDonePOHandler(res) {
+            if (res) { setStage(decentralizedStages.FLASH_SALE); }
+        }
+        socket.on("ds:isDone", isDonePOHandler);
+
+        return () => {
+            socket.off("decentralizedList");
+            socket.off("ds:isDone");
+        }
+    }, [])
+
+    // resetTimer
+    useEffect(() => {
+        setTimer(data.timer * 60)
+    }, [stage, data.timer])
+
+    useEffect(() => {
+        const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+            setCountSold(0);
+            dispatch({ type: reducerActions.NEXT_PHASE });
+            setStage(decentralizedStages.POST_PRICE);
+        }
+
+        return () => {
+            clearInterval(interval);
+        }
+    });
+
+    switch (stage) {
+        case decentralizedStages.POST_PRICE:
+            if (data.type === "seller") { return <PostPriceDS data={{ ...data, seller: sellers }} timer={timer} /> }
+            else if (data.type === "buyer") { return <BuyerIdleDS data={{ ...data, seller: sellers }} timer={timer} /> }
+            else { return <BlankScreen lineNumber="031" /> }
+
+        case decentralizedStages.FLASH_SALE:
+            if (data.type === "seller") { return <SellerIdleDS data={{ ...data, seller: sellers }} timer={timer} /> }
+            else if (data.type === "buyer") { return <ShopHandler data={{ ...data, seller: sellers }} timer={timer} /> }
+            else { return <BlankScreen lineNumber="032" /> }
+
+        default:
+            return <BlankScreen lineNumber="030" />
+    }
 }

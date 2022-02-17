@@ -23,9 +23,8 @@ export default function Participants() {
             if (res.status === 401) {
                 window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
                 logout(() => { window.location.reload("/"); });
-            } else {
-                // printLog(res)
-                console.log("serverMessage", res);
+            } else if (res.status >= 300) {
+                printLog(res)
             }
         }
         socket.on("serverMessage", serverMessageHandler)

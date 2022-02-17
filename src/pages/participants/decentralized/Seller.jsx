@@ -4,16 +4,16 @@ import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
-import Timer from '../../../components/Timer'
-import { capitalize, displayPrice } from '../../../Utils'
+import Timer from '../../../components/Timer';
+import { capitalize, displayPrice } from '../../../Utils';
 
-export function PostPriceScreen({ data, timer }) {
+export function PostPriceDS({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
     function submitHandler(e) {
         e.preventDefault()
-        socket.emit("po:inputSellerPrice", {
+        socket.emit("ds:inputSellerPrice", {
             price: parseInt(price),
             phaseId: data.currentPhase.id
         })
@@ -65,7 +65,7 @@ export function PostPriceScreen({ data, timer }) {
     )
 }
 
-export function SellerIdleScreen({ data, timer }) {
+export function SellerIdleDS({ data, timer }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
