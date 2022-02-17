@@ -6,7 +6,7 @@ import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
 import Error404 from '../../errors/Error404';
 import { imgURL } from '../../../adapters/serverURL';
-import { printLog } from '../../../Utils';
+import { priceMask, printLog } from '../../../Utils';
 
 export default function Edit() {
     const [loading, setLoading] = useState(true);
@@ -159,9 +159,7 @@ export default function Edit() {
                                 <Form.Group controlId="simulationBudget">
                                     <Form.Label className='required'>Anggaran Simulasi</Form.Label>
                                     <br />
-                                    <Form.Control type="number" min={0} step={1}
-                                        defaultValue={data.simulationBudget} required disabled
-                                        onChange={(e) => { setData({ ...data, simulationBudget: e.target.value }) }} />
+                                    <Form.Control defaultValue={priceMask(data.simulationBudget)} required disabled />
                                 </Form.Group>
                             </div>
                         </section>

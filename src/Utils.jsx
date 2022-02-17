@@ -94,3 +94,28 @@ export function getRandomColor() {
 export function printLog({ msg }) {
     console.log(msg)
 }
+
+export function priceMask(num) {
+    if (isNaN(num)) {
+        return 0;
+    } else {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+}
+
+function priceUnMask(str) {
+    let parts = (1234.5).toLocaleString().match(/(\D+)/g);
+    let unformatted = str;
+
+    unformatted = unformatted.split(parts[0]).join("");
+    unformatted = unformatted.split(parts[1]).join(".");
+
+    return parseFloat(unformatted);
+}
+
+export function numberInputFormat(e, str) {
+    const value = priceUnMask(str);
+    const maskedValue = priceMask(value);
+    e.target.value = maskedValue;
+    return value
+}

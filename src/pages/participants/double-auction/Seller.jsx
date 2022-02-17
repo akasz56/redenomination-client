@@ -47,14 +47,22 @@ export default function SellerAuctionScreen({ data, timer }) {
                         <Form.Group controlId="inputHarga">
                             <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda ajukan</Form.Label>
                             {(data.currentPhase.phaseType !== "postRedenomPrice") ?
-                                <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
-                                    onChange={e => { setInputPrice(e.target.value) }}
+                                <Form.Control className='text-center'
+                                    defaultValue={inputPrice} required
+                                    onChange={e => {
+                                        const value = numberInputFormat(e, e.target.value)
+                                        setInputPrice(value)
+                                    }}
                                     min={data.detail.unitCost}
                                     placeholder={data.detail.unitCost}
                                 />
                                 :
-                                <Form.Control type="number" className='text-center' defaultValue={inputPrice} required
-                                    onChange={e => { setInputPrice(e.target.value) }}
+                                <Form.Control className='text-center'
+                                    defaultValue={inputPrice} required
+                                    onChange={e => {
+                                        const value = numberInputFormat(e, e.target.value)
+                                        setInputPrice(value)
+                                    }}
                                     min={data.detail.unitCost / 1000}
                                     placeholder={data.detail.unitCost / 1000}
                                     step={0.001}

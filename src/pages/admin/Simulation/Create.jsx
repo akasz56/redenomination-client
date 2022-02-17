@@ -3,7 +3,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import { createSimulation, uploadPicture } from '../../../adapters/Simulations';
 import LoadingComponent from '../../../components/Loading';
 import UnitInput from '../../../components/UnitInput';
-import { printLog } from '../../../Utils';
+import { numberInputFormat, printLog } from '../../../Utils';
 
 export default function Create() {
     const [loading, setLoading] = useState(false);
@@ -24,6 +24,11 @@ export default function Create() {
         document.title = "Buat Simulasi baru";
     }, [])
 
+    function budgetHandler(e) {
+        const value = numberInputFormat(e, e.target.value)
+        setFormData({ ...formData, simulationBudget: value });
+    }
+
     function togglePlayerHandler(e) {
         e.preventDefault();
         setTogglePlayer(prev => !prev);
@@ -31,12 +36,13 @@ export default function Create() {
 
     function additionalPlayerHandler(e, isSeller) {
         e.preventDefault();
+        const value = numberInputFormat(e, e.target.value);
         if (isSeller) {
             setUnitValues({ ...unitValues, ["pembeli" + (formData.participantNumber / 2 + 0.5)]: undefined });
-            setUnitCosts({ ...unitCosts, ["penjual" + (formData.participantNumber / 2 + 0.5)]: e.target.value });
+            setUnitCosts({ ...unitCosts, ["penjual" + (formData.participantNumber / 2 + 0.5)]: value });
         } else {
             setUnitCosts({ ...unitCosts, ["penjual" + (formData.participantNumber / 2 + 0.5)]: undefined });
-            setUnitValues({ ...unitValues, ["pembeli" + (formData.participantNumber / 2 + 0.5)]: e.target.value });
+            setUnitValues({ ...unitValues, ["pembeli" + (formData.participantNumber / 2 + 0.5)]: value });
         }
     }
 
@@ -155,9 +161,9 @@ export default function Create() {
                             <Form.Group controlId="simulationBudget">
                                 <Form.Label className='required'>Anggaran Simulasi</Form.Label>
                                 <br />
-                                <Form.Control type="number" min={0} step={1}
+                                <Form.Control
                                     defaultValue={formData.simulationBudget} required
-                                    onChange={(e) => { setFormData({ ...formData, simulationBudget: e.target.value }) }} />
+                                    onChange={budgetHandler} />
                             </Form.Group>
                         </div>
                     </section>
@@ -171,7 +177,10 @@ export default function Create() {
                                     id={i + 1}
                                     required
                                     role="penjual"
-                                    onChange={(e) => { setUnitCosts({ ...unitCosts, ["penjual" + (i + 1)]: e.target.value }); }}
+                                    onChange={(e) => {
+                                        const value = numberInputFormat(e, e.target.value)
+                                        setUnitCosts({ ...unitCosts, ["penjual" + (i + 1)]: value });
+                                    }}
                                 />
                             ))}
                             {(formData.participantNumber % 2) ?
@@ -200,7 +209,10 @@ export default function Create() {
                                     id={i + 1}
                                     required
                                     role="pembeli"
-                                    onChange={(e) => { setUnitValues({ ...unitValues, ["pembeli" + (i + 1)]: e.target.value }); }}
+                                    onChange={(e) => {
+                                        const value = numberInputFormat(e, e.target.value)
+                                        setUnitValues({ ...unitValues, ["pembeli" + (i + 1)]: value });
+                                    }}
                                 />
                             ))}
                             {(formData.participantNumber % 2) ?

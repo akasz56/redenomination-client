@@ -35,16 +35,22 @@ export function PostPriceDS({ data, timer }) {
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
                         {(data.currentPhase.phaseType !== "postRedenomPrice") ?
-                            <Form.Control type="number"
+                            <Form.Control
                                 className='text-center' required
-                                onChange={e => setPrice(e.target.value)}
+                                onChange={e => {
+                                    const value = numberInputFormat(e, e.target.value)
+                                    setPrice(value)
+                                }}
                                 min={data.detail.unitCost}
                                 placeholder={data.detail.unitCost}
                             />
                             :
-                            <Form.Control type="number"
+                            <Form.Control
                                 className='text-center' required
-                                onChange={e => setPrice(e.target.value)}
+                                onChange={e => {
+                                    const value = numberInputFormat(e, e.target.value)
+                                    setPrice(value)
+                                }}
                                 min={data.detail.unitCost / 1000}
                                 placeholder={data.detail.unitCost / 1000}
                                 step={0.001}

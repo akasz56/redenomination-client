@@ -13,8 +13,7 @@ export default function UnitInput(props) {
         <Form.Group controlId={controlID} className={classes}>
             <Form.Label className={required ? "required" : ''}>{title}:</Form.Label>
             <Form.Control
-                type="number"
-                style={{ width: "6em", display: "inline" }}
+                style={{ width: "11em", display: "inline" }}
                 defaultValue={props.defaultValue}
                 required={required}
                 disabled={disabled}
