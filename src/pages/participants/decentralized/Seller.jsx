@@ -5,7 +5,7 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice } from '../../../Utils';
+import { capitalize, displayPrice, numberInputFormat } from '../../../Utils';
 
 export function PostPriceDS({ data, timer }) {
     const [status, setStatus] = useState(false);

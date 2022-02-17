@@ -3,7 +3,7 @@ import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice } from '../../../Utils'
+import { capitalize, displayPrice, numberInputFormat } from '../../../Utils'
 import LoadingComponent from '../../../components/Loading';
 import { useState } from 'react';
 
