@@ -1,14 +1,15 @@
-import { useState } from "react"
-import { useEffect } from "react"
-import { useReducer } from "react"
+import { useState, useEffect, useReducer, useCallback } from "react"
 import socket from "../../adapters/SocketIO"
 import { capitalize, printLog, sortPhases } from "../../Utils"
 import BlankScreen from "./BlankScreen"
+import { participantStage } from "./Participants"
 import { BuyerIdleDS, ShopHandler } from "./decentralized/Buyer"
 import { PostPriceDS, SellerIdleDS } from "./decentralized/Seller"
-import { participantStage } from "./Participants"
 import { BuyerIdleScreen, FlashSaleScreen } from "./posted-offer/Buyer"
 import { PostPriceScreen, SellerIdleScreen } from "./posted-offer/Seller"
+import BuyerAuctionScreen from "./double-auction/Buyer"
+import SellerAuctionScreen from "./double-auction/Seller"
+import { Button, Modal } from "react-bootstrap"
 
 const simulationType = {
     PO: "Posted Offer",
@@ -89,11 +90,120 @@ export default function PhaseHandler({ data, setStateStage }) {
     }
 }
 
-
 function DAHandler({ data, dispatch }) {
-    return <BlankScreen lineNumber="DA DONE" />
-    // initialize Stage
-    // listen socket
+    const [isBreak, setIsBreak] = useState(false);
+    const [timer, setTimer] = useState(data.timer * 60);
+    const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
+    const [matched, setMatched] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
+    const auctionDoneRoutine = useCallback(() => {
+        console.log("auctionDoneRoutine");
+        const breakTimeout = setTimeout(() => {
+            setIsBreak(false);
+            clearTimeout(breakTimeout);
+            dispatch({ type: reducerActions.NEXT_PHASE });
+        }, 5000);
+    }, [])
+
+    const notify = useCallback(() => {
+        console.log("notify");
+        setShowModal(true);
+        const notifTimeout = setTimeout(() => {
+            setShowModal(false)
+            clearTimeout(notifTimeout);
+        }, 3000);
+    }, [])
+
+    // eventListener
+    useEffect(() => {
+        function doubleAuctionListHandler(res) {
+            console.log("doubleAuctionListHandler", res);
+            setSocketData({
+                minPrice: res.minPrice,
+                maxPrice: res.maxPrice
+            });
+        }
+        socket.on("doubleAuctionList", doubleAuctionListHandler);
+
+        function isDoneDAHandler(res) {
+            console.log("isDoneDAHandler", res);
+            auctionDoneRoutine();
+        }
+        socket.on("da:isDone", isDoneDAHandler);
+
+        function bidMatchHandler(res) {
+            console.log("bidMatchHandler", res);
+            notify();
+            setMatched(true);
+        }
+        socket.on("bidMatch", bidMatchHandler);
+
+        return () => {
+            socket.off("doubleAuctionList");
+            socket.off("da:isDone");
+            socket.off("bidMatch");
+        }
+    }, [auctionDoneRoutine, notify])
+
+    // nextStageCleanup
+    useEffect(() => {
+        console.log("nextStageCleanup");
+        setTimer(data.timer * 60)
+        setSocketData({ minPrice: "-", maxPrice: "-" });
+        setMatched(false);
+    }, [isBreak, data.timer])
+
+    // Timer
+    useEffect(() => {
+        console.log("Timer");
+        const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+
+        if (timer <= 0) { auctionDoneRoutine(); }
+
+        return () => {
+            clearInterval(interval);
+        }
+    });
+
+    function NotificationElement() {
+        return (
+            <Modal show={true} aria-labelledby="contained-modal-title-vcenter" centered>
+                <Modal.Header>
+                    <Modal.Title>Notifikasi</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Terdapat match harga, Transaksi dilakukan</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => { setShowModal(false) }}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+
+    const viewData = { ...data, socketData: socketData, matched: matched, isBreak: isBreak };
+    if (showModal) {
+        if (data.type === "seller") {
+            return <>
+                <SellerAuctionScreen data={viewData} timer={timer} />
+                <NotificationElement />
+            </>
+        }
+        else if (data.type === "buyer") {
+            return <>
+                <BuyerAuctionScreen data={viewData} timer={timer} />
+                <NotificationElement />
+            </>
+        }
+        else { return <BlankScreen lineNumber="032" /> }
+    } else {
+        if (data.type === "seller") { return <SellerAuctionScreen data={viewData} timer={timer} /> }
+        else if (data.type === "buyer") { return <BuyerAuctionScreen data={viewData} timer={timer} /> }
+        else { return <BlankScreen lineNumber="031" /> }
+    }
+
+
 }
 
 const postedOfferStages = {
@@ -209,10 +319,10 @@ function DSHandler({ data, dispatch }) {
         }
         socket.on("decentralizedList", decentralizedListHandler);
 
-        function isDonePOHandler(res) {
+        function isDoneDSHandler(res) {
             if (res) { setStage(decentralizedStages.FLASH_SALE); }
         }
-        socket.on("ds:isDone", isDonePOHandler);
+        socket.on("ds:isDone", isDoneDSHandler);
 
         return () => {
             socket.off("decentralizedList");

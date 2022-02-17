@@ -1,37 +1,25 @@
-import { useEffect, useState, useReducer } from 'react';
-import { Button, Container, Form, Image, Modal } from 'react-bootstrap'
+import { Button, Container, Form, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice, printLog } from '../../../Utils'
+import { capitalize, displayPrice } from '../../../Utils'
 import LoadingComponent from '../../../components/Loading';
+import { useState } from 'react';
 
-export default function BuyerAuctionScreen({ data }) {
+export default function BuyerAuctionScreen({ data, timer }) {
+    const [inputPrice, setInputPrice] = useState(0);
+
     function submitHandler(e) {
         e.preventDefault();
         socket.emit("da:postBuyer", {
             buyerBargain: parseInt(inputPrice),
             phaseId: data.currentPhase.id
         });
-        dispatch({ type: RED_ACT.HAS_INPUTTED_ONCE })
+        // HAS_INPUTTED_ONCE
     }
 
-    if (currentState.waitBreak) return (<>
-        <LoadingComponent className='child' />
-
-        <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
-            <Modal.Header>
-                <Modal.Title>Notifikasi</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" onClick={() => { setShowModal(false) }}>
-                    Close
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    </>)
+    if (data.isBreak) return <LoadingComponent className='child' />
     else {
         return (
             <Container className='text-center d-flex flex-column'>
@@ -39,7 +27,7 @@ export default function BuyerAuctionScreen({ data }) {
                 <section className='row my-5 py-5 border rounded-pill'>
                     <div className="col-md-4">
                         <p>Bid</p>
-                        <h1 className='text-primary fw-bolder'>{currentState.socketData.minPrice}</h1>
+                        <h1 className='text-primary fw-bolder'>{data.socketData.minPrice}</h1>
                     </div>
                     <div className="col-md-4">
                         <p><span className='fw-bolder'>Unit Value</span> anda</p>
@@ -47,12 +35,12 @@ export default function BuyerAuctionScreen({ data }) {
                     </div>
                     <div className="col-md-4">
                         <p>Offer</p>
-                        <h1 className='text-primary fw-bolder'>{currentState.socketData.maxPrice}</h1>
+                        <h1 className='text-primary fw-bolder'>{data.socketData.maxPrice}</h1>
                     </div>
                 </section>
 
                 <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
-                {currentState.matched ?
+                {data.matched ?
                     <p>menunggu partisipan lain...</p>
                     :
                     <Form onSubmit={submitHandler} className='mb-5'>
@@ -84,19 +72,6 @@ export default function BuyerAuctionScreen({ data }) {
                     goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                     inflation={data.inflationType}
                 />
-
-                <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
-                    <Modal.Header>
-                        <Modal.Title>Notifikasi</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={() => { setShowModal(false) }}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
             </Container>
         )
     }

@@ -2,4 +2,5 @@ pass: ekonomi123
 
 # known issues & todos
 
-- testing di server
+- displayprice di doubleauction
+- running bug di doubleauction

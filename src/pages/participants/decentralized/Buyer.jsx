@@ -67,8 +67,11 @@ export function ShopHandler({ data, timer }) {
 
 function ShopView({ data, timer, setIsInside, setHasBought }) {
     useEffect(() => {
+        const documentTitle = document.title;
         document.title = data.shop.role + " - Decentralized";
         if (data.shop.isSold) { setIsInside(null) }
+
+        return () => { document.title = documentTitle; }
     })
 
     function clickBack() {
