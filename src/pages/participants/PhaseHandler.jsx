@@ -10,6 +10,7 @@ import { PostPriceScreen, SellerIdleScreen } from "./posted-offer/Seller"
 import BuyerAuctionScreen from "./double-auction/Buyer"
 import SellerAuctionScreen from "./double-auction/Seller"
 import LoadingComponent from "../../components/Loading"
+import { Button, Modal } from "react-bootstrap"
 
 const simulationType = {
     PO: "Posted Offer",
@@ -96,14 +97,14 @@ const doubleAuctionStages = {
 }
 function DAHandler({ data, dispatch }) {
     const [matched, setMatched] = useState(false);
-    const [socketData, setSocketData] = useState({ minPrice: "-", maxPrice: "-" });
+    const [socketData, setSocketData] = useState({ minPrice: 0, maxPrice: 0 });
     const [stage, setStage] = useState(doubleAuctionStages.AUCTION);
     const [timer, setTimer] = useState(data.timer * 60);
+    const [showModal, setShowModal] = useState(false);
 
     // eventListener
     useEffect(() => {
         function doubleAuctionListHandler(res) {
-            // consolelog("doubleAuctionListHandler", res);
             setSocketData({
                 minPrice: res.minPrice,
                 maxPrice: res.maxPrice
@@ -112,13 +113,12 @@ function DAHandler({ data, dispatch }) {
         socket.on("doubleAuctionList", doubleAuctionListHandler);
 
         function isDoneDAHandler(res) {
-            // consolelog("isDoneDAHandler", res);
             setStage(doubleAuctionStages.BREAK);
         }
         socket.on("da:isDone", isDoneDAHandler);
 
         function bidMatchHandler(res) {
-            // consolelog("bidMatchHandler", res);
+            setShowModal(true)
             setMatched(true);
         }
         socket.on("bidMatch", bidMatchHandler);
@@ -132,14 +132,12 @@ function DAHandler({ data, dispatch }) {
 
     // resetTimer
     useEffect(() => {
-        // consolelog("resetTimer");
         setTimer(data.timer * 60)
         if (stage === doubleAuctionStages.BREAK) {
-            // consolelog("Break");
             const breakTimeout = setTimeout(() => {
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(doubleAuctionStages.AUCTION);
-                setSocketData({ minPrice: "-", maxPrice: "-" });
+                setSocketData({ minPrice: 0, maxPrice: 0 });
                 setMatched(false);
                 clearTimeout(breakTimeout);
             }, 5000);
@@ -148,11 +146,9 @@ function DAHandler({ data, dispatch }) {
 
     // Timer
     useEffect(() => {
-        // consolelog("setInterval");
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
 
         if (timer <= 0) {
-            // consolelog("timer", timer)
             setTimer(data.timer * 60)
             setStage(doubleAuctionStages.BREAK);
         }
@@ -162,16 +158,38 @@ function DAHandler({ data, dispatch }) {
         }
     });
 
-    const viewData = { ...data, socketData: socketData, matched: matched };
+    // notification Modal
+    useEffect(() => {
+        if (showModal) {
+            const notifTimeout = setTimeout(() => {
+                setShowModal(false)
+                clearTimeout(notifTimeout);
+            }, 3000);
+        }
+    }, [showModal])
 
+    const viewData = { ...data, socketData: socketData, matched: matched };
     switch (stage) {
         case doubleAuctionStages.AUCTION:
-            if (data.type === "seller") { return <SellerAuctionScreen data={viewData} timer={timer} /> }
-            else if (data.type === "buyer") { return <BuyerAuctionScreen data={viewData} timer={timer} /> }
+            if (data.type === "seller") {
+                return <>
+                    <SellerAuctionScreen data={viewData} timer={timer} />
+                    {showModal ? <NotificationModal showModal={showModal} setShowModal={setShowModal} /> : ""}
+                </>
+            }
+            else if (data.type === "buyer") {
+                return <>
+                    <BuyerAuctionScreen data={viewData} timer={timer} />
+                    {showModal ? <NotificationModal showModal={showModal} setShowModal={setShowModal} /> : ""}
+                </>
+            }
             else { return <BlankScreen lineNumber="011" /> }
 
         case doubleAuctionStages.BREAK:
-            return <LoadingComponent className='child' />
+            return <>
+                <LoadingComponent className='child' />
+                {showModal ? <NotificationModal showModal={showModal} setShowModal={setShowModal} /> : ""}
+            </>
 
         default:
             return <BlankScreen lineNumber="010" />
@@ -190,9 +208,7 @@ function POHandler({ data, dispatch }) {
 
     // eventListener
     useEffect(() => {
-        // consolelog("eventListener")
         function postedOfferListHandler(res) {
-            // consolelog("eventListener", "postedOfferListHandler", res)
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
@@ -210,13 +226,11 @@ function POHandler({ data, dispatch }) {
         socket.on("postedOfferList", postedOfferListHandler);
 
         function isDonePOHandler(res) {
-            // consolelog("eventListener", "isDonePOHandler", res)
             if (res) { setStage(postedOfferStages.FLASH_SALE); }
         }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
-            // consolelog("eventListener", "refresh");
             socket.off("postedOfferList");
             socket.off("po:isDone");
         }
@@ -224,12 +238,10 @@ function POHandler({ data, dispatch }) {
 
     // resetTimer
     useEffect(() => {
-        // consolelog("resetTimer");
         setTimer(data.timer * 60)
     }, [stage, data.timer])
 
     useEffect(() => {
-        // consolelog("setInterval");
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
 
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
@@ -335,4 +347,34 @@ function DSHandler({ data, dispatch }) {
         default:
             return <BlankScreen lineNumber="030" />
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Extras
+function NotificationModal({ showModal, setShowModal }) {
+    return (
+        <Modal show={showModal} aria-labelledby="contained-modal-title-vcenter" centered>
+            <Modal.Header>
+                <Modal.Title>Notifikasi</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
+            <Modal.Footer>
+                <Button variant="primary" onClick={() => { setShowModal(false) }}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    )
 }
