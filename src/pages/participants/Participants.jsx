@@ -40,7 +40,7 @@ export default function Participants() {
         case participantStage.SIMULATION:
             return <PhaseHandler data={stateData} setStateStage={setStateStage} />
         case participantStage.COMPLETE:
-            return <CompleteScreenHandler data={stateData} setStateStage={setStateStage} />
+            return <CompleteScreenHandler data={stateData} />
 
         default:
             return <BlankScreen lineNumber="000" />

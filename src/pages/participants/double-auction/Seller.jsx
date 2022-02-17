@@ -27,7 +27,7 @@ export default function SellerAuctionScreen({ data, timer }) {
                 <section className='row my-5 py-5 border rounded-pill'>
                     <div className="col-md-4">
                         <p>Bid</p>
-                        <h1 className='text-primary fw-bolder'>{data.socketData.minPrice}</h1>
+                        <h1 className='text-primary fw-bolder'>{displayPrice(data.socketData.minPrice, data.currentPhase.phaseType)}</h1>
                     </div>
                     <div className="col-md-4">
                         <p><span className='fw-bolder'>Unit Cost</span> anda</p>
@@ -35,7 +35,7 @@ export default function SellerAuctionScreen({ data, timer }) {
                     </div>
                     <div className="col-md-4">
                         <p>Offer</p>
-                        <h1 className='text-primary fw-bolder'>{data.socketData.maxPrice}</h1>
+                        <h1 className='text-primary fw-bolder'>{displayPrice(data.socketData.maxPrice, data.currentPhase.phaseType)}</h1>
                     </div>
                 </section>
 

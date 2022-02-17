@@ -6,7 +6,7 @@ import Label from "../../components/Label";
 import LoadingComponent from "../../components/Loading";
 import { capitalize } from "../../Utils";
 
-export default function CompleteScreenHandler({ data, setStateStage }) {
+export default function CompleteScreenHandler({ data }) {
     const [rewards, setRewards] = useState(0)
 
     useEffect(() => {
@@ -30,7 +30,7 @@ function CompleteScreen({ data }) {
     }
 
     function generateLink() {
-        return "https://wa.me/" + kontak + "?text=Saya menerima reward sebesar " + data.rewards + " dalam simulasi " + data.simulationType + " (" + data.loginToken + ")"
+        return "https://wa.me/" + kontak + "?text=Saya menerima reward sebesar " + data.rewards + " dalam simulasi " + data.simulationType + " (" + data.detail.loginToken + ")"
     }
 
     return (
@@ -52,7 +52,7 @@ function CompleteScreen({ data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                phase={data.simulationType + " (" + data.loginToken + ")"}
+                phase={data.simulationType + " (" + data.detail.loginToken + ")"}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
             />

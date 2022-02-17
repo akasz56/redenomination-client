@@ -1,6 +1,11 @@
 pass: ekonomi123
 
-# known issues & todos
+# todos
+
+- thousands separator
+- username list in simulation.jsx
+
+# known issues
 
 - displayprice di doubleauction
 - running bug di doubleauction
