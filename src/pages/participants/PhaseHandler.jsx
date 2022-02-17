@@ -153,6 +153,7 @@ function DAHandler({ data, dispatch }) {
 
         if (timer <= 0) {
             // consolelog("timer", timer)
+            setTimer(data.timer * 60)
             setStage(doubleAuctionStages.BREAK);
         }
 
@@ -232,9 +233,8 @@ function POHandler({ data, dispatch }) {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
 
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            // consolelog("timer", timer);
-            // consolelog("countSold", countSold);
             setCountSold(0);
+            setTimer(data.timer * 60)
             dispatch({ type: reducerActions.NEXT_PHASE });
             setStage(postedOfferStages.POST_PRICE);
         }
@@ -242,7 +242,7 @@ function POHandler({ data, dispatch }) {
         return () => {
             clearInterval(interval);
         }
-    });
+    }, [countSold, data.participantNumber, dispatch, timer]);
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
@@ -311,6 +311,7 @@ function DSHandler({ data, dispatch }) {
 
         if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
             setCountSold(0);
+            setTimer(data.timer * 60)
             dispatch({ type: reducerActions.NEXT_PHASE });
             setStage(decentralizedStages.POST_PRICE);
         }
