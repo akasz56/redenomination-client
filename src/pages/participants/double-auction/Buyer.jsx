@@ -11,10 +11,14 @@ export default function BuyerAuctionScreen({ data, timer }) {
 
     function submitHandler(e) {
         e.preventDefault();
-        socket.emit("da:postBuyer", {
-            buyerBargain: parseInt(inputPrice),
-            phaseId: data.currentPhase.id
-        });
+        if (inputPrice >= data.detail.unitCost) {
+            socket.emit("da:postBuyer", {
+                buyerBargain: Number(inputPrice),
+                phaseId: data.currentPhase.id
+            });
+        } else {
+            alert("harga kurang dari unit cost anda!")
+        }
     }
 
     return (

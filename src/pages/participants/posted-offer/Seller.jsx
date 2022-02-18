@@ -13,11 +13,15 @@ export function PostPriceScreen({ data, timer }) {
 
     function submitHandler(e) {
         e.preventDefault()
-        socket.emit("po:inputSellerPrice", {
-            price: parseInt(price),
-            phaseId: data.currentPhase.id
-        })
-        setStatus(true);
+        if (price >= data.detail.unitCost) {
+            socket.emit("po:inputSellerPrice", {
+                price: Number(price),
+                phaseId: data.currentPhase.id
+            })
+            setStatus(true);
+        } else {
+            alert("harga kurang dari unit cost anda!")
+        }
     }
 
     return (

@@ -14,7 +14,8 @@ import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
 import { CSVLink } from 'react-csv';
-
+import UnitProfit from '../../../components/UnitProfit';
+import UnitPlayer from '../../../components/UnitPlayer';
 
 export default function Simulation() {
     const [loading, setLoading] = useState(true);
@@ -186,48 +187,77 @@ export default function Simulation() {
                     <Button className='w-100 py-lg-2' onClick={showCreateSessionForm}>+ Tambah ulangan</Button>
 
                     {dataSummary ?
-                        <section style={{ marginTop: "5rem" }} className="row">
-                            <h1>Ringkasan Simulasi</h1>
+                        <>
+                            <UnitProfit buyers={dataGet.buyers} sellers={dataGet.sellers} budget={dataGet.simulationBudget} />
+
+                            <section style={{ marginTop: "5rem" }} className="row">
+                                <h1>Ringkasan Simulasi</h1>
+                                <hr />
+                                <div className='col-md-6'>
+                                    <Line data={dataSummary.trx} width={"100px"} height={"50px"}
+                                        options={{
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: 'Jumlah Transaksi',
+                                                },
+                                            },
+                                        }}
+                                    />
+                                    <CSVLink
+                                        filename={'Jumlah Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                        data={[
+                                            ["Ulangan"].concat(dataSummary.trx.labels),
+                                            ...dataSummary.trx.datasets.map(dataset => [dataset.label, ...dataset.data])
+                                        ]}>Download Jumlah Transaksi</CSVLink>
+                                </div>
+                                <div className='col-md-6'>
+                                    <Line data={dataSummary.price} width={"100px"} height={"50px"}
+                                        options={{
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: 'Harga kesepakatan',
+                                                },
+                                            },
+                                        }}
+                                    />
+                                    <CSVLink
+                                        filename={'Harga Kesepakatan Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                        data={[
+                                            ["Ulangan"].concat(dataSummary.price.labels),
+                                            ...dataSummary.price.datasets.map(dataset => [dataset.label, ...dataset.data])
+                                        ]}>Download Harga Kesepakatan Transaksi</CSVLink>
+                                </div>
+                            </section>
+                        </>
+                        :
+                        <section style={{ marginTop: "5rem" }} className='row'>
+                            <h1>Peserta</h1>
                             <hr />
-                            <div className='col-md-6'>
-                                <Line data={dataSummary.trx} width={"100px"} height={"50px"}
-                                    options={{
-                                        plugins: {
-                                            title: {
-                                                display: true,
-                                                text: 'Jumlah Transaksi',
-                                            },
-                                        },
-                                    }}
-                                />
-                                <CSVLink
-                                    filename={'Jumlah Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
-                                    data={[
-                                        ["Ulangan"].concat(dataSummary.trx.labels),
-                                        ...dataSummary.trx.datasets.map(dataset => [dataset.label, ...dataset.data])
-                                    ]}>Download Jumlah Transaksi</CSVLink>
+                            <div className="col-md-6">
+                                <p className="fw-bold text-center">Daftar Penjual</p>
+                                {dataGet.sellers.map((item, i) => (
+                                    <UnitPlayer
+                                        key={i + 1}
+                                        id={i + 1}
+                                        role="penjual"
+                                        item={item}
+                                    />
+                                ))}
                             </div>
-                            <div className='col-md-6'>
-                                <Line data={dataSummary.price} width={"100px"} height={"50px"}
-                                    options={{
-                                        plugins: {
-                                            title: {
-                                                display: true,
-                                                text: 'Harga kesepakatan',
-                                            },
-                                        },
-                                    }}
-                                />
-                                <CSVLink
-                                    filename={'Harga Kesepakatan Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
-                                    data={[
-                                        ["Ulangan"].concat(dataSummary.price.labels),
-                                        ...dataSummary.price.datasets.map(dataset => [dataset.label, ...dataset.data])
-                                    ]}>Download Harga Kesepakatan Transaksi</CSVLink>
+                            <div className="col-md-6">
+                                <p className="fw-bold text-center">Daftar Pembeli</p>
+                                {dataGet.buyers.map((item, i) => (
+                                    <UnitPlayer
+                                        key={i + 1}
+                                        id={i + 1}
+                                        role="pembeli"
+                                        item={item}
+                                    />
+                                ))}
                             </div>
                         </section>
-                        :
-                        <></>
                     }
 
                     <section style={{ marginTop: "5rem" }} className='info'>

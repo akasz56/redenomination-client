@@ -7,33 +7,23 @@ import { participantStage } from './Participants';
 import "./Ready.css";
 
 export default function ReadyScreenHandler({ data, setStateStage, setStateData }) {
+    const [ready, setReady] = useState(false)
+
     useEffect(() => {
-        function readyCountHandler(res) {
+        socket.on("readyCount", (res) => {
             if (res.numberOfReadyPlayer === res.totalPlayer) {
                 setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
                 setStateStage(participantStage.SIMULATION);
                 socket.off("readyCount");
             }
-        }
-        socket.on("readyCount", readyCountHandler);
+        });
 
-        return () => { socket.off("readyCount"); }
-    }, [setStateData, setStateStage])
-
-    return <ReadyScreen data={data} />
-}
-
-function ReadyScreen({ data }) {
-    const [ready, setReady] = useState(false)
-
-    useEffect(() => {
         socket.emit("isClientReady")
         socket.on("isClientReady", (res) => {
             setReady(res.isReady);
+            socket.off("isClientReady")
         })
-
-        return () => { socket.off("isClientReady") }
-    }, [])
+    }, []);
 
     function btnHandler(e) {
         e.preventDefault()
