@@ -28,6 +28,7 @@ export default function Participants() {
             }
         }
         socket.on("serverMessage", serverMessageHandler)
+        console.log(socket._callbacks);
 
         return () => {
             socket.off("serverMessage")

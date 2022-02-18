@@ -10,20 +10,23 @@ export default function ReadyScreenHandler({ data, setStateStage, setStateData }
     const [ready, setReady] = useState(false)
 
     useEffect(() => {
-        socket.on("readyCount", (res) => {
-            if (res.numberOfReadyPlayer === res.totalPlayer) {
-                setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
-                setStateStage(participantStage.SIMULATION);
-                socket.off("readyCount");
-            }
-        });
-
         socket.emit("isClientReady")
         socket.on("isClientReady", (res) => {
             setReady(res.isReady);
             socket.off("isClientReady")
         })
     }, []);
+
+    useEffect(() => {
+        socket.on("readyCount", (res) => {
+            console.log(res)
+            if (res.numberOfReadyPlayer === res.totalPlayer) {
+                setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
+                setStateStage(participantStage.SIMULATION);
+                socket.off("readyCount");
+            }
+        });
+    }, [socket])
 
     function btnHandler(e) {
         e.preventDefault()
