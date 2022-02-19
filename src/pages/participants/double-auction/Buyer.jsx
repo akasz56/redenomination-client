@@ -67,11 +67,11 @@ export default function BuyerAuctionScreen({ data, timer }) {
                                 const value = numberInputFormat(e, e.target.value)
                                 setInputPrice(value)
                             }}
-                            min={data.detail.unitCost}
+                            min={data.detail.unitValue}
                             placeholder={(data.currentPhase.phaseType !== "postRedenomPrice") ?
-                                data.detail.unitCost
+                                data.detail.unitValue
                                 :
-                                data.detail.unitCost / 1000
+                                data.detail.unitValue / 1000
                             }
                         />
 
