@@ -31,12 +31,17 @@ export function ShopHandler({ data, timer }) {
     const [isInside, setIsInside] = useState(null);
     const [hasBought, setHasBought] = useState(false);
 
+    useEffect(() => {
+        document.title = "Decentralized";
+    }, [isInside])
+
     function clickHandler(item) {
-        setIsInside(item)
+        setIsInside(item.decentralizedId)
     }
 
     if (isInside) {
-        return <ShopView data={{ ...data, shop: isInside, hasBought: hasBought }} timer={timer} setIsInside={setIsInside} setHasBought={setHasBought} />
+        const shop = sellers.find((item) => item.decentralizedId === isInside);
+        return <ShopView data={{ ...data, shop: shop, hasBought: hasBought }} timer={timer} setIsInside={setIsInside} setHasBought={setHasBought} />
     } else {
         return (
             <Container className='text-center d-flex flex-column'>
@@ -46,7 +51,7 @@ export function ShopHandler({ data, timer }) {
                     {data.seller.map((item, i) => (
                         <Card
                             key={i}
-                            variant={(item.isSold) ? "done" : (hasBought ? "wait" : "decentralized")}
+                            variant={(item.status) ? "done" : (hasBought ? "wait" : "decentralized")}
                             className="mb-3"
                             role={item.role}
                             onBtnClick={(e) => { clickHandler(item) }}
@@ -67,11 +72,11 @@ export function ShopHandler({ data, timer }) {
 
 function ShopView({ data, timer, setIsInside, setHasBought }) {
     useEffect(() => {
-        const documentTitle = document.title;
         document.title = data.shop.role + " - Decentralized";
-        if (data.shop.isSold) { setIsInside(null) }
+    }, [])
 
-        return () => { document.title = documentTitle; }
+    useEffect(() => {
+        if (data.shop.isSold) { setIsInside(null) }
     })
 
     function clickBack() {
@@ -109,7 +114,7 @@ function ShopView({ data, timer, setIsInside, setHasBought }) {
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
             <p className='mt-5'>Harga yang ditawarkan oleh <span className='fw-bold'>{data.shop.role}</span> adalah</p>
-            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>Rp. {data.shop.price}</h1>
+            <h1 className='mb-4 mb-xl-5 text-primary fw-bolder'>{displayPrice(data.shop.price, data.currentPhase.phaseType)}</h1>
 
             {data.hasBought ? <p className='mt-5'>menunggu partisipan lain...</p> : block}
 

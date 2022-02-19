@@ -2,12 +2,6 @@ pass: ekonomi123
 
 # todos
 
+- isSessionDone implementation
+
 # known issues
-
--
-
-# tests
-
-- decentralized 4p
-- decentralized 4p timer
-- decentralized 4p same room

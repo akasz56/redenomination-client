@@ -302,7 +302,7 @@ function DSHandler({ data, dispatch }) {
                     sellerId: item.sellerId,
                     role: "Penjual " + (i + 1),
                     price: item.price,
-                    status: (item.isSold) ? "done" : "",
+                    status: item.isSold,
                     decentralizedId: item.id
                 }
             })
