@@ -40,9 +40,9 @@ export function saveAuth(role, idtoken) {
     }
 }
 
-export function logout(next) {
+export function logout(next = () => { }) {
     localStorage.removeItem('auth');
-    next()
+    next();
 }
 
 export function sortPhases(phases) {
