@@ -94,7 +94,11 @@ export function priceMask(num) {
     if (isNaN(num)) {
         return 0;
     } else {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let [part1, part2] = num.toString().split(".", 2);
+        return ((part2 !== undefined) ?
+            part1.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + part2
+            :
+            part1.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }
 }
 
@@ -105,12 +109,12 @@ function priceUnMask(str) {
     unformatted = unformatted.split(parts[0]).join("");
     unformatted = unformatted.split(parts[1]).join(".");
 
-    return parseFloat(unformatted);
+    return unformatted;
 }
 
 export function numberInputFormat(e, str) {
     const value = priceUnMask(str);
     const maskedValue = priceMask(value);
     e.target.value = maskedValue;
-    return value
+    return parseFloat(value)
 }
