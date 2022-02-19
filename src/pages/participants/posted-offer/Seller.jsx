@@ -20,7 +20,7 @@ export function PostPriceScreen({ data, timer }) {
                 })
             }
         }
-    }, [timer])
+    }, [data, timer, status])
 
     function submitHandler(e) {
         e.preventDefault()

@@ -16,7 +16,7 @@ export default function CompleteScreenHandler({ data }) {
         }
         socket.emit("collectProfit", { participantId: data.detail.id })
         socket.once("collectedProfit", collectedProfitHandler);
-    }, [])
+    }, [data])
 
     return <CompleteScreen data={{ ...data, rewards: rewards }} />
 }

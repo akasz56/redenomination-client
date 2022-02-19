@@ -179,7 +179,9 @@ export default function Session() {
                     buyers: res.buyers
                 });
             })
-            socket.on("admin:isSessionDone",)
+            socket.on("admin:isSessionDone", res => {
+                console.log("admin:isSessionDone", res);
+            })
         }, [])
 
         useEffect(() => {

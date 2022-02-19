@@ -149,7 +149,7 @@ function DAHandler({ data, dispatch }) {
                 clearTimeout(breakTimeout);
             }, 5000);
         }
-    }, [stage, data.timer])
+    }, [stage, data.timer, dispatch])
 
     // Timer
     useEffect(() => {
@@ -163,7 +163,7 @@ function DAHandler({ data, dispatch }) {
         return () => {
             clearInterval(interval);
         }
-    });
+    }, [timer, data.timer]);
 
     // notification Modal
     useEffect(() => {
@@ -263,7 +263,7 @@ function POHandler({ data, dispatch }) {
         return () => {
             clearInterval(interval);
         }
-    }, [countSold, data.participantNumber, dispatch, timer]);
+    }, [data, timer, dispatch, stage, countSold]);
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
@@ -342,7 +342,7 @@ function DSHandler({ data, dispatch }) {
         return () => {
             clearInterval(interval);
         }
-    });
+    }, [data, timer, dispatch, stage, countSold]);
 
     switch (stage) {
         case decentralizedStages.POST_PRICE:

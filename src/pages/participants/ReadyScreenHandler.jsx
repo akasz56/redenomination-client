@@ -25,7 +25,7 @@ export default function ReadyScreenHandler({ data, setStateStage, setStateData }
                 socket.off("readyCount");
             }
         });
-    }, [socket])
+    }, [setStateData, setStateStage])
 
     function btnHandler(e) {
         e.preventDefault()

@@ -20,7 +20,7 @@ export function PostPriceDS({ data, timer }) {
                 })
             }
         }
-    }, [timer])
+    }, [data, timer, status])
 
     function submitHandler(e) {
         e.preventDefault()
