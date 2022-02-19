@@ -20,7 +20,8 @@ export default function Home() {
         e.preventDefault();
 
         setLoading(true);
-        socket.emit("loginToken", { "token": token, "username": username });
+
+        socket.emit("loginToken", { "token": token.toUpperCase(), "username": username });
         socket.emit("join", token);
         socket.on("serverMessage", res => {
             if (res.status === 200) {
