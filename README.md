@@ -2,8 +2,6 @@ pass: ekonomi123
 
 # todos
 
-- anda sudah masuk sbg participants
-
 # known issues
 
 - unitvalue unitcost pas post redenom

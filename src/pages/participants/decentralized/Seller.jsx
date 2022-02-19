@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Container, Form, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
@@ -10,6 +10,17 @@ import { capitalize, displayPrice, numberInputFormat } from '../../../Utils';
 export function PostPriceDS({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
+
+    useEffect(() => {
+        if (timer <= 0) {
+            if (!status) {
+                socket.emit("ds:inputSellerPrice", {
+                    price: Number(data.detail.unitCost),
+                    phaseId: data.currentPhase.id
+                })
+            }
+        }
+    }, [timer])
 
     function submitHandler(e) {
         e.preventDefault()

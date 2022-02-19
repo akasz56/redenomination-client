@@ -244,11 +244,13 @@ function POHandler({ data, dispatch }) {
     useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
 
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            setCountSold(0);
-            setTimer(data.timer * 60)
-            dispatch({ type: reducerActions.NEXT_PHASE });
-            setStage(postedOfferStages.POST_PRICE);
+        if (stage === postedOfferStages.FLASH_SALE) {
+            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+                setCountSold(0);
+                setTimer(data.timer * 60)
+                dispatch({ type: reducerActions.NEXT_PHASE });
+                setStage(postedOfferStages.POST_PRICE);
+            }
         }
 
         return () => {
@@ -321,11 +323,13 @@ function DSHandler({ data, dispatch }) {
     useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
 
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            setCountSold(0);
-            setTimer(data.timer * 60)
-            dispatch({ type: reducerActions.NEXT_PHASE });
-            setStage(decentralizedStages.POST_PRICE);
+        if (stage === decentralizedStages.FLASH_SALE) {
+            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+                setCountSold(0);
+                setTimer(data.timer * 60)
+                dispatch({ type: reducerActions.NEXT_PHASE });
+                setStage(decentralizedStages.POST_PRICE);
+            }
         }
 
         return () => {
