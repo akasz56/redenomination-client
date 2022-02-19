@@ -105,10 +105,17 @@ function DAHandler({ data, dispatch }) {
     // eventListener
     useEffect(() => {
         function doubleAuctionListHandler(res) {
-            setSocketData({
-                minPrice: res.minPrice,
-                maxPrice: res.maxPrice
-            });
+            console.log(res);
+            setSocketData(
+                prev => {
+                    const temp = {
+                        minPrice: (prev.minPrice > res.minPrice) ? res.minPrice : prev.minPrice,
+                        maxPrice: (prev.maxPrice < res.maxPrice) ? res.maxPrice : prev.maxPrice
+                    }
+                    console.log(temp);
+                    return temp;
+                }
+            );
         }
         socket.on("doubleAuctionList", doubleAuctionListHandler);
 
