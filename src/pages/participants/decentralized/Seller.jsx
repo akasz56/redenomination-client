@@ -13,14 +13,27 @@ export function PostPriceDS({ data, timer }) {
 
     function submitHandler(e) {
         e.preventDefault()
-        if (price >= data.detail.unitCost) {
-            socket.emit("ds:inputSellerPrice", {
-                price: Number(price),
-                phaseId: data.currentPhase.id
-            })
-            setStatus(true);
+
+        if (data.currentPhase.phaseType !== "postRedenomPrice") {
+            if (price >= data.detail.unitCost) {
+                socket.emit("ds:inputSellerPrice", {
+                    price: Number(price),
+                    phaseId: data.currentPhase.id
+                })
+                setStatus(true);
+            } else {
+                alert("harga kurang dari unit cost anda!")
+            }
         } else {
-            alert("harga kurang dari unit cost anda!")
+            if (price >= data.detail.unitCost / 1000) {
+                socket.emit("ds:inputSellerPrice", {
+                    price: Number(price),
+                    phaseId: data.currentPhase.id
+                })
+                setStatus(true);
+            } else {
+                alert("harga kurang dari unit cost anda!")
+            }
         }
     }
 
@@ -38,28 +51,17 @@ export function PostPriceDS({ data, timer }) {
                 <Form onSubmit={submitHandler} className='mt-5'>
                     <Form.Group controlId="inputHarga">
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda tetapkan</Form.Label>
-                        {(data.currentPhase.phaseType !== "postRedenomPrice") ?
-                            <Form.Control
-                                className='text-center' required
-                                onChange={e => {
-                                    const value = numberInputFormat(e, e.target.value)
-                                    setPrice(value)
-                                }}
-                                min={data.detail.unitCost}
-                                placeholder={data.detail.unitCost}
-                            />
-                            :
-                            <Form.Control
-                                className='text-center' required
-                                onChange={e => {
-                                    const value = numberInputFormat(e, e.target.value)
-                                    setPrice(value)
-                                }}
-                                min={data.detail.unitCost / 1000}
-                                placeholder={data.detail.unitCost / 1000}
-                                step={0.001}
-                            />
-                        }
+                        <Form.Control className='text-center' required
+                            onChange={e => {
+                                const value = numberInputFormat(e, e.target.value)
+                                setPrice(value)
+                            }}
+                            placeholder={(data.currentPhase.phaseType !== "postRedenomPrice") ?
+                                data.detail.unitCost
+                                :
+                                data.detail.unitCost / 1000
+                            }
+                        />
                     </Form.Group>
                     <Button type="submit" className='mt-3 py-3 px-5 fs-4'>Tetapkan</Button>
                 </Form>

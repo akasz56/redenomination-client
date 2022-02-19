@@ -19,7 +19,6 @@ export default function ReadyScreenHandler({ data, setStateStage, setStateData }
 
     useEffect(() => {
         socket.on("readyCount", (res) => {
-            console.log(res)
             if (res.numberOfReadyPlayer === res.totalPlayer) {
                 setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
                 setStateStage(participantStage.SIMULATION);

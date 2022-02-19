@@ -79,7 +79,6 @@ function ShopView({ data, timer, setIsInside, setHasBought }) {
     }
 
     function clickBuy() {
-        console.log("data.shop", data.shop)
         if (window.confirm("yakin membeli?")) {
             socket.emit("ds:buy", {
                 decentralizedId: data.shop.decentralizedId,

@@ -2,13 +2,12 @@ pass: ekonomi123
 
 # todos
 
-- username list in simulation.jsx
-- notification di double auction
+- anda sudah masuk sbg participants
 
 # known issues
 
-- di hosting gabisa start phase ga listen ready count?????
-- numberInputFormat jadi round???
+- unitvalue unitcost pas post redenom
+- sortphase buat data gan
 
 # tests
 

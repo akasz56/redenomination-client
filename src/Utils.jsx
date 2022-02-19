@@ -40,11 +40,6 @@ export function saveAuth(role, idtoken) {
     }
 }
 
-export function getParticipantId() {
-    let savedAuth = JSON.parse(localStorage.getItem("auth"));
-    return savedAuth.id;
-}
-
 export function logout(next) {
     localStorage.removeItem('auth');
     next()
