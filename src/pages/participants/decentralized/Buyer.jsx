@@ -40,7 +40,7 @@ export function ShopHandler({ data, timer }) {
     }
 
     if (isInside) {
-        const shop = sellers.find((item) => item.decentralizedId === isInside);
+        const shop = data.sellers.find((item) => item.decentralizedId === isInside);
         return <ShopView data={{ ...data, shop: shop, hasBought: hasBought }} timer={timer} setIsInside={setIsInside} setHasBought={setHasBought} />
     } else {
         return (
