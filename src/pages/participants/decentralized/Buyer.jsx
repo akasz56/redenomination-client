@@ -40,7 +40,7 @@ export function ShopHandler({ data, timer }) {
     }
 
     if (isInside) {
-        const shop = data.sellers.find((item) => item.decentralizedId === isInside);
+        const shop = data.seller.find((item) => item.decentralizedId === isInside);
         return <ShopView data={{ ...data, shop: shop, hasBought: hasBought }} timer={timer} setIsInside={setIsInside} setHasBought={setHasBought} />
     } else {
         return (
@@ -102,7 +102,7 @@ function ShopView({ data, timer, setIsInside, setHasBought }) {
         </>
         :
         <>
-            <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>Rp. {data.detail.unitValue}</span></p>
+            <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>Rp. {displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}</span></p>
             <div className='mt-3'>
                 <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i className='bx bx-arrow-back'></i> Kembali</Button>
                 <Button onClick={clickBuy} className='fs-4 py-2 px-4 ms-3'> <i className='bx bxs-cart-add' ></i> Beli</Button>

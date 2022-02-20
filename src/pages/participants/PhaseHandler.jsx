@@ -97,7 +97,7 @@ const doubleAuctionStages = {
 }
 function DAHandler({ data, dispatch }) {
     const [matched, setMatched] = useState(false);
-    const [socketData, setSocketData] = useState({ minPrice: 0, maxPrice: 0 });
+    const [socketData, setSocketData] = useState({ bid: 0, offer: 0 });
     const [stage, setStage] = useState(doubleAuctionStages.AUCTION);
     const [timer, setTimer] = useState(data.timer * 60);
     const [showModal, setShowModal] = useState(false);
@@ -105,14 +105,12 @@ function DAHandler({ data, dispatch }) {
     // eventListener
     useEffect(() => {
         function doubleAuctionListHandler(res) {
-            console.log(res);
             setSocketData(
                 prev => {
                     const temp = {
-                        minPrice: (prev.minPrice > res.minPrice) ? res.minPrice : prev.minPrice,
-                        maxPrice: (prev.maxPrice < res.maxPrice) ? res.maxPrice : prev.maxPrice
+                        bid: (prev.bid > res.bid) ? res.bid : prev.bid,
+                        offer: (prev.offer < res.offer) ? res.offer : prev.offer
                     }
-                    console.log(temp);
                     return temp;
                 }
             );
@@ -144,7 +142,7 @@ function DAHandler({ data, dispatch }) {
             const breakTimeout = setTimeout(() => {
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(doubleAuctionStages.AUCTION);
-                setSocketData({ minPrice: 0, maxPrice: 0 });
+                setSocketData({ bid: 0, offer: 0 });
                 setMatched(false);
                 clearTimeout(breakTimeout);
             }, 5000);
@@ -248,22 +246,23 @@ function POHandler({ data, dispatch }) {
         setTimer(data.timer * 60)
     }, [stage, data.timer])
 
+    // timer
     useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
-
-        if (stage === postedOfferStages.FLASH_SALE) {
-            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                setCountSold(0);
-                setTimer(data.timer * 60)
-                dispatch({ type: reducerActions.NEXT_PHASE });
-                setStage(postedOfferStages.POST_PRICE);
-            }
-        }
 
         return () => {
             clearInterval(interval);
         }
-    }, [data, timer, dispatch, stage, countSold]);
+    }, [timer]);
+
+    if (stage === postedOfferStages.FLASH_SALE) {
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+            setCountSold(0);
+            setTimer(data.timer * 60)
+            dispatch({ type: reducerActions.NEXT_PHASE });
+            setStage(postedOfferStages.POST_PRICE);
+        }
+    }
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
@@ -327,22 +326,23 @@ function DSHandler({ data, dispatch }) {
         setTimer(data.timer * 60)
     }, [stage, data.timer])
 
+    // timer
     useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
-
-        if (stage === decentralizedStages.FLASH_SALE) {
-            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                setCountSold(0);
-                setTimer(data.timer * 60)
-                dispatch({ type: reducerActions.NEXT_PHASE });
-                setStage(decentralizedStages.POST_PRICE);
-            }
-        }
 
         return () => {
             clearInterval(interval);
         }
-    }, [data, timer, dispatch, stage, countSold]);
+    }, [timer]);
+
+    if (stage === decentralizedStages.FLASH_SALE) {
+        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+            setCountSold(0);
+            setTimer(data.timer * 60)
+            dispatch({ type: reducerActions.NEXT_PHASE });
+            setStage(decentralizedStages.POST_PRICE);
+        }
+    }
 
     switch (stage) {
         case decentralizedStages.POST_PRICE:
