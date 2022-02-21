@@ -160,7 +160,6 @@ export default function Session() {
     }
 
     function ViewRun() {
-        const [isLive, setIsLive] = useState(false);
         const [participant, setParticipant] = useState({
             sellers: data.simulation.sellers,
             buyers: data.simulation.buyers
@@ -168,10 +167,6 @@ export default function Session() {
 
         useEffect(() => {
             socket.emit("adminLoginToken", { "token": data.simulation.token })
-            socket.on("adminLoginToken", res => {
-                setIsLive(true)
-                socket.off("adminLoginToken")
-            })
 
             socket.on("admin:activePlayers", res => {
                 setParticipant({
@@ -179,15 +174,35 @@ export default function Session() {
                     buyers: res.buyers
                 });
             })
+
             socket.on("admin:isSessionDone", res => {
-                console.log("admin:isSessionDone", res);
+                const res = await finishSession(urlParams.id)
+                if (res.status === 200) {
+                    setIsRunning(false)
+                    window.location.reload()
+                } else {
+                    setLoading(false)
+                    printLog(res);
+                    alert("Terjadi Kesalahan");
+                }
+                window.location.reload();
             })
+
+            return () => {
+                socket.on("admin:activePlayers");
+                socket.on("admin:isSessionDone");
+            }
         }, [])
 
         useEffect(() => {
             socket.on("serverMessage", res => {
                 printLog(res)
             })
+
+
+            return () => {
+                socket.on("serverMessage");
+            }
         })
 
         return (
