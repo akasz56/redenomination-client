@@ -105,15 +105,7 @@ function DAHandler({ data, dispatch }) {
     // eventListener
     useEffect(() => {
         function doubleAuctionListHandler(res) {
-            setSocketData(
-                prev => {
-                    const temp = {
-                        bid: (prev.bid > res.bid) ? res.bid : prev.bid,
-                        offer: (prev.offer < res.offer) ? res.offer : prev.offer
-                    }
-                    return temp;
-                }
-            );
+            setSocketData({ bid: res.bid, offer: res.offer });
         }
         socket.on("doubleAuctionList", doubleAuctionListHandler);
 
