@@ -2,16 +2,11 @@ pass: ekonomi123
 
 # todos
 
-- isSessionDone implementation
+- admin:isSessionDone implementation
+- activePhase implementation
+- new entity participants (known issue 001)
+- no upgrades, polling by default (known issue 001)
 
 # known issues
 
-- jangan pake socket id lagi deh, pake seller id aja
-- bikin entity baru buat participants
-
-- posted offer
-
-- double auction masuk ke sistem tp ga muncul gan
-
-- offer turun
-- bid naik
+- (001) suka disconnect transport error

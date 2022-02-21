@@ -7,15 +7,7 @@ import { participantStage } from './Participants';
 import "./Ready.css";
 
 export default function ReadyScreenHandler({ data, setStateStage, setStateData }) {
-    const [ready, setReady] = useState(false)
-
-    useEffect(() => {
-        socket.emit("isClientReady")
-        socket.on("isClientReady", (res) => {
-            setReady(res.isReady);
-            socket.off("isClientReady")
-        })
-    }, []);
+    const [ready, setReady] = useState(data.detail.isReady)
 
     useEffect(() => {
         socket.on("readyCount", (res) => {

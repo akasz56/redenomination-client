@@ -27,7 +27,7 @@ const phaseName = [
 const reducerActions = {
     INIT_PHASE: "INIT_PHASE",
     NEXT_PHASE: "NEXT_PHASE",
-    CHECK_CURRENT_PHASE: "CHECK_CURRENT_PHASE",
+    CONTINUE_PHASE: "CONTINUE_PHASE",
 }
 
 export default function PhaseHandler({ data, setStateStage }) {
@@ -62,7 +62,7 @@ export default function PhaseHandler({ data, setStateStage }) {
                     };
                 }
 
-            case reducerActions.CHECK_CURRENT_PHASE:
+            case reducerActions.CONTINUE_PHASE:
                 printLog(prevState)
                 return prevState;
 
@@ -255,14 +255,16 @@ function POHandler({ data, dispatch }) {
         }
     }, [timer]);
 
-    if (stage === postedOfferStages.FLASH_SALE) {
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            setCountSold(0);
-            setTimer(data.timer * 60)
-            dispatch({ type: reducerActions.NEXT_PHASE });
-            setStage(postedOfferStages.POST_PRICE);
+    useEffect(() => {
+        if (stage === postedOfferStages.FLASH_SALE) {
+            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+                setCountSold(0);
+                setTimer(data.timer * 60)
+                dispatch({ type: reducerActions.NEXT_PHASE });
+                setStage(postedOfferStages.POST_PRICE);
+            }
         }
-    }
+    }, [stage, timer, countSold, data.participantNumber, data.timer, dispatch])
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
@@ -335,14 +337,16 @@ function DSHandler({ data, dispatch }) {
         }
     }, [timer]);
 
-    if (stage === decentralizedStages.FLASH_SALE) {
-        if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-            setCountSold(0);
-            setTimer(data.timer * 60)
-            dispatch({ type: reducerActions.NEXT_PHASE });
-            setStage(decentralizedStages.POST_PRICE);
+    useEffect(() => {
+        if (stage === decentralizedStages.FLASH_SALE) {
+            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
+                setCountSold(0);
+                setTimer(data.timer * 60)
+                dispatch({ type: reducerActions.NEXT_PHASE });
+                setStage(decentralizedStages.POST_PRICE);
+            }
         }
-    }
+    }, [stage, timer, countSold, data.participantNumber, data.timer, dispatch])
 
     switch (stage) {
         case decentralizedStages.POST_PRICE:
