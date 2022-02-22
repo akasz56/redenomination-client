@@ -107,7 +107,7 @@ function DAHandler({ data, dispatch }) {
     // eventListener
     useEffect(() => {
         function doubleAuctionListHandler(res) {
-            setSocketData({ bid: res.bid, offer: res.offer });
+            setSocketData({ bid: isNaN(res.bid) ? 0 : res.bid, offer: isNaN(res.offer) ? 0 : res.offer });
         }
         socket.on("doubleAuctionList", doubleAuctionListHandler);
 
@@ -381,7 +381,7 @@ function NotificationModal({ showModal, setShowModal }) {
             <Modal.Header>
                 <Modal.Title>Notifikasi</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Terdapat match harga dengan Penjual</Modal.Body>
+            <Modal.Body>Terdapat match harga</Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" onClick={() => { setShowModal(false) }}>
                     Close

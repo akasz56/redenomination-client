@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import Label from "../../components/Label";
-import { capitalize } from "../../Utils";
+import { capitalize, logout } from "../../Utils";
 
 export default function CompleteScreenHandler({ data }) {
+    useEffect(() => {
+        logout();
+    }, [])
 
     return (
         <Container className='text-center d-flex flex-column'>

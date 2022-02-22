@@ -27,7 +27,6 @@ export default function Participants() {
                     socket.once("serverMessage", res => {
                         if (res.status === 200) {
                             if (res.data.isSessionRunning) {
-                                console.log(res.data);
                                 saveAuth("participant", { token: loggedIn.token, username: loggedIn.username, });
                                 setStateData(res.data)
                             } else {
