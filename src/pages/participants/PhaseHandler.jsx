@@ -11,6 +11,7 @@ import BuyerAuctionScreen from "./double-auction/Buyer"
 import SellerAuctionScreen from "./double-auction/Seller"
 import LoadingComponent from "../../components/Loading"
 import { Button, Modal } from "react-bootstrap"
+import dayjs from "dayjs"
 
 const simulationType = {
     PO: "Posted Offer",
@@ -99,6 +100,7 @@ function DAHandler({ data, dispatch }) {
     const [matched, setMatched] = useState(false);
     const [socketData, setSocketData] = useState({ bid: 0, offer: 0 });
     const [stage, setStage] = useState(doubleAuctionStages.AUCTION);
+    const [startTime] = useState(dayjs().toDate());
     const [timer, setTimer] = useState(data.timer * 60);
     const [showModal, setShowModal] = useState(false);
 
@@ -143,7 +145,7 @@ function DAHandler({ data, dispatch }) {
 
     // Timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"),) } }, 1000);
 
         if (timer <= 0) {
             setTimer(data.timer * 60)
@@ -201,6 +203,7 @@ function POHandler({ data, dispatch }) {
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
+    const [startTime] = useState(dayjs().toDate());
     const [timer, setTimer] = useState(data.timer * 60);
 
     // eventListener
@@ -240,12 +243,12 @@ function POHandler({ data, dispatch }) {
 
     // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"),) } }, 1000);
 
         return () => {
             clearInterval(interval);
         }
-    }, [timer]);
+    }, [timer, data.timer]);
 
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
@@ -283,6 +286,7 @@ function DSHandler({ data, dispatch }) {
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [stage, setStage] = useState(decentralizedStages.POST_PRICE);
+    const [startTime] = useState(dayjs().toDate());
     const [timer, setTimer] = useState(data.timer * 60);
 
     // eventListener
@@ -322,12 +326,12 @@ function DSHandler({ data, dispatch }) {
 
     // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(timer - 1) } }, 1000);
+        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"),) } }, 1000);
 
         return () => {
             clearInterval(interval);
         }
-    }, [timer]);
+    }, [timer, data.timer]);
 
     useEffect(() => {
         if (stage === decentralizedStages.FLASH_SALE) {

@@ -175,7 +175,7 @@ export default function Session() {
                 });
             })
 
-            socket.on("admin:isSessionDone", res => {
+            socket.on("admin:isSessionDone", async () => {
                 const res = await finishSession(urlParams.id)
                 if (res.status === 200) {
                     setIsRunning(false)

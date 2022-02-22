@@ -23,7 +23,6 @@ export default function Home() {
 
         socket.emit("loginToken", { "token": token.toUpperCase(), "username": username });
         socket.on("serverMessage", res => {
-            console.log(res);
             if (res.status === 200) {
                 if (res.data.isSessionRunning) {
                     saveAuth("participant", res.data.detail.id)
