@@ -175,18 +175,7 @@ export default function Session() {
                 });
             })
 
-            socket.on("admin:isSessionDone", async () => {
-                const res = await finishSession(urlParams.id)
-                if (res.status === 200) {
-                    setIsRunning(false)
-                    window.location.reload()
-                } else {
-                    setLoading(false)
-                    printLog(res);
-                    alert("Terjadi Kesalahan");
-                }
-                window.location.reload();
-            })
+            socket.on("admin:isSessionDone", async () => { window.location.reload(); })
 
             return () => {
                 socket.off("admin:activePlayers");

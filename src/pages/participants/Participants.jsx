@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
@@ -17,7 +17,6 @@ export default function Participants() {
     const { state } = useLocation();
     const [stateData, setStateData] = useState(state);
     const [stateStage, setStateStage] = useState(participantStage.READY);
-    const navigate = useNavigate();
 
     useEffect(() => {
         function serverMessageHandler(res) {
@@ -30,7 +29,7 @@ export default function Participants() {
                             if (res.data.isSessionRunning) {
                                 console.log(res.data);
                                 saveAuth("participant", { token: loggedIn.token, username: loggedIn.username, });
-                                navigate('/participant', { state: res.data });
+                                setStateData(res.data)
                             } else {
                                 window.alert("Simulasi belum dijalankan");
                                 logout(() => { window.location.reload() })
