@@ -7,10 +7,10 @@ import { participantStage } from './Participants';
 import "./Ready.css";
 
 export default function ReadyScreenHandler({ data, setStateStage, setStateData }) {
-    const [ready, setReady] = useState(data.detail.isReady)
+    const [ready, setReady] = useState(false)
 
     useEffect(() => {
-        socket.on("readyCount", (res) => {
+        socket.on("readyCount", res => {
             if (res.numberOfReadyPlayer === res.totalPlayer) {
                 setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
                 setStateStage(participantStage.SIMULATION);
@@ -21,9 +21,15 @@ export default function ReadyScreenHandler({ data, setStateStage, setStateData }
 
     function btnHandler(e) {
         e.preventDefault()
-        const changeStatus = !ready;
-        setReady(changeStatus);
         socket.emit("toggleReady");
+        socket.on("serverMessage", res => {
+            if (res.status === 200) {
+                setReady(res.data.user.isReady);
+                const changeStatus = !ready;
+                setReady(changeStatus);
+            }
+            socket.off("serverMessage");
+        })
     }
 
     return (
