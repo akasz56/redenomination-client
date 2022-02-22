@@ -23,7 +23,7 @@ export default function UnitProfit(props) {
                     />
                     <Form.Control disabled
                         style={{ width: "12em" }}
-                        defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format((buyer.profit / totalProfit) * budget)}
+                        defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((buyer.profit / totalProfit) * budget) + 5000)}
                     />
                 </div>
             ))}
@@ -35,7 +35,7 @@ export default function UnitProfit(props) {
                     />
                     <Form.Control disabled
                         style={{ width: "12em" }}
-                        defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format((seller.profit / totalProfit) * budget)}
+                        defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((seller.profit / totalProfit) * budget) + 5000)}
                     />
                 </div>
             ))}
