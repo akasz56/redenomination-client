@@ -14,7 +14,7 @@ export default function Home() {
 
     useEffect(() => {
         document.title = "Redenomination Project App";
-    });
+    }, []);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -25,7 +25,7 @@ export default function Home() {
         socket.on("serverMessage", res => {
             if (res.status === 200) {
                 if (res.data.isSessionRunning) {
-                    saveAuth("participant", res.data.detail.id)
+                    saveAuth("participant", { token, username, });
                     navigate('/participant', { state: res.data });
                     socket.off("serverMessage");
                 } else {

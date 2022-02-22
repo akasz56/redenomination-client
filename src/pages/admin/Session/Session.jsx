@@ -189,20 +189,14 @@ export default function Session() {
             })
 
             return () => {
-                socket.on("admin:activePlayers");
-                socket.on("admin:isSessionDone");
+                socket.off("admin:activePlayers");
+                socket.off("admin:isSessionDone");
             }
         }, [])
 
         useEffect(() => {
-            socket.on("serverMessage", res => {
-                printLog(res)
-            })
-
-
-            return () => {
-                socket.on("serverMessage");
-            }
+            socket.on("serverMessage", res => { printLog(res) })
+            return () => { socket.off("serverMessage"); }
         })
 
         return (

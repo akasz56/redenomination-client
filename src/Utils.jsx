@@ -17,27 +17,32 @@ export function myToken() {
 }
 
 export function saveAuth(role, idtoken) {
-    if (localStorage.getItem("auth") === null) {
-        switch (role) {
-            case "participant":
-                localStorage.setItem('auth', JSON.stringify({
-                    login: true,
-                    role: role,
-                    id: idtoken,
-                }));
-                break;
-            case "admin":
-                localStorage.setItem('auth', JSON.stringify({
-                    login: true,
-                    role: role,
-                    token: idtoken,
-                }));
-                break;
+    switch (role) {
+        case "participant":
+            localStorage.setItem('auth', JSON.stringify({
+                login: true,
+                role: role,
+                id: idtoken,
+            }));
+            break;
+        case "admin":
+            localStorage.setItem('auth', JSON.stringify({
+                login: true,
+                role: role,
+                token: idtoken,
+            }));
+            break;
 
-            default:
-                break;
-        }
+        default:
+            break;
     }
+}
+
+export function checkIfLoggedIn() {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+
+    if (auth) { return { token: auth.id.token, username: auth.id.username } }
+    return undefined;
 }
 
 export function logout(next = () => { }) {

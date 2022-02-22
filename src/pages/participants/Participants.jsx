@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { logout, printLog } from "../../Utils";
+import { checkIfLoggedIn, logout, printLog, saveAuth } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -17,12 +17,31 @@ export default function Participants() {
     const { state } = useLocation();
     const [stateData, setStateData] = useState(state);
     const [stateStage, setStateStage] = useState(participantStage.READY);
+    const navigate = useNavigate();
 
     useEffect(() => {
         function serverMessageHandler(res) {
             if (res.status === 401) {
-                window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
-                logout(() => { window.location.reload("/"); });
+                const loggedIn = checkIfLoggedIn();
+                if (loggedIn) {
+                    socket.emit("loginToken", { "token": loggedIn.token.toUpperCase(), "username": loggedIn.username });
+                    socket.once("serverMessage", res => {
+                        if (res.status === 200) {
+                            if (res.data.isSessionRunning) {
+                                console.log(res.data);
+                                saveAuth("participant", { token: loggedIn.token, username: loggedIn.username, });
+                                navigate('/participant', { state: res.data });
+                            } else {
+                                window.alert("Simulasi belum dijalankan");
+                                logout(() => { window.location.reload() })
+                            }
+                        } else {
+                            printLog(res)
+                            const msg = "(" + res.status + ") " + res.message;
+                            window.alert(msg);
+                        }
+                    })
+                }
             } else if (res.status >= 300) {
                 printLog(res)
             }
