@@ -60,13 +60,13 @@ export function sortPhases(phases) {
 export function displayPrice(price, phaseType = "preRedenomPrice") {
     switch (phaseType) {
         case "preRedenomPrice":
-            return "Rp. " + parseInt(price)
+            return "Rp. " + priceMask(price)
 
         case "transitionPrice":
-            return "Rp. " + parseInt(price) + " / Rp. " + parseInt(parseInt(price) / 1000)
+            return "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseInt(price) / 1000)
 
         case "postRedenomPrice":
-            return "Rp. " + parseInt(price) / 1000;
+            return "Rp. " + priceMask(parseInt(price) / 1000)
 
         default:
             break;

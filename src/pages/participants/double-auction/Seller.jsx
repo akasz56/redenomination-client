@@ -3,7 +3,7 @@ import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice, numberInputFormat } from '../../../Utils'
+import { adjustPrice, capitalize, displayPrice, numberInputFormat } from '../../../Utils'
 import { useState } from 'react';
 
 export default function SellerAuctionScreen({ data, timer }) {
@@ -13,29 +13,13 @@ export default function SellerAuctionScreen({ data, timer }) {
     function submitHandler(e) {
         e.preventDefault();
 
-        if (data.currentPhase.phaseType !== "postRedenomPrice") {
-            if (inputPrice >= data.detail.unitCost) {
-                socket.emit("da:postSeller", {
-                    sellerBargain: Number(inputPrice),
-                    phaseId: data.currentPhase.id
-                });
-            } else {
-                alert("harga kurang dari unit cost anda!")
-            }
+        if (inputPrice >= adjustPrice(data.detail.unitCost, data.currentPhase.phaseType)) {
+            socket.emit("da:postSeller", {
+                sellerBargain: Number(inputPrice),
+                phaseId: data.currentPhase.id
+            });
         } else {
-            if (inputPrice >= data.detail.unitCost / 1000) {
-                socket.emit("da:postSeller", {
-                    sellerBargain: Number(inputPrice),
-                    phaseId: data.currentPhase.id
-                });
-                setShowSuccess(true);
-                const successTimeout = setTimeout(() => {
-                    setShowSuccess(false);
-                    clearTimeout(successTimeout);
-                }, 3000)
-            } else {
-                alert("harga kurang dari unit cost anda!")
-            }
+            alert("harga kurang dari unit cost anda!")
         }
     }
 
@@ -66,7 +50,7 @@ export default function SellerAuctionScreen({ data, timer }) {
                 <Form onSubmit={submitHandler} className='mb-5'>
                     <Form.Group controlId="inputHarga">
                         {showSuccess ?
-                            <Alert variant={success}>Harga berhasil terinput</Alert>
+                            <Alert variant={"success"}>Harga berhasil terinput</Alert>
                             :
                             <></>
                         }

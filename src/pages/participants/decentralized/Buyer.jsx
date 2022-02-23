@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Button, Container, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
@@ -35,12 +35,15 @@ export function ShopHandler({ data, timer }) {
         document.title = "Decentralized";
     }, [isInside])
 
+    const shop = useMemo(() => {
+        data.seller.find((item) => item.decentralizedId === isInside)
+    }, [isInside, data]);
+
     function clickHandler(item) {
         setIsInside(item.decentralizedId)
     }
 
     if (isInside) {
-        const shop = data.seller.find((item) => item.decentralizedId === isInside);
         return <ShopView data={{ ...data, shop: shop, hasBought: hasBought }} timer={timer} setIsInside={setIsInside} setHasBought={setHasBought} />
     } else {
         return (
@@ -77,7 +80,7 @@ function ShopView({ data, timer, setIsInside, setHasBought }) {
 
     useEffect(() => {
         if (data.shop.isSold) { setIsInside(null) }
-    })
+    }, [data])
 
     function clickBack() {
         setIsInside(null)
@@ -102,7 +105,7 @@ function ShopView({ data, timer, setIsInside, setHasBought }) {
         </>
         :
         <>
-            <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>Rp. {displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}</span></p>
+            <p className='mb-3'>Unit Value anda sebesar <span className='fw-bold'>{displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}</span></p>
             <div className='mt-3'>
                 <Button onClick={clickBack} variant='secondary' className='fs-4 py-2 px-4'> <i className='bx bx-arrow-back'></i> Kembali</Button>
                 <Button onClick={clickBuy} className='fs-4 py-2 px-4 ms-3'> <i className='bx bxs-cart-add' ></i> Beli</Button>

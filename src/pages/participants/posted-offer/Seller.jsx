@@ -5,14 +5,14 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer'
-import { capitalize, displayPrice, numberInputFormat } from '../../../Utils'
+import { adjustPrice, capitalize, displayPrice, numberInputFormat } from '../../../Utils'
 
 export function PostPriceScreen({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
     useEffect(() => {
-        if (timer <= 0) {
+        if (timer <= 1) {
             if (!status) {
                 socket.emit("po:inputSellerPrice", {
                     price: Number(data.detail.unitCost),
@@ -25,26 +25,14 @@ export function PostPriceScreen({ data, timer }) {
     function submitHandler(e) {
         e.preventDefault()
 
-        if (data.currentPhase.phaseType !== "postRedenomPrice") {
-            if (price >= data.detail.unitCost) {
-                socket.emit("po:inputSellerPrice", {
-                    price: Number(price),
-                    phaseId: data.currentPhase.id
-                })
-                setStatus(true);
-            } else {
-                alert("harga kurang dari unit cost anda!")
-            }
+        if (price >= adjustPrice(data.detail.unitCost, data.currentPhase.phaseType)) {
+            socket.emit("po:inputSellerPrice", {
+                price: Number(price),
+                phaseId: data.currentPhase.id
+            })
+            setStatus(true);
         } else {
-            if (price >= data.detail.unitCost / 1000) {
-                socket.emit("po:inputSellerPrice", {
-                    price: Number(price),
-                    phaseId: data.currentPhase.id
-                })
-                setStatus(true);
-            } else {
-                alert("harga kurang dari unit cost anda!")
-            }
+            alert("harga kurang dari unit cost anda!")
         }
     }
 
@@ -67,11 +55,7 @@ export function PostPriceScreen({ data, timer }) {
                                 const value = numberInputFormat(e, e.target.value)
                                 setPrice(value)
                             }}
-                            placeholder={(data.currentPhase.phaseType !== "postRedenomPrice") ?
-                                data.detail.unitCost
-                                :
-                                data.detail.unitCost / 1000
-                            }
+                            placeholder={adjustPrice(data.detail.unitCost, data.currentPhase.phaseType)}
                         />
                     </Form.Group>
                     <Button type="submit" className='mt-3 py-3 px-5 fs-4'>Tetapkan</Button>

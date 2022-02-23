@@ -159,7 +159,7 @@ export default function Create() {
                         </div>
                         <div className="col-md-6">
                             <Form.Group controlId="simulationBudget">
-                                <Form.Label className='required'>Anggaran Simulasi</Form.Label>
+                                <Form.Label className='required'>Anggaran per Ulangan</Form.Label>
                                 <br />
                                 <Form.Control
                                     defaultValue={formData.simulationBudget} required
