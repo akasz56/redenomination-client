@@ -1,44 +1,48 @@
 import { useMemo } from "react"
-import { Form } from "react-bootstrap"
+import { sumByUsername } from "../Utils";
+import { Form } from "react-bootstrap";
 
-export default function UnitProfit(props) {
-    const buyers = useMemo(() => props.buyers, [props.buyers])
-    const sellers = useMemo(() => props.sellers, [props.sellers])
-    const budget = useMemo(() => props.budget, [props.budget])
-
-    const totalProfit = useMemo(() => {
-        return (buyers.reduce((prev, buyer) => prev + buyer.profit, 0) +
-            sellers.reduce((prev, seller) => prev + seller.profit, 0))
-    }, [buyers, sellers])
+export default function UnitProfit({ profits, budget }) {
+    const usernames = useMemo(() => sumByUsername(profits), [profits])
+    const totalProfit = useMemo(() => usernames.reduce((sum, item) => sum + item.profit, 0), [usernames])
+    const usernames2 = usernames;
+    const usernames1 = usernames2.splice(0, usernames.length / 2);
 
     return (
         <section className='row'>
             <h1 className="text-center" style={{ marginTop: "7rem" }}>Reward masing-masing peserta Simulasi</h1>
             <hr />
-            {buyers.map((buyer, i) => (
-                <div key={i} className='col-md-6 d-flex justify-content-center mb-3'>
-                    <Form.Control disabled
-                        style={{ width: "8em" }}
-                        defaultValue={buyer.username}
-                    />
-                    <Form.Control disabled
-                        style={{ width: "12em" }}
-                        defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((buyer.profit / totalProfit) * budget) + 5000)}
-                    />
-                </div>
-            ))}
-            {sellers.map((seller, i) => (
-                <div key={i} className='col-md-6 d-flex justify-content-center mb-3'>
-                    <Form.Control disabled
-                        style={{ width: "8em" }}
-                        defaultValue={seller.username}
-                    />
-                    <Form.Control disabled
-                        style={{ width: "12em" }}
-                        defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((seller.profit / totalProfit) * budget) + 5000)}
-                    />
-                </div>
-            ))}
+
+            <div className='col-md-6'>
+                {usernames1.map((item, i) => (
+                    <div key={i} className="d-flex justify-content-center mb-3">
+                        <Form.Control disabled
+                            style={{ width: "8em" }}
+                            defaultValue={item.username}
+                        />
+                        <Form.Control disabled
+                            style={{ width: "12em" }}
+                            defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((item.profit / totalProfit) * budget) + 5000)}
+                        />
+                    </div>
+                ))}
+            </div>
+
+            <div className='col-md-6'>
+                {usernames2.map((item, i) => (
+                    <div key={i} className="d-flex justify-content-center mb-3">
+                        <Form.Control disabled
+                            style={{ width: "8em" }}
+                            defaultValue={item.username}
+                        />
+                        <Form.Control disabled
+                            style={{ width: "12em" }}
+                            defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((item.profit / totalProfit) * budget) + 5000)}
+                        />
+                    </div>
+                ))}
+            </div>
+
         </section>
     )
 }

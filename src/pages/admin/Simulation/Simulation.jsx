@@ -8,7 +8,7 @@ import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
-import { capitalize, getRandomColor, printLog } from '../../../Utils';
+import { capitalize, getRandomColor, printLog, sessionProfitsToArray } from '../../../Utils';
 import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
@@ -188,7 +188,7 @@ export default function Simulation() {
 
                     {dataSummary ?
                         <>
-                            <UnitProfit buyers={dataGet.buyers} sellers={dataGet.sellers} budget={dataGet.simulationBudget} />
+                            <UnitProfit profits={sessionProfitsToArray(dataGet.sessions)} budget={dataGet.simulationBudget * dataGet.sessions.length} />
 
                             <section style={{ marginTop: "5rem" }} className="row">
                                 <h1>Ringkasan Simulasi</h1>

@@ -123,3 +123,27 @@ export function numberInputFormat(e, str) {
     e.target.value = maskedValue;
     return parseFloat(value)
 }
+
+export function sumByUsername(ungrouped) {
+    const grouped = ungrouped.reduce((grouppedUsername, item) => {
+        const username = (grouppedUsername[item.username] || 0);
+        grouppedUsername[item.username] = username + item.price;
+        return grouppedUsername;
+    }, {});
+
+    let returnable = [];
+
+    for (let item in grouped) {
+        returnable.push({
+            username: item,
+            profit: grouped[item]
+        });
+    }
+
+    return returnable;
+}
+
+export function sessionProfitsToArray(sessions) {
+    const sessionProfits = sessions.map(item => item.profits)
+    return sessionProfits.reduce((concated, item) => concated.concat(item), [])
+}

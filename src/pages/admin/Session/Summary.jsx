@@ -125,7 +125,7 @@ export default function Summary(props) {
                 ""
             }
 
-            <UnitProfit buyers={data.simulation.buyers} sellers={data.simulation.sellers} budget={data.simulation.simulationBudget} />
+            <UnitProfit profits={data.profits} budget={data.simulation.simulationBudget} />
         </>
     )
 }
