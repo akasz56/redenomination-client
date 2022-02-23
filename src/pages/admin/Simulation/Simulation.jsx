@@ -8,7 +8,7 @@ import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
-import { capitalize, getRandomColor, printLog, sessionProfitsToArray } from '../../../Utils';
+import { capitalize, getRandomColor, displayPrice, printLog, sessionProfitsToArray } from '../../../Utils';
 import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
@@ -291,7 +291,7 @@ export default function Simulation() {
                                     key={i + 1}
                                     id={i + 1}
                                     role="penjual"
-                                    defaultValue={parseInt(dataGet.sellers[i].unitCost)}
+                                    defaultValue={displayPrice(dataGet.sellers[i].unitCost)}
                                 />
                             ))}
                         </div>
@@ -303,7 +303,7 @@ export default function Simulation() {
                                     key={i + 1}
                                     id={i + 1}
                                     role="pembeli"
-                                    defaultValue={parseInt(dataGet.buyers[i].unitValue)}
+                                    defaultValue={displayPrice(dataGet.buyers[i].unitValue)}
                                 />
                             ))}
                         </div>
