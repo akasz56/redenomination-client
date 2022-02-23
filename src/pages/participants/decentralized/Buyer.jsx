@@ -35,16 +35,16 @@ export function ShopHandler({ data, timer }) {
         document.title = "Decentralized";
     }, [isInside])
 
-    const shop = useMemo(() => {
-        data.seller.find((item) => item.decentralizedId === isInside)
-    }, [isInside, data]);
-
     function clickHandler(item) {
         setIsInside(item.decentralizedId)
     }
 
     if (isInside) {
-        return <ShopView data={{ ...data, shop: shop, hasBought: hasBought }} timer={timer} setIsInside={setIsInside} setHasBought={setHasBought} />
+        return <ShopView
+            timer={timer}
+            setIsInside={setIsInside} setHasBought={setHasBought}
+            data={{ ...data, hasBought: hasBought, shop: data.seller.find((item) => item.decentralizedId === isInside) }}
+        />
     } else {
         return (
             <Container className='text-center d-flex flex-column'>
