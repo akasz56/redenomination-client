@@ -79,8 +79,7 @@ export default function Admin() {
     function logoutBtnHandler(e) {
         e.preventDefault();
         if (window.confirm("Yakin ingin keluar?")) {
-            localStorage.removeItem('auth');
-            window.location.href = "/"
+            logout(window.location.href = "/")
         }
     }
 

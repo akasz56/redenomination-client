@@ -150,11 +150,6 @@ export default function Session() {
                     <Link to='#' className="btn btn-primary w-100 p-4" onClick={startSession} >Jalankan Ulangan</Link>
                     <hr />
                 </section>
-
-                <section className='my-5'>
-                    <h1>Hapus Ulangan</h1>
-                    <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
-                </section>
             </>
         )
     }
@@ -259,6 +254,11 @@ export default function Session() {
                         :
                         <Summary data={data} />
                     }
+
+                    <section className='my-5'>
+                        <h1>Hapus Ulangan</h1>
+                        <Button variant="danger" onClick={showDeleteSessionForm}>Hapus Ulangan</Button>
+                    </section>
 
                     <Modal show={modalEdit} onHide={showEditSessionForm}>
                         <form onSubmit={submitEditSession}>

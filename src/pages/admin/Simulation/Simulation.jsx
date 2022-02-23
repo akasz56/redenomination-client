@@ -266,7 +266,7 @@ export default function Simulation() {
                         <div className="details">
                             <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
                             <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
-                            <p>Anggaran Simulasi : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
+                            <p>Anggaran per ulangan : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
                         </div>
                         {dataGet.goodsPic !== '' ?
                             <figure className='d-flex flex-column'>
