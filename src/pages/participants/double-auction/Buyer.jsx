@@ -1,4 +1,4 @@
-import { Button, Container, Form, Image } from 'react-bootstrap'
+import { Button, Container, Form, Image, Alert } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL';
 import Label from '../../../components/Label'
@@ -8,6 +8,7 @@ import { useState } from 'react';
 
 export default function BuyerAuctionScreen({ data, timer }) {
     const [inputPrice, setInputPrice] = useState(0);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -20,7 +21,6 @@ export default function BuyerAuctionScreen({ data, timer }) {
                 });
             } else {
                 alert("harga melebihi unit value anda!")
-
             }
         } else {
             if (inputPrice <= data.detail.unitValue / 1000) {
@@ -28,9 +28,13 @@ export default function BuyerAuctionScreen({ data, timer }) {
                     buyerBargain: Number(inputPrice),
                     phaseId: data.currentPhase.id
                 });
+                setShowSuccess(true);
+                const successTimeout = setTimeout(() => {
+                    setShowSuccess(false);
+                    clearTimeout(successTimeout);
+                }, 3000)
             } else {
                 alert("harga melebihi unit value anda!")
-
             }
         }
     }
@@ -38,6 +42,9 @@ export default function BuyerAuctionScreen({ data, timer }) {
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
+
+            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
+
             <section className='row my-5 py-5 border rounded-pill'>
                 <div className="col-md-4">
                     <p>Bid</p>
@@ -53,12 +60,16 @@ export default function BuyerAuctionScreen({ data, timer }) {
                 </div>
             </section>
 
-            <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
             {data.matched ?
                 <p>menunggu partisipan lain...</p>
                 :
                 <Form onSubmit={submitHandler} className='mb-5'>
                     <Form.Group controlId="inputHarga">
+                        {showSuccess ?
+                            <Alert variant={success}>Harga berhasil terinput</Alert>
+                            :
+                            <></>
+                        }
                         <Form.Label className='mb-3'>Masukkan <span className='fw-bolder'>harga kesepakatan</span> yang ingin anda ajukan</Form.Label>
                         <Form.Control className='text-center'
                             defaultValue={inputPrice}
