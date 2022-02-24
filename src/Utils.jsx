@@ -63,10 +63,10 @@ export function displayPrice(price, phaseType = "preRedenomPrice") {
             return "Rp. " + priceMask(price)
 
         case "transitionPrice":
-            return "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseInt(price) / 1000)
+            return "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseFloat(price) / 1000) + " (Rupiah Baru)"
 
         case "postRedenomPrice":
-            return "Rp. " + priceMask(parseInt(price) / 1000)
+            return "Rp. " + priceMask(parseFloat(price) / 1000) + " (Rupiah Baru)"
 
         default:
             break;
@@ -77,10 +77,10 @@ export function adjustPrice(price, phaseType = "preRedenomPrice") {
     switch (phaseType) {
         case "preRedenomPrice":
         case "transitionPrice":
-            return parseInt(price)
+            return parseFloat(price)
 
         case "postRedenomPrice":
-            return parseInt(price) / 1000;
+            return parseFloat(price) / 1000;
 
         default:
             break;

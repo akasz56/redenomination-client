@@ -22,7 +22,7 @@ const simulationType = {
 const phaseName = [
     "Pre-Redenominasi",
     "Transisi Redenominasi",
-    "Pasca Transisi Redenominasi"
+    "Pasca Redenominasi"
 ]
 
 const reducerActions = {

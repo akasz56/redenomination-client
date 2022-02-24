@@ -20,7 +20,7 @@ export default function Summary(props) {
                 const randomColor = getRandomColor();
                 setDataSummary({
                     price: {
-                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Redenominasi"],
                         datasets: [{
                             label: 'Rata-rata Harga kesepakatan',
                             data: res.data.phaseSummary.map((phase) => phase.avgTrxPrice),
@@ -29,7 +29,7 @@ export default function Summary(props) {
                         }]
                     },
                     trx: {
-                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                        labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Redenominasi"],
                         datasets: [{
                             label: 'Jumlah Transaksi',
                             data: res.data.phaseSummary.map((phase) => phase.avgTrxOccurrence),
@@ -79,7 +79,7 @@ export default function Summary(props) {
 
             <section className='row'>
                 <div className="col-md-6 text-center">
-                    <p>Rata-rata jumlah transaksi</p>
+                    <p>Jumlah transaksi</p>
                     <h1 className='text-primary fw-bolder'>{data.avgTrxOccurrence}</h1>
                 </div>
                 <div className="col-md-6 text-center">
@@ -111,6 +111,8 @@ export default function Summary(props) {
                         </div>
                     </section>
 
+                    <h1 className='mt-5 text-center'>Historis Redenominasi</h1>
+                    <hr />
                     {data.simulation.simulationType === "double auction" ?
                         <section className='mt-5'>
                             <ScatterSummary data={dataSummary.bargainList} labels={dataSummary.price.labels} nameArr={nameArr} />

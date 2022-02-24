@@ -36,7 +36,7 @@ export default function Simulation() {
                 if (res1.data.sessionSummary.length >= 1) {
                     setDataSummary({
                         price: {
-                            labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                            labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Redenominasi"],
                             datasets: res1.data.sessionSummary.map((session, idx) => {
                                 const randomColor = getRandomColor();
                                 return {
@@ -48,7 +48,7 @@ export default function Simulation() {
                             })
                         },
                         trx: {
-                            labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Transisi Redenominasi"],
+                            labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Redenominasi"],
                             datasets: res1.data.sessionSummary.map((session, idx) => {
                                 const randomColor = getRandomColor();
                                 return {
@@ -217,7 +217,7 @@ export default function Simulation() {
                                             plugins: {
                                                 title: {
                                                     display: true,
-                                                    text: 'Harga kesepakatan',
+                                                    text: 'Rata-rata Harga kesepakatan',
                                                 },
                                             },
                                         }}

@@ -91,7 +91,9 @@ export default function Admin() {
             </section>
 
             {summary ?
-                <CSVLink filename={"Output ANOVA " + dayjs().locale("id").format("dddd, D MMM YYYY")} data={summary}>Download Tabel ANOVA</CSVLink>
+                <CSVLink filename={"Output Struktur Data hasil eksperimen " + dayjs().locale("id").format("dddd, D MMM YYYY")} data={summary} className="btn btn-primary">
+                    <i className='bx bx-download'></i> Download Struktur Data hasil eksperimen
+                </CSVLink>
                 :
                 <></>
             }
