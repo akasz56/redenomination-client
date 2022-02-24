@@ -87,7 +87,7 @@ export function SellerIdleScreen({ data, timer }) {
                         className="mb-3"
                         role={item.role}
                     >
-                        {displayPrice(item.price, data.currentPhase.phaseType)}
+                        {displayPrice(item.price, data.currentPhase.phaseType, true)}
                     </Card>
                 ))}
             </section>

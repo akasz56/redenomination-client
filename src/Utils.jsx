@@ -57,16 +57,16 @@ export function sortPhases(phases) {
     return [phase0, phase1, phase2];
 }
 
-export function displayPrice(price, phaseType = "preRedenomPrice") {
+export function displayPrice(price, phaseType = "preRedenomPrice", isCard = false) {
     switch (phaseType) {
         case "preRedenomPrice":
             return "Rp. " + priceMask(price)
 
         case "transitionPrice":
-            return "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseFloat(price) / 1000) + " (Rupiah Baru)"
+            return "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseFloat(price) / 1000) + (isCard) ? " (Rupiah Baru)" : ""
 
         case "postRedenomPrice":
-            return "Rp. " + priceMask(parseFloat(price) / 1000) + " (Rupiah Baru)"
+            return "Rp. " + priceMask(parseFloat(price) / 1000) + (isCard) ? " (Rupiah Baru)" : ""
 
         default:
             break;
