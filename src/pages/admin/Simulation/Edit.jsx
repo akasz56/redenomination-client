@@ -92,17 +92,29 @@ export default function Edit() {
                     <form onSubmit={submitForm}>
                         <h1 className='mt-5'>Ubah Simulasi</h1>
 
-                        <Form.Group controlId='type' className="mb-3">
-                            <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
-                            <Form.Select
-                                disabled
-                                value={data.simulationType}
-                                onChange={(e) => { setData({ ...data, simulationType: e.target.value }) }}>
-                                <option value="Posted Offer">Posted Offer</option>
-                                <option value="Double Auction">Double Auction</option>
-                                <option value="Decentralized">Desentralisasi</option>
-                            </Form.Select>
-                        </Form.Group>
+                        <section className="row">
+                            <div className="col-md-6">
+                                <Form.Group controlId='type' className="mb-3">
+                                    <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
+                                    <Form.Select value={data.simulationType}
+                                        onChange={(e) => { setData({ ...data, simulationType: e.target.value }) }}>
+                                        <option value="Posted Offer">Posted Offer</option>
+                                        <option value="Double Auction">Double Auction</option>
+                                        <option value="Decentralized">Desentralisasi</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </div>
+                            <div className="col-md-6">
+                                <Form.Group controlId="growthType">
+                                    <Form.Label className='required'>Jenis Pertumbuhan Ekonomi</Form.Label>
+                                    <Form.Select value={data.growthType}
+                                        onChange={(e) => { setData({ ...data, growthType: e.target.value }) }}>
+                                        <option value={"Tinggi"}>Tinggi</option>
+                                        <option value={"Rendah"}>Rendah</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </div>
+                        </section>
 
                         <section className="row mb-3">
                             <div className="col-md-6">

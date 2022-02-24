@@ -263,10 +263,15 @@ export default function Simulation() {
                     <section style={{ marginTop: "5rem" }} className='info'>
                         <h1 className="text-center">Detail Simulasi</h1>
                         <hr />
-                        <div className="details">
-                            <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
-                            <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
-                            <p>Anggaran per ulangan : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
+                        <div className="row text-center">
+                            <div className="col-md-6">
+                                <p>Jenis Pertumbuhan Ekonomi : <span className='fw-bold'>{dataGet.growthType}</span></p>
+                                <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
+                            </div>
+                            <div className="col-md-6">
+                                <p>Anggaran per ulangan : <span className='fw-bold'>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(dataGet.simulationBudget)}</span></p>
+                                <p>Jenis Inflasi : <span className='fw-bold'>{dataGet.inflationType}</span></p>
+                            </div>
                         </div>
                         {dataGet.goodsPic !== '' ?
                             <figure className='d-flex flex-column'>

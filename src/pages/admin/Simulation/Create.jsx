@@ -16,8 +16,9 @@ export default function Create() {
         goodsType: "Inelastis",
         goodsName: '',
         inflationType: "Inflasi Rendah",
+        growthType: "Tinggi",
         participantNumber: 20,
-        simulationBudget: 200000,
+        simulationBudget: 65000,
     });
 
     useEffect(() => {
@@ -94,15 +95,29 @@ export default function Create() {
                 <form onSubmit={submitForm}>
                     <h1 className='mt-5'>Simulasi Baru</h1>
 
-                    <Form.Group controlId='type' className="mb-3">
-                        <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
-                        <Form.Select value={formData.simulationType}
-                            onChange={(e) => { setFormData({ ...formData, simulationType: e.target.value }) }}>
-                            <option value="Posted Offer">Posted Offer</option>
-                            <option value="Double Auction">Double Auction</option>
-                            <option value="Decentralized">Desentralisasi</option>
-                        </Form.Select>
-                    </Form.Group>
+                    <section className="row">
+                        <div className="col-md-6">
+                            <Form.Group controlId='type' className="mb-3">
+                                <Form.Label className='required'>Jenis sistem transaksi</Form.Label>
+                                <Form.Select value={formData.simulationType}
+                                    onChange={(e) => { setFormData({ ...formData, simulationType: e.target.value }) }}>
+                                    <option value="Posted Offer">Posted Offer</option>
+                                    <option value="Double Auction">Double Auction</option>
+                                    <option value="Decentralized">Desentralisasi</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </div>
+                        <div className="col-md-6">
+                            <Form.Group controlId="growthType">
+                                <Form.Label className='required'>Jenis Pertumbuhan Ekonomi</Form.Label>
+                                <Form.Select value={formData.growthType}
+                                    onChange={(e) => { setFormData({ ...formData, growthType: e.target.value }) }}>
+                                    <option value={"Tinggi"}>Tinggi</option>
+                                    <option value={"Rendah"}>Rendah</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </div>
+                    </section>
 
                     <section className="row mb-3">
                         <div className="col-md-6">
