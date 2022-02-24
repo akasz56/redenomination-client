@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { checkIfLoggedIn, logout, printLog, saveAuth } from "../../Utils";
+import { alertUser, checkIfLoggedIn, logout, printLog, saveAuth } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -34,14 +34,12 @@ export default function Participants() {
                                 logout(() => { window.location.reload() })
                             }
                         } else {
-                            printLog(res)
-                            const msg = "(" + res.status + ") " + res.message;
-                            window.alert(msg);
+                            alertUser(res)
                         }
                     })
                 }
             } else if (res.status >= 300) {
-                printLog(res)
+                alertUser(res)
             }
         }
         socket.on("serverMessage", serverMessageHandler)

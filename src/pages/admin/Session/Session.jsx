@@ -178,11 +178,6 @@ export default function Session() {
             }
         }, [])
 
-        useEffect(() => {
-            socket.on("serverMessage", res => { printLog(res) })
-            return () => { socket.off("serverMessage"); }
-        })
-
         return (
             <>
                 <section>

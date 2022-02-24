@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Form, Overlay, Tooltip } from 'react-bootstrap';
 
-export default function UnitInput(props) {
+export default function UnitPlayer(props) {
     const [show, setShow] = useState(false);
     const target = useRef(null);
 

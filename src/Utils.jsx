@@ -147,3 +147,9 @@ export function sessionProfitsToArray(sessions) {
     const sessionProfits = sessions.map(item => item.profits)
     return sessionProfits.reduce((concated, item) => concated.concat(item), [])
 }
+
+export function alertUser(res) {
+    printLog(res)
+    const msg = "(" + res.status + ") " + res.message;
+    window.alert(msg);
+}
