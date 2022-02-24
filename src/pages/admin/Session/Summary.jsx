@@ -127,7 +127,7 @@ export default function Summary(props) {
                 ""
             }
 
-            <UnitProfit profits={data.profits} budget={data.simulation.simulationBudget} />
+            <UnitProfit profits={data.profits} budget={data.simulation.simulationBudget} isSession />
         </>
     )
 }

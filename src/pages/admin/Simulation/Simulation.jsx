@@ -191,7 +191,7 @@ export default function Simulation() {
                             <UnitProfit profits={sessionProfitsToArray(dataGet.sessions)} budget={dataGet.simulationBudget * dataGet.sessions.length} />
 
                             <section style={{ marginTop: "5rem" }} className="row">
-                                <h1>Ringkasan Simulasi</h1>
+                                <h1 className="text-center">Ringkasan Simulasi</h1>
                                 <hr />
                                 <div className='col-md-6'>
                                     <Line data={dataSummary.trx} width={"100px"} height={"50px"}
@@ -233,7 +233,7 @@ export default function Simulation() {
                         </>
                         :
                         <section style={{ marginTop: "5rem" }} className='row'>
-                            <h1>Peserta</h1>
+                            <h1 className="text-center">Peserta</h1>
                             <hr />
                             <div className="col-md-6">
                                 <p className="fw-bold text-center">Daftar Penjual</p>
@@ -261,7 +261,7 @@ export default function Simulation() {
                     }
 
                     <section style={{ marginTop: "5rem" }} className='info'>
-                        <h1>Detail Simulasi</h1>
+                        <h1 className="text-center">Detail Simulasi</h1>
                         <hr />
                         <div className="details">
                             <p>Jenis Barang : <span className='fw-bold'>{dataGet.goodsType} ({dataGet.goodsName})</span></p>
@@ -281,7 +281,7 @@ export default function Simulation() {
                     </section>
 
                     <section style={{ marginTop: "5rem" }} className='row'>
-                        <h1>Unit Cost dan Unit Value</h1>
+                        <h1 className="text-center">Unit Cost dan Unit Value</h1>
                         <hr />
                         <div className="col-md-6">
                             <p className="fw-bold text-center">Unit Cost</p>
@@ -310,7 +310,7 @@ export default function Simulation() {
                     </section>
 
                     <section style={{ marginTop: "5rem" }} className='mb-5' >
-                        <h1>Hapus Simulasi</h1>
+                        <h1 className="text-center">Hapus Simulasi</h1>
                         <hr />
                         <Button variant="danger" className='mt-3' onClick={showDeleteSessionForm}>Hapus Simulasi</Button>
                     </section>
