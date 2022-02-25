@@ -63,10 +63,16 @@ export function displayPrice(price, phaseType = "preRedenomPrice", isCard = fals
             return "Rp. " + priceMask(price)
 
         case "transitionPrice":
-            return "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseFloat(price) / 1000) + (isCard) ? " (Rupiah Baru)" : ""
+            return (isCard) ?
+                "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseFloat(price) / 1000) + " (Rupiah Baru)"
+                :
+                "Rp. " + priceMask(price) + " / Rp. " + priceMask(parseFloat(price) / 1000)
 
         case "postRedenomPrice":
-            return "Rp. " + priceMask(parseFloat(price) / 1000) + (isCard) ? " (Rupiah Baru)" : ""
+            return (isCard) ?
+                "Rp. " + priceMask(parseFloat(price) / 1000) + " (Rupiah Baru)"
+                :
+                "Rp. " + priceMask(parseFloat(price) / 1000)
 
         default:
             break;
