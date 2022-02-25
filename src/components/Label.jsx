@@ -4,6 +4,7 @@ export default function Label(props) {
     const Element = () => {
         return (<>
             <p className='fw-bolder'>Masa {props.phase}</p>
+            <p>Anda sedang menjalani tipe simulasi {props.type}</p>
             <p>Jenis Barang: {props.goods}</p>
             <p>Jenis Inflasi: {props.inflation}</p>
         </>)

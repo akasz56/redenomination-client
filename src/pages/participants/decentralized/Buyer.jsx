@@ -19,6 +19,7 @@ export function BuyerIdleDS({ data, timer }) {
 
             <Label
                 className="mt-5 mx-auto"
+                type={data.simulationType}
                 phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
@@ -64,8 +65,9 @@ export function ShopHandler({ data, timer }) {
 
                 <Label
                     className="mt-5 mx-auto"
+                    type={data.simulationType}
                     phase={data.currentPhase.phaseName}
-                    goods={data.goodsType + " (" + data.goodsName + ")"}
+                    goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                     inflation={data.inflationType}
                 />
             </Container >
@@ -123,6 +125,7 @@ function ShopView({ data, timer, setIsInside, setHasBought }) {
 
             <Label
                 className="mt-5 mx-auto"
+                type={data.simulationType}
                 phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
