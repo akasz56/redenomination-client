@@ -52,7 +52,7 @@ function CompleteScreen({ data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                complete
+                complete={true}
                 type={capitalize(data.simulationType) + " (" + data.detail.loginToken + ")"}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}

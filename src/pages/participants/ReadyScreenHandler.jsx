@@ -6,18 +6,18 @@ import { capitalize } from '../../Utils';
 import { participantStage } from './Participants';
 import "./Ready.css";
 
-export default function ReadyScreenHandler({ data, setStateStage, setStateData }) {
+export default function ReadyScreenHandler({ data, setStateStage }) {
     const [ready, setReady] = useState(false)
 
     useEffect(() => {
         socket.on("readyCount", res => {
-            if (res.numberOfReadyPlayer === res.totalPlayer) {
-                setStateData((prev) => ({ ...prev, participantNumber: res.totalPlayer }));
-                setStateStage(participantStage.SIMULATION);
-                socket.off("readyCount");
-            }
+            if (res.numberOfReadyPlayer === res.totalPlayer) { setStateStage(participantStage.SIMULATION); }
         });
-    }, [setStateData, setStateStage])
+
+        return () => {
+            socket.off("readyCount");
+        }
+    }, [setStateStage])
 
     function btnHandler(e) {
         e.preventDefault()

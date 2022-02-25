@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { alertUser, checkIfLoggedIn, logout, printLog, saveAuth } from "../../Utils";
+import { alertUser, checkIfLoggedIn, logout, saveAuth } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -15,47 +15,71 @@ export const participantStage = {
 
 export default function Participants() {
     const { state } = useLocation();
-    const [stateData, setStateData] = useState(state);
-    const [stateStage, setStateStage] = useState(participantStage.READY);
+    const [stateData, setStateData] = useState({ ...state, sessionData: undefined });
+    const [sessionData, setSessionData] = useState(state.sessionData);
+    const [stateStage, setStateStage] = useState(false);
 
     useEffect(() => {
-        function serverMessageHandler(res) {
-            if (res.status === 401) {
-                const loggedIn = checkIfLoggedIn();
-                if (loggedIn) {
-                    socket.emit("loginToken", { "token": loggedIn.token.toUpperCase(), "username": loggedIn.username });
-                    socket.once("serverMessage", res => {
-                        if (res.status === 200) {
-                            if (res.data.isSessionRunning) {
-                                saveAuth("participant", { token: loggedIn.token, username: loggedIn.username, });
-                                setStateData(res.data)
-                            } else {
-                                window.alert("Simulasi belum dijalankan");
-                                logout(() => { window.location.reload() })
-                            }
-                        } else {
-                            alertUser(res)
-                        }
-                    })
+        function retryLogin() {
+            const loggedIn = checkIfLoggedIn();
+            if (loggedIn) {
+                relogin(loggedIn);
+            } else {
+                window.alert("Anda belum terdaftar dalam server, silahkan coba masukkan token partisipan lagi");
+                logout(() => { window.location.reload("/"); });
+            }
+        }
+
+        function relogin(auth) {
+            socket.emit("loginToken", { "token": auth.token.toUpperCase(), "username": auth.username });
+            socket.on("serverMessage", res => {
+                if (res.status === 200 && res.data.isSessionRunning) {
+                    saveAuth("participant", { token: auth.token, username: auth.username, });
+                    setStateData(res.data);
+                } else {
+                    alertUser(res)
                 }
-            } else if (res.status >= 300) {
+            })
+        }
+
+        function serverMessageHandler(res) {
+            if (res.status === 401) { retryLogin() }
+            else if (res.status === 403) { retryLogin() }
+            else if (res.status >= 300) {
                 alertUser(res)
+                console.log("alertUser", res)
+            } else {
+                console.log("serverMsg", res)
             }
         }
         socket.on("serverMessage", serverMessageHandler)
+
+        function sessionDataUpdateHandler(res) {
+            console.log("sessionDataUpdate", res);
+            setSessionData(res);
+        }
+        socket.on("sessionDataUpdate", sessionDataUpdateHandler);
 
         return () => {
             socket.off("serverMessage")
         }
     }, []);
 
+    useEffect(() => {
+        if (stateData.isSessionRunning) {
+            if (sessionData.phaseId === participantStage.READY) { setStateStage(participantStage.READY); }
+            else { setStateStage(participantStage.SIMULATION); }
+        }
+        else { setStateStage(participantStage.COMPLETE); }
+    }, [stateData, sessionData])
+
     switch (stateStage) {
         case participantStage.READY:
-            return <ReadyScreenHandler data={stateData} setStateStage={setStateStage} setStateData={setStateData} />
+            return <ReadyScreenHandler data={{ ...stateData, sessionData }} setStateStage={setStateStage} />
         case participantStage.SIMULATION:
-            return <PhaseHandler data={stateData} setStateStage={setStateStage} />
+            return <PhaseHandler data={{ ...stateData, sessionData }} setStateStage={setStateStage} />
         case participantStage.COMPLETE:
-            return <CompleteScreenHandler data={stateData} />
+            return <CompleteScreenHandler data={{ ...stateData, sessionData }} />
 
         default:
             return <BlankScreen lineNumber="000" />
