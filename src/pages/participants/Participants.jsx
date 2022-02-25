@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { alertUser, checkIfLoggedIn, logout, printLog, saveAuth } from "../../Utils";
+import { alertUser, checkIfLoggedIn, logout, saveAuth } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
