@@ -76,7 +76,7 @@ export default function SellerAuctionScreen({ data, timer }) {
 
             <Label
                 className="mt-5 mx-auto"
-                type={data.simulationType}
+                type={capitalize(data.simulationType)}
                 phase={data.currentPhase.phaseName}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}
