@@ -64,7 +64,7 @@ export function FlashSaleScreen({ data, timer }) {
                         role={item.role}
                         onBtnClick={(e) => { buyHandler(e, item) }}
                     >
-                        {displayPrice(item.price, data.currentPhase.phaseType, true)}
+                        {displayPrice(item.price, data.currentPhase.phaseType)}
                     </Card>
                 ))}
             </section>

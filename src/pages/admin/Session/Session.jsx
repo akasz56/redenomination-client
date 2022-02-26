@@ -170,7 +170,7 @@ export default function Session() {
                 });
             })
 
-            socket.on("admin:isSessionDone", async () => { window.location.reload(); })
+            socket.on("admin:isSessionDone", () => { window.location.reload(); })
 
             return () => {
                 socket.off("admin:activePlayers");
