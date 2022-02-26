@@ -38,13 +38,6 @@ export function saveAuth(role, idtoken) {
     }
 }
 
-export function checkIfLoggedIn() {
-    const auth = JSON.parse(localStorage.getItem('auth'));
-
-    if (auth) { return { token: auth.id.token, username: auth.id.username } }
-    return undefined;
-}
-
 export function logout(next = () => { }) {
     localStorage.removeItem('auth');
     next();

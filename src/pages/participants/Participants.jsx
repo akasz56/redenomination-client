@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { alertUser, checkIfLoggedIn, logout, saveAuth } from "../../Utils";
+import { alertUser } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -20,11 +20,13 @@ export default function Participants() {
 
     function retryLogin() {
         socket.emit("loginToken", { "token": state.detail.loginToken.toUpperCase(), "username": state.detail.username });
-        socket.on("serverMessage", res => {
+        function retryLoginHandler(res) {
             if (res.status === 200 && res.data.isSessionRunning) {
                 setStateData(res.data);
+                socket.off("serverMessage", retryLoginHandler)
             } else { alertUser(res) }
-        })
+        }
+        socket.once("serverMessage", retryLoginHandler)
     }
 
     useEffect(() => {
@@ -40,8 +42,8 @@ export default function Participants() {
         socket.on("sessionDataUpdate", sessionDataUpdateHandler);
 
         return () => {
-            socket.off("serverMessage")
-            socket.off("sessionDataUpdate");
+            socket.off("serverMessage", serverMessageHandler);
+            socket.off("sessionDataUpdate", sessionDataUpdateHandler);
         }
     }, []);
 

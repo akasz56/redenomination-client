@@ -178,8 +178,8 @@ export default function Session() {
             socket.on("admin:isSessionDone", isSessionDoneListener)
 
             return () => {
-                socket.off("admin:activePlayers");
-                socket.off("admin:isSessionDone");
+                socket.off("admin:activePlayers", activePlayersListener);
+                socket.off("admin:isSessionDone", isSessionDoneListener);
             }
         }, [])
 

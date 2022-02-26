@@ -123,9 +123,9 @@ function DAHandler({ data, dispatch }) {
         socket.on("bidMatch", bidMatchHandler);
 
         return () => {
-            socket.off("doubleAuctionList");
-            socket.off("da:isDone");
-            socket.off("bidMatch");
+            socket.off("doubleAuctionList", doubleAuctionListHandler);
+            socket.off("da:isDone", isDoneDAHandler);
+            socket.off("bidMatch", bidMatchHandler);
         }
     }, [])
 
@@ -232,8 +232,8 @@ function POHandler({ data, dispatch }) {
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
-            socket.off("postedOfferList");
-            socket.off("po:isDone");
+            socket.off("postedOfferList", postedOfferListHandler);
+            socket.off("po:isDone", isDonePOHandler);
         }
     }, [])
 
@@ -315,8 +315,8 @@ function DSHandler({ data, dispatch }) {
         socket.on("ds:isDone", isDoneDSHandler);
 
         return () => {
-            socket.off("decentralizedList");
-            socket.off("ds:isDone");
+            socket.off("decentralizedList", decentralizedListHandler);
+            socket.off("ds:isDone", isDoneDSHandler);
         }
     }, [])
 

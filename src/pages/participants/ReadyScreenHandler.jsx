@@ -22,14 +22,15 @@ export default function ReadyScreenHandler({ data, setStateStage, setStateData }
     function btnHandler(e) {
         e.preventDefault()
         socket.emit("toggleReady");
-        socket.on("serverMessage", res => {
+        function readyScreenResponse(res) {
             if (res.status === 200) {
                 setReady(res.data.user.isReady);
                 const changeStatus = !ready;
                 setReady(changeStatus);
             }
-            socket.off("serverMessage");
-        })
+            socket.off("serverMessage", readyScreenResponse);
+        }
+        socket.on("serverMessage", readyScreenResponse);
     }
 
     return (
