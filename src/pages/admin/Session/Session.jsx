@@ -163,14 +163,19 @@ export default function Session() {
         useEffect(() => {
             socket.emit("adminLoginToken", { "token": data.simulation.token })
 
-            socket.on("admin:activePlayers", res => {
+            function activePlayersListener(res) {
                 setParticipant({
                     sellers: res.sellers,
                     buyers: res.buyers
                 });
-            })
+            }
+            socket.on("admin:activePlayers", activePlayersListener)
 
-            socket.on("admin:isSessionDone", () => { window.location.reload(); })
+            function activePlayersListener(res) {
+                console.log(res)
+                window.location.reload();
+            }
+            socket.on("admin:isSessionDone", activePlayersListener)
 
             return () => {
                 socket.off("admin:activePlayers");
