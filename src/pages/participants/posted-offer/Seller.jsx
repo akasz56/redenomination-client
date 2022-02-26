@@ -12,13 +12,12 @@ export function PostPriceScreen({ data, timer }) {
     const [price, setPrice] = useState(false);
 
     useEffect(() => {
-        if (timer <= 1) {
-            if (!status) {
-                socket.emit("po:inputSellerPrice", {
-                    price: Number(data.detail.unitCost),
-                    phaseId: data.currentPhase.id
-                })
-            }
+        if (timer <= 1 && !status) {
+            socket.emit("po:inputSellerPrice", {
+                price: Number(data.detail.unitCost),
+                phaseId: data.currentPhase.id
+            })
+            setStatus(true)
         }
     }, [data, timer, status])
 
@@ -88,7 +87,7 @@ export function SellerIdleScreen({ data, timer }) {
                         className="mb-3"
                         role={item.role}
                     >
-                        {displayPrice(item.price, data.currentPhase.phaseType, true)}
+                        {displayPrice(item.price, data.currentPhase.phaseType)}
                     </Card>
                 ))}
             </section>
