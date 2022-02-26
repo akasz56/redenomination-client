@@ -171,11 +171,11 @@ export default function Session() {
             }
             socket.on("admin:activePlayers", activePlayersListener)
 
-            function activePlayersListener(res) {
+            function isSessionDoneListener(res) {
                 console.log(res)
                 window.location.reload();
             }
-            socket.on("admin:isSessionDone", activePlayersListener)
+            socket.on("admin:isSessionDone", isSessionDoneListener)
 
             return () => {
                 socket.off("admin:activePlayers");
