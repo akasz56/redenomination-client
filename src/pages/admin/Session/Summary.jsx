@@ -22,7 +22,7 @@ export default function Summary(props) {
                     price: {
                         labels: ["Pre-Redenominasi", "Transisi Redenominasi", "Pasca Redenominasi"],
                         datasets: [{
-                            label: 'Rata-rata Harga kesepakatan',
+                            label: 'Rata-rata Harga kesepakatan transaksi',
                             data: res.data.phaseSummary.map((phase) => phase.avgTrxPrice),
                             borderColor: randomColor,
                             backgroundColor: randomColor,
@@ -94,7 +94,7 @@ export default function Summary(props) {
                         <div className="col-md-6">
                             <Bar data={dataSummary.trx} />
                             <CSVLink
-                                filename={'Jumlah Transaksi ' + capitalize(data.simulation.simulationType) + " " + dayjs(data.simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                filename={'Jumlah Transaksi ' + capitalize(data.simulation.simulationType) + " " + capitalize(data.sessionType)}
                                 data={[
                                     dataSummary.trx.labels,
                                     ...dataSummary.trx.datasets.map(dataset => [...dataset.data])
@@ -103,7 +103,7 @@ export default function Summary(props) {
                         <div className="col-md-6">
                             <Bar data={dataSummary.price} />
                             <CSVLink
-                                filename={'Harga Kesepakatan Transaksi ' + capitalize(data.simulation.simulationType) + " " + dayjs(data.simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                filename={'Rata-rata Harga Kesepakatan Transaksi ' + capitalize(data.simulation.simulationType) + " " + capitalize(data.sessionType)}
                                 data={[
                                     dataSummary.price.labels,
                                     ...dataSummary.price.datasets.map(dataset => [...dataset.data])
