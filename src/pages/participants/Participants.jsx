@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { alertUserSocketSocket } from "../../Utils";
+import { alertUserSocket } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -16,28 +16,28 @@ export const participantStage = {
 export default function Participants() {
     const { state } = useLocation();
     if (state === null) {
-        alertUserSocketSocket({ status: "000", message: "anda belum terdaftar, silahkan login dahulu" })
+        alertUserSocket({ status: "000", message: "anda belum terdaftar, silahkan login dahulu" })
         window.location.href = "/";
     }
     const [stateData, setStateData] = useState(state);
     const [stateStage, setStateStage] = useState(participantStage.READY);
 
-    function retryLogin() {
-        socket.emit("loginToken", { "token": state.detail.loginToken.toUpperCase(), "username": state.detail.username });
-        function retryLoginHandler(res) {
-            if (res.status === 200 && res.data.isSessionRunning) {
-                setStateData(res.data);
-                socket.off("serverMessage", retryLoginHandler)
-            } else { alertUserSocketSocket(res) }
-        }
-        socket.on("serverMessage", retryLoginHandler)
-    }
-
     useEffect(() => {
+        function retryLogin() {
+            socket.emit("loginToken", { "token": state.detail.loginToken.toUpperCase(), "username": state.detail.username });
+            function retryLoginHandler(res) {
+                if (res.status === 200 && res.data.isSessionRunning) {
+                    setStateData(res.data);
+                    socket.off("serverMessage", retryLoginHandler)
+                } else { alertUserSocket(res) }
+            }
+            socket.on("serverMessage", retryLoginHandler)
+        }
+
         function serverMessageHandler(res) {
             if (res.status === 401) { retryLogin() }
             else if (res.status === 403) { retryLogin() }
-            else if (res.status >= 300) { alertUserSocketSocket(res); console.log("alertUserSocketSocket", res) }
+            else if (res.status >= 300) { alertUserSocket(res); console.log("alertUserSocket", res) }
             else { console.log("serverMsg", res) }
         }
         socket.on("serverMessage", serverMessageHandler)

@@ -4,7 +4,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import socket from '../adapters/SocketIO';
 import LoadingComponent from '../components/Loading';
 import './Home.css';
-import { alertUserSocketSocket } from '../Utils';
+import { alertUserSocket } from '../Utils';
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function Home() {
                 navigate('/participant', { state: res.data });
                 socket.off("serverMessage", loginTokenHandlerHome);
             } else {
-                alertUserSocketSocket(res)
+                alertUserSocket(res)
                 setLoading(false);
             }
         }
