@@ -38,13 +38,6 @@ export function saveAuth(role, idtoken) {
     }
 }
 
-export function checkIfLoggedIn() {
-    const auth = JSON.parse(localStorage.getItem('auth'));
-
-    if (auth) { return { token: auth.id.token, username: auth.id.username } }
-    return undefined;
-}
-
 export function logout(next = () => { }) {
     localStorage.removeItem('auth');
     next();
@@ -149,7 +142,7 @@ export function sessionProfitsToArray(sessions) {
 }
 
 export function alertUserSocket(res) {
-    printLog(res)
+    console.log("alertUserSocket", res);
     const msg = "(" + res.status + ") " + res.message;
     window.alert(msg);
 }
