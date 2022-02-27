@@ -25,6 +25,7 @@ export default function App() {
 			<Route path="/">
 				<Route index element={<Homepage />} />
 				<Route path="login" element={<Login />} />
+				<Route path="participant" element={<Participants />} />
 			</Route>
 
 			<Route path="/" element={<ProtectedRoute for='admin' />}>
@@ -46,10 +47,6 @@ export default function App() {
 					</Route>
 				</Route>
 				<Route path="participant/*" element={<Participants />} />
-			</Route>
-
-			<Route path="/" element={<ProtectedRoute for='participant' />}>
-				<Route path="participant" element={<Participants />} />
 			</Route>
 
 			<Route path="*" element={<Error404 />} />

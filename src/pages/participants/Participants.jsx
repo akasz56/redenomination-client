@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { alertUser } from "../../Utils";
+import { alertUserSocket } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -15,6 +15,10 @@ export const participantStage = {
 
 export default function Participants() {
     const { state } = useLocation();
+    if (state === null) {
+        alertUserSocket({ status: "000", message: "anda belum terdaftar, silahkan login dahulu" })
+        window.location.href = "/";
+    }
     const [stateData, setStateData] = useState(state);
     const [stateStage, setStateStage] = useState(participantStage.READY);
 
@@ -24,16 +28,16 @@ export default function Participants() {
             if (res.status === 200 && res.data.isSessionRunning) {
                 setStateData(res.data);
                 socket.off("serverMessage", retryLoginHandler)
-            } else { alertUser(res) }
+            } else { alertUserSocket(res) }
         }
-        socket.once("serverMessage", retryLoginHandler)
+        socket.on("serverMessage", retryLoginHandler)
     }
 
     useEffect(() => {
         function serverMessageHandler(res) {
             if (res.status === 401) { retryLogin() }
             else if (res.status === 403) { retryLogin() }
-            else if (res.status >= 300) { alertUser(res); console.log("alertUser", res) }
+            else if (res.status >= 300) { alertUserSocket(res); console.log("alertUserSocket", res) }
             else { console.log("serverMsg", res) }
         }
         socket.on("serverMessage", serverMessageHandler)
