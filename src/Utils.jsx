@@ -148,7 +148,7 @@ export function sessionProfitsToArray(sessions) {
     return sessionProfits.reduce((concated, item) => concated.concat(item), [])
 }
 
-export function alertUser(res) {
+export function alertUserSocket(res) {
     printLog(res)
     const msg = "(" + res.status + ") " + res.message;
     window.alert(msg);

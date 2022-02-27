@@ -72,20 +72,12 @@ export default function PhaseHandler({ data, setStateStage }) {
                 return prevState;
         }
     }
+
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        if (state.currentPhase.id !== data.sessionData.phaseId) {
-            const currentRunningPhase = data.phases.findIndex(item => item.id === data.sessionData.phaseId)
-            if (currentRunningPhase !== -1) {
-                console.log("currentRunningPhase", currentRunningPhase);
-                dispatch({ type: reducerActions.CONTINUE_PHASE, phaseId: data.sessionData.phaseId })
-            } else {
-                console.log("initphase");
-                dispatch({ type: reducerActions.INIT_PHASE })
-            }
-        }
-    }, [data, state])
+        dispatch({ type: reducerActions.INIT_PHASE })
+    }, [])
 
     switch (capitalize(data.simulationType)) {
         case simulationType.DA:
@@ -108,7 +100,7 @@ function DAHandler({ data, dispatch }) {
     const [matched, setMatched] = useState(false);
     const [socketData, setSocketData] = useState({ bid: 0, offer: 0 });
     const [stage, setStage] = useState(doubleAuctionStages.AUCTION);
-    const [startTime, setStartTime] = useState(data.sessionData.startTime.toDate());
+    const [startTime, setStartTime] = useState(dayjs().toDate());
     const [timer, setTimer] = useState(data.timer * 60);
     const [showModal, setShowModal] = useState(false);
 
@@ -131,16 +123,11 @@ function DAHandler({ data, dispatch }) {
         socket.on("bidMatch", bidMatchHandler);
 
         return () => {
-            socket.off("doubleAuctionList");
-            socket.off("da:isDone");
-            socket.off("bidMatch");
+            socket.off("doubleAuctionList", doubleAuctionListHandler);
+            socket.off("da:isDone", isDoneDAHandler);
+            socket.off("bidMatch", bidMatchHandler);
         }
     }, [])
-
-    useEffect(() => {
-        if (data.sessionData.stageCode) { setStage(doubleAuctionStages.BREAK); }
-        else { setStage(doubleAuctionStages.AUCTION); }
-    }, [data])
 
     // resetTimer
     useEffect(() => {
@@ -214,18 +201,10 @@ const postedOfferStages = {
     FLASH_SALE: "FLASH_SALE",
 }
 function POHandler({ data, dispatch }) {
-    const [sellers, setSellers] = useState(() => {
-        const exist = JSON.parse(localStorage.getItem("po:sellers"));
-        if (exist) { return exist; }
-        else { return {}; }
-    });
-    const [countSold, setCountSold] = useState(() => {
-        const exist = JSON.parse(localStorage.getItem("po:countSold"));
-        if (exist) { return exist; }
-        else { return 0; }
-    });
+    const [sellers, setSellers] = useState({});
+    const [countSold, setCountSold] = useState(0);
     const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
-    const [startTime, setStartTime] = useState(data.sessionData.startTime.toDate());
+    const [startTime, setStartTime] = useState(dayjs().toDate());
     const [timer, setTimer] = useState(data.timer * 60);
 
     // eventListener
@@ -244,8 +223,6 @@ function POHandler({ data, dispatch }) {
             })
             setSellers(temp)
             setCountSold(count)
-            localStorage.setItem("po:sellers", JSON.stringify(temp))
-            localStorage.setItem("po:countSold", JSON.stringify(count))
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
@@ -255,17 +232,10 @@ function POHandler({ data, dispatch }) {
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
-            socket.off("postedOfferList");
-            socket.off("po:isDone");
-            localStorage.removeItem("po:sellers")
-            localStorage.removeItem("po:countSold")
+            socket.off("postedOfferList", postedOfferListHandler);
+            socket.off("po:isDone", isDonePOHandler);
         }
     }, [])
-
-    useEffect(() => {
-        if (data.sessionData.stageCode) { setStage(postedOfferStages.FLASH_SALE); }
-        else { setStage(postedOfferStages.POST_PRICE); }
-    }, [data])
 
     // resetTimer
     useEffect(() => {
@@ -317,7 +287,7 @@ function DSHandler({ data, dispatch }) {
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [stage, setStage] = useState(decentralizedStages.POST_PRICE);
-    const [startTime, setStartTime] = useState(data.sessionData.startTime.toDate());
+    const [startTime, setStartTime] = useState(dayjs().toDate());
     const [timer, setTimer] = useState(data.timer * 60);
 
     // eventListener
@@ -345,15 +315,10 @@ function DSHandler({ data, dispatch }) {
         socket.on("ds:isDone", isDoneDSHandler);
 
         return () => {
-            socket.off("decentralizedList");
-            socket.off("ds:isDone");
+            socket.off("decentralizedList", decentralizedListHandler);
+            socket.off("ds:isDone", isDoneDSHandler);
         }
     }, [])
-
-    useEffect(() => {
-        if (data.sessionData.stageCode) { setStage(decentralizedStages.FLASH_SALE); }
-        else { setStage(decentralizedStages.POST_PRICE); }
-    }, [data])
 
     // resetTimer
     useEffect(() => {
