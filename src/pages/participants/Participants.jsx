@@ -16,10 +16,11 @@ export const participantStage = {
 export default function Participants() {
     const { state } = useLocation();
     if (state === null) {
-        alertUserSocket({ status: "000", message: "anda belum terdaftar, silahkan login dahulu" })
+        alertUserSocket({ status: "000", message: "Anda belum terdaftar, silahkan login dahulu" })
         window.location.href = "/";
     }
-    const [stateData, setStateData] = useState(state);
+    const [sessionData, setSessionData] = useState(state.sessionData);
+    const [stateData, setStateData] = useState({ ...state, sessionData });
     const [stateStage, setStateStage] = useState(participantStage.READY);
 
     useEffect(() => {
@@ -39,6 +40,9 @@ export default function Participants() {
             const socketId = JSON.parse(localStorage.getItem('auth'));
             if (socketId !== null && socketId.role === 'participant') {
                 if (socketId !== socket.id) { retryLogin() }
+            } else {
+                alertUserSocket({ status: "000", message: "Anda belum terdaftar, silahkan login dahulu" })
+                window.location.href = "/";
             }
         });
 
@@ -50,7 +54,9 @@ export default function Participants() {
         }
         socket.on("serverMessage", serverMessageHandler)
 
-        function sessionDataUpdateHandler(res) { console.log("sessionDataUpdate", res); }
+        function sessionDataUpdateHandler(res) {
+            setSessionData(res);
+        }
         socket.on("sessionDataUpdate", sessionDataUpdateHandler);
 
         return () => {
