@@ -152,3 +152,7 @@ export function filterProfit(arr) {
     const buyers = arr.filter(item => item.unitValue);
     return [sumByUsername(sellers), sumByUsername(buyers)]
 }
+
+export function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0;
+}

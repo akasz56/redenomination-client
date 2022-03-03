@@ -5,7 +5,7 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer'
-import { capitalize, displayPrice } from '../../../Utils'
+import { capitalize, displayPrice, isEmptyObject } from '../../../Utils'
 
 export function BuyerIdleScreen({ data, timer }) {
     return (
@@ -56,17 +56,21 @@ export function FlashSaleScreen({ data, timer }) {
             <Image src={(data.goodsPic) ? imgURL + data.goodsPic : ''} fluid alt={data.goodsType} className='mx-auto' style={{ height: "360px" }} />
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {data.seller.map((item, i) => (
-                    <Card
-                        key={i}
-                        variant={(item.status === "done") ? "done" : ((hasBought) ? 'wait' : '')}
-                        className="mb-3"
-                        role={item.role}
-                        onBtnClick={(e) => { buyHandler(e, item) }}
-                    >
-                        {displayPrice(item.price, data.currentPhase.phaseType)}
-                    </Card>
-                ))}
+                {isEmptyObject(data.seller) ?
+                    <></>
+                    :
+                    data.seller.map((item, i) => (
+                        <Card
+                            key={i}
+                            variant={(item.status === "done") ? "done" : ((hasBought) ? 'wait' : '')}
+                            className="mb-3"
+                            role={item.role}
+                            onBtnClick={(e) => { buyHandler(e, item) }}
+                        >
+                            {displayPrice(item.price, data.currentPhase.phaseType)}
+                        </Card>
+                    ))
+                }
             </section>
 
             <Label

@@ -5,7 +5,7 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer'
-import { adjustPrice, capitalize, displayPrice, numberInputFormat } from '../../../Utils'
+import { adjustPrice, capitalize, displayPrice, isEmptyObject, numberInputFormat } from '../../../Utils'
 
 export function PostPriceScreen({ data, timer }) {
     const [status, setStatus] = useState(false);
@@ -80,16 +80,20 @@ export function SellerIdleScreen({ data, timer }) {
             <p className='mt-5'>menunggu...</p>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {data.seller.map((item, i) => (
-                    <Card
-                        key={i}
-                        variant={(item.status === "done") ? "done" : "wait"}
-                        className="mb-3"
-                        role={item.role}
-                    >
-                        {displayPrice(item.price, data.currentPhase.phaseType)}
-                    </Card>
-                ))}
+                {isEmptyObject(data.seller) ?
+                    <></>
+                    :
+                    data.seller.map((item, i) => (
+                        <Card
+                            key={i}
+                            variant={(item.status === "done") ? "done" : "wait"}
+                            className="mb-3"
+                            role={item.role}
+                        >
+                            {displayPrice(item.price, data.currentPhase.phaseType)}
+                        </Card>
+                    ))
+                }
             </section>
 
             <Label

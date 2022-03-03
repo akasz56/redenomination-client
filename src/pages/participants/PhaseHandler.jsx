@@ -1,6 +1,6 @@
 import { useState, useEffect, useReducer } from "react"
 import socket from "../../adapters/SocketIO"
-import { capitalize, printLog, sortPhases } from "../../Utils"
+import { capitalize, isEmptyObject, printLog, sortPhases } from "../../Utils"
 import BlankScreen from "./BlankScreen"
 import { participantStage } from "./Participants"
 import { BuyerIdleDS, ShopHandler } from "./decentralized/Buyer"
@@ -41,7 +41,6 @@ export default function PhaseHandler({ data, setStateStage }) {
     function reducer(prevState, action) {
         switch (action.type) {
             case reducerActions.INIT_PHASE:
-                console.log(reducerActions.INIT_PHASE)
                 socket.emit("startPhase", { "phaseId": prevState.phases[0].id })
                 return {
                     ...prevState,
@@ -50,7 +49,6 @@ export default function PhaseHandler({ data, setStateStage }) {
                 };
 
             case reducerActions.NEXT_PHASE:
-                console.log(reducerActions.NEXT_PHASE)
                 socket.emit("finishPhase", { "phaseId": prevState.currentPhase.id })
                 const nextIndex = prevState.currentPhaseIndex + 1;
                 if (nextIndex >= 3) {
@@ -66,19 +64,32 @@ export default function PhaseHandler({ data, setStateStage }) {
                 }
 
             case reducerActions.CONTINUE_PHASE:
-                printLog(prevState)
-                return prevState;
+                console.log("continue phase", {
+                    ...prevState,
+                    currentPhase: { ...prevState.phases[action.payload], phaseName: phaseName[action.payload] },
+                    currentPhaseIndex: action.payload,
+                });
+                return {
+                    ...prevState,
+                    currentPhase: { ...prevState.phases[action.payload], phaseName: phaseName[action.payload] },
+                    currentPhaseIndex: action.payload,
+                };
 
             default:
                 printLog("unhandled phase reduce")
                 return prevState;
         }
     }
-
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        dispatch({ type: reducerActions.INIT_PHASE })
+        const indexExist = state.phases.findIndex(item => item.id === data.sessionData.phaseId);
+        if (indexExist !== -1) {
+            dispatch({ type: reducerActions.CONTINUE_PHASE, payload: indexExist });
+            console.log(state.phases)
+        } else {
+            dispatch({ type: reducerActions.INIT_PHASE });
+        }
     }, [])
 
     switch (capitalize(data.simulationType)) {
@@ -207,13 +218,20 @@ const postedOfferStages = {
 function POHandler({ data, dispatch }) {
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
-    const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
     const [timer, setTimer] = useState(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"));
+    const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
 
-    // eventListener
+    useEffect(() => {
+        if (stage === postedOfferStages.FLASH_SALE && isEmptyObject(sellers)) {
+            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
+        }
+    }, [stage, sellers, data])
+
+    // eventListeners
     useEffect(() => {
         function postedOfferListHandler(res) {
+            console.log(res);
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
@@ -230,9 +248,7 @@ function POHandler({ data, dispatch }) {
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) {
-            if (res) { setStage(postedOfferStages.FLASH_SALE); }
-        }
+        function isDonePOHandler(res) { if (res) { setStage(postedOfferStages.FLASH_SALE); } }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
@@ -241,30 +257,32 @@ function POHandler({ data, dispatch }) {
         }
     }, [])
 
+
     // startStage
-    useEffect(() => {
-        setStartTime(dayjs(data.sessionData.startTime).toDate())
-    }, [stage, data])
+    useEffect(() => { setStartTime(dayjs(data.sessionData.startTime).toDate()) }, [stage, data])
 
     // timer
     useEffect(() => {
         const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"),) } }, 1000);
-        return () => {
-            clearInterval(interval);
-        }
+        return () => { clearInterval(interval); }
     }, [timer, data.timer, startTime]);
 
+    // cleanup before nextPhase
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
             if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                console.log("lewat sini?")
                 setCountSold(0);
                 setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(postedOfferStages.POST_PRICE);
             }
+        } else {
+            if (timer <= 0) {
+                setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
+                setStage(postedOfferStages.FLASH_SALE);
+            }
         }
-    }, [stage, timer, countSold, data, dispatch])
+    }, [stage, timer, startTime, countSold, data, dispatch])
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:

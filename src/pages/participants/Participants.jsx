@@ -19,8 +19,7 @@ export default function Participants() {
         alertUserSocket({ status: "000", message: "Anda belum terdaftar, silahkan login dahulu" })
         window.location.href = "/";
     }
-    const [sessionData, setSessionData] = useState(state.sessionData);
-    const [stateData, setStateData] = useState({ ...state, sessionData });
+    const [stateData, setStateData] = useState(state);
     const [stateStage, setStateStage] = useState(participantStage.READY);
 
     useEffect(() => {
@@ -31,9 +30,10 @@ export default function Participants() {
                 if (res.status === 200 && res.data.isSessionRunning) {
                     setStateData(res.data);
                     saveAuth('participant', socket.id);
+                    socket.off("serverMessage", retryLoginHandler)
                 }
             }
-            socket.once("serverMessage", retryLoginHandler)
+            socket.on("serverMessage", retryLoginHandler)
         }
 
         socket.on("connect", () => {
@@ -55,7 +55,10 @@ export default function Participants() {
         socket.on("serverMessage", serverMessageHandler)
 
         function sessionDataUpdateHandler(res) {
-            setSessionData(res);
+            setStateData(prev => ({
+                ...prev,
+                sessionData: res,
+            }));
         }
         socket.on("sessionDataUpdate", sessionDataUpdateHandler);
 
