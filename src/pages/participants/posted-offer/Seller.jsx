@@ -26,7 +26,7 @@ export function PostPriceScreen({ data, timer }) {
     useEffect(() => {
         if (timer <= 1 && !status) {
             socket.emit("po:inputSellerPrice", {
-                price: Number(data.detail.unitCost),
+                price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType),
                 phaseId: data.currentPhase.id
             })
             setStatus(true)
