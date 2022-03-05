@@ -12,6 +12,18 @@ export function PostPriceScreen({ data, timer }) {
     const [price, setPrice] = useState(false);
 
     useEffect(() => {
+        if (isEmptyObject(data.seller)) {
+            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
+        } else {
+            const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
+            if (exists !== -1) {
+                console.log(exists);
+                setStatus(true)
+            }
+        }
+    }, [data])
+
+    useEffect(() => {
         if (timer <= 0 && !status) {
             socket.emit("po:inputSellerPrice", {
                 price: Number(data.detail.unitCost),
@@ -73,6 +85,13 @@ export function PostPriceScreen({ data, timer }) {
 }
 
 export function SellerIdleScreen({ data, timer }) {
+
+    useEffect(() => {
+        if (isEmptyObject(data.seller)) {
+            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
+        }
+    }, [data])
+
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />

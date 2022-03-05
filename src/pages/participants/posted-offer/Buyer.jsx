@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
@@ -30,6 +30,18 @@ export function BuyerIdleScreen({ data, timer }) {
 
 export function FlashSaleScreen({ data, timer }) {
     const [hasBought, setHasBought] = useState(false);
+
+    useEffect(() => {
+        if (isEmptyObject(data.seller)) {
+            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
+        } else {
+            const exists = data.seller.findIndex(item => item.buyerId === data.detail.id);
+            if (exists !== -1) {
+                console.log(exists);
+                setHasBought(true)
+            }
+        }
+    }, [data])
 
     function buyHandler(e, item) {
         e.preventDefault();

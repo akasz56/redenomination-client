@@ -222,12 +222,6 @@ function POHandler({ data, dispatch }) {
     const [timer, setTimer] = useState(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"));
     const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
 
-    useEffect(() => {
-        if (stage === postedOfferStages.FLASH_SALE && isEmptyObject(sellers)) {
-            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
-        }
-    }, [stage, sellers, data])
-
     // eventListeners
     useEffect(() => {
         function postedOfferListHandler(res) {
@@ -237,6 +231,7 @@ function POHandler({ data, dispatch }) {
                 count = (item.isSold) ? (count + 1) : count;
                 return {
                     sellerId: item.sellerId,
+                    buyerId: item.buyerId,
                     role: "Penjual " + (i + 1),
                     price: item.price,
                     status: (item.isSold) ? "done" : "",
@@ -272,6 +267,7 @@ function POHandler({ data, dispatch }) {
         if (stage === postedOfferStages.FLASH_SALE) {
             if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
                 setCountSold(0);
+                setSellers({});
                 setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(postedOfferStages.POST_PRICE);
