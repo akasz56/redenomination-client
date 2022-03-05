@@ -1,10 +1,10 @@
 import { useMemo } from "react"
-import { filterProfit, sumByUsername } from "../Utils";
+import { displayPrice, filterProfit, sumByUsername } from "../Utils";
 import { Form } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 
 export default function UnitProfit({ profits, budget, isSession = false }) {
-    const labels = ["username", "profit"];
+    const labels = ["username", "rewards"];
 
     function SessionElement() {
         const [sellers, buyers] = filterProfit(profits)
@@ -17,8 +17,8 @@ export default function UnitProfit({ profits, budget, isSession = false }) {
                     filename={"Profit"}
                     data={[
                         labels,
-                        ...sellers.map(item => [item.username, item.profit]),
-                        ...buyers.map(item => [item.username, item.profit]),
+                        ...sellers.map(item => [item.username, displayPrice(parseInt((item.profit / totalProfit) * budget))]),
+                        ...buyers.map(item => [item.username, displayPrice(parseInt((item.profit / totalProfit) * budget))]),
                     ]}
                 >Download CSV</CSVLink>
 
@@ -70,8 +70,8 @@ export default function UnitProfit({ profits, budget, isSession = false }) {
                     filename={"Profit"}
                     data={[
                         labels,
-                        ...usernames1.map(item => [item.username, item.profit]),
-                        ...usernames2.map(item => [item.username, item.profit]),
+                        ...usernames1.map(item => [item.username, displayPrice(parseInt((item.profit / totalProfit) * budget))]),
+                        ...usernames2.map(item => [item.username, displayPrice(parseInt((item.profit / totalProfit) * budget))]),
                     ]}
                 >Download CSV</CSVLink>
 

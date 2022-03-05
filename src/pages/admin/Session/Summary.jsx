@@ -104,7 +104,7 @@ export default function Summary(props) {
                                     data={[
                                         dataSummary.trx.labels,
                                         ...dataSummary.trx.datasets.map(dataset => [...dataset.data])
-                                    ]}>Download CSV</CSVLink>
+                                    ]}><i className='bx bx-download'></i> Download CSV</CSVLink>
                             </div>
                         </div>
                         <div className="col-md-6">
@@ -120,7 +120,7 @@ export default function Summary(props) {
                                     data={[
                                         dataSummary.price.labels,
                                         ...dataSummary.price.datasets.map(dataset => [...dataset.data])
-                                    ]}>Download CSV</CSVLink>
+                                    ]}><i className='bx bx-download'></i> Download CSV</CSVLink>
                             </div>
                         </div>
                     </section>
