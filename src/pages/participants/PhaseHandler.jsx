@@ -86,7 +86,6 @@ export default function PhaseHandler({ data, setStateStage }) {
         const indexExist = state.phases.findIndex(item => item.id === data.sessionData.phaseId);
         if (indexExist !== -1) {
             dispatch({ type: reducerActions.CONTINUE_PHASE, payload: indexExist });
-            console.log(state.phases)
         } else {
             dispatch({ type: reducerActions.INIT_PHASE });
         }
@@ -225,7 +224,6 @@ function POHandler({ data, dispatch }) {
     // eventListeners
     useEffect(() => {
         function postedOfferListHandler(res) {
-            console.log(res);
             let count = 0;
             const temp = res.map((item, i) => {
                 count = (item.isSold) ? (count + 1) : count;
@@ -271,11 +269,6 @@ function POHandler({ data, dispatch }) {
                 setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(postedOfferStages.POST_PRICE);
-            }
-        } else {
-            if (timer <= 0) {
-                setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
-                setStage(postedOfferStages.FLASH_SALE);
             }
         }
     }, [stage, timer, startTime, countSold, data, dispatch])
