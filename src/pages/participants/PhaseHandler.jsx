@@ -259,6 +259,11 @@ function POHandler({ data, dispatch }) {
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(postedOfferStages.POST_PRICE);
             }
+        } else if (stage === postedOfferStages.POST_PRICE) {
+            if (timer <= 0) {
+                setTimer(data.timer * 60)
+                setStage(postedOfferStages.FLASH_SALE);
+            }
         }
     }, [stage, timer, countSold, data.participantNumber, data.timer, dispatch])
 
