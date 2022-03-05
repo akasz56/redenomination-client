@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button, Container, Form, Image, Modal, Table } from 'react-bootstrap';
 import dayjs from "dayjs";
@@ -8,7 +8,7 @@ import { createSession } from '../../../adapters/Sessions';
 import { imgURL } from '../../../adapters/serverURL';
 import LoadingComponent from '../../../components/Loading';
 import Error404 from '../../errors/Error404';
-import { capitalize, getRandomColor, displayPrice, printLog, sessionProfitsToArray } from '../../../Utils';
+import { capitalize, getRandomColor, displayPrice, printLog, sessionProfitsToArray, downloadPNG } from '../../../Utils';
 import './Simulation.css'
 import UnitInput from '../../../components/UnitInput';
 import 'chart.js/auto';
@@ -18,6 +18,8 @@ import UnitProfit from '../../../components/UnitProfit';
 import UnitPlayer from '../../../components/UnitPlayer';
 
 export default function Simulation() {
+    const trxOccurrence = useRef(null);
+    const trxPrice = useRef(null);
     const [loading, setLoading] = useState(true);
     const [dataGet, setDataGet] = useState(false);
     const [dataPost, setDataPost] = useState(false);
@@ -195,7 +197,7 @@ export default function Simulation() {
                                 <h1 className="text-center">Ringkasan Simulasi</h1>
                                 <hr />
                                 <div className='col-md-6'>
-                                    <Line data={dataSummary.trx} width={"100px"} height={"50px"}
+                                    <Line data={dataSummary.trx} width={"100px"} height={"50px"} ref={trxOccurrence}
                                         options={{
                                             plugins: {
                                                 title: {
@@ -205,15 +207,22 @@ export default function Simulation() {
                                             },
                                         }}
                                     />
-                                    <CSVLink
-                                        filename={'Jumlah Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
-                                        data={[
-                                            ["Ulangan"].concat(dataSummary.trx.labels),
-                                            ...dataSummary.trx.datasets.map(dataset => [dataset.label, ...dataset.data])
-                                        ]}>Download Jumlah Transaksi</CSVLink>
+                                    <div className="d-flex justify-content-around">
+                                        <Button
+                                            onClick={(e => {
+                                                e.preventDefault();
+                                                downloadPNG(trxOccurrence, 'Jumlah Transaksi ' + dataGet.token);
+                                            })}><i className='bx bx-download'></i> Download PNG</Button>
+                                        <CSVLink className='btn btn-primary'
+                                            filename={'Jumlah Transaksi ' + dataGet.token}
+                                            data={[
+                                                ["Ulangan"].concat(dataSummary.trx.labels),
+                                                ...dataSummary.trx.datasets.map(dataset => [dataset.label, ...dataset.data])
+                                            ]}><i className='bx bx-download'></i> Download CSV</CSVLink>
+                                    </div>
                                 </div>
                                 <div className='col-md-6'>
-                                    <Line data={dataSummary.price} width={"100px"} height={"50px"}
+                                    <Line data={dataSummary.price} width={"100px"} height={"50px"} ref={trxPrice}
                                         options={{
                                             plugins: {
                                                 title: {
@@ -223,12 +232,19 @@ export default function Simulation() {
                                             },
                                         }}
                                     />
-                                    <CSVLink
-                                        filename={'Rata-rata Harga Kesepakatan Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
-                                        data={[
-                                            ["Ulangan"].concat(dataSummary.price.labels),
-                                            ...dataSummary.price.datasets.map(dataset => [dataset.label, ...dataset.data])
-                                        ]}>Download Rata-rata Harga Kesepakatan Transaksi</CSVLink>
+                                    <div className="d-flex justify-content-around">
+                                        <Button
+                                            onClick={(e => {
+                                                e.preventDefault();
+                                                downloadPNG(trxPrice, 'Rata-rata Harga Kesepakatan Transaksi ' + dataGet.token);
+                                            })}><i className='bx bx-download'></i> Download PNG</Button>
+                                        <CSVLink className='btn btn-primary'
+                                            filename={'Rata-rata Harga Kesepakatan Transaksi ' + dataGet.token}
+                                            data={[
+                                                ["Ulangan"].concat(dataSummary.price.labels),
+                                                ...dataSummary.price.datasets.map(dataset => [dataset.label, ...dataset.data])
+                                            ]}><i className='bx bx-download'></i> Download CSV</CSVLink>
+                                    </div>
                                 </div>
                             </section>
                         </>

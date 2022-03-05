@@ -1,9 +1,6 @@
-import { useState, useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
-import socket from "../../adapters/SocketIO";
 import Label from "../../components/Label";
-import LoadingComponent from "../../components/Loading";
-import { capitalize, displayPrice, logout } from "../../Utils";
+import { capitalize, logout } from "../../Utils";
 
 export default function CompleteScreenHandler({ data }) {
     return (

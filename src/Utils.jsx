@@ -156,3 +156,10 @@ export function filterProfit(arr) {
 export function isEmptyObject(obj) {
     return Object.keys(obj).length === 0;
 }
+
+export function downloadPNG(thisRef, fileName) {
+    const link = document.createElement("a");
+    link.download = fileName + ".png";
+    link.href = thisRef.current.toBase64Image();
+    link.click()
+}

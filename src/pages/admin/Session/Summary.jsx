@@ -1,17 +1,20 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { readSessionSummary } from '../../../adapters/Sessions';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { capitalize, displayPrice, getRandomColor, printLog } from '../../../Utils';
+import { capitalize, displayPrice, downloadPNG, getRandomColor, printLog } from '../../../Utils';
 import ScatterSummary from '../../../components/ScatterSummary';
 import UnitProfit from '../../../components/UnitProfit';
 import { CSVLink } from 'react-csv';
+import { Button } from 'react-bootstrap';
 
 export default function Summary(props) {
     const [data, setData] = useState(props.data);
     const [dataSummary, setDataSummary] = useState(props.dataSummary);
+    const trxOccurrence = useRef(null)
+    const trxPrice = useRef(null)
 
     useEffect(() => {
         async function fetchSummary(sessionId) {
@@ -57,14 +60,11 @@ export default function Summary(props) {
         }
 
         setData(props.data)
-        if (props.data.id) {
-            fetchSummary(props.data.id)
-        }
+        if (props.data.id) { fetchSummary(props.data.id) }
     }, [props])
 
     const nameArr = useMemo(() => [
-        dayjs(data.timeLastRun).locale("id").format("dddd, D MMM YYYY"),
-        capitalize(data.simulation.simulationType),
+        data.simulation.token,
         data.sessionType
     ], [data])
 
@@ -92,22 +92,36 @@ export default function Summary(props) {
                 <>
                     <section className="row mt-5">
                         <div className="col-md-6">
-                            <Bar data={dataSummary.trx} />
-                            <CSVLink
-                                filename={'Jumlah Transaksi ' + capitalize(data.simulation.simulationType) + " " + capitalize(data.sessionType)}
-                                data={[
-                                    dataSummary.trx.labels,
-                                    ...dataSummary.trx.datasets.map(dataset => [...dataset.data])
-                                ]}>Download CSV</CSVLink>
+                            <Bar ref={trxOccurrence} data={dataSummary.trx} />
+                            <div className="d-flex justify-content-around">
+                                <Button
+                                    onClick={(e => {
+                                        e.preventDefault();
+                                        downloadPNG(trxOccurrence, 'Jumlah Transaksi ' + data.sessionType + " " + data.simulation.token);
+                                    })}><i className='bx bx-download'></i> Download PNG</Button>
+                                <CSVLink className='btn btn-primary'
+                                    filename={'Jumlah Transaksi ' + data.sessionType + " " + data.simulation.token}
+                                    data={[
+                                        dataSummary.trx.labels,
+                                        ...dataSummary.trx.datasets.map(dataset => [...dataset.data])
+                                    ]}>Download CSV</CSVLink>
+                            </div>
                         </div>
                         <div className="col-md-6">
-                            <Bar data={dataSummary.price} />
-                            <CSVLink
-                                filename={'Rata-rata Harga Kesepakatan Transaksi ' + capitalize(data.simulation.simulationType) + " " + capitalize(data.sessionType)}
-                                data={[
-                                    dataSummary.price.labels,
-                                    ...dataSummary.price.datasets.map(dataset => [...dataset.data])
-                                ]}>Download CSV</CSVLink>
+                            <Bar ref={trxPrice} data={dataSummary.price} />
+                            <div className="d-flex justify-content-around">
+                                <Button
+                                    onClick={(e => {
+                                        e.preventDefault();
+                                        downloadPNG(trxPrice, 'Rata-rata Harga Kesepakatan Transaksi ' + data.sessionType + " " + data.simulation.token);
+                                    })}><i className='bx bx-download'></i> Download PNG</Button>
+                                <CSVLink className='btn btn-primary'
+                                    filename={'Rata-rata Harga Kesepakatan Transaksi ' + data.sessionType + " " + data.simulation.token}
+                                    data={[
+                                        dataSummary.price.labels,
+                                        ...dataSummary.price.datasets.map(dataset => [...dataset.data])
+                                    ]}>Download CSV</CSVLink>
+                            </div>
                         </div>
                     </section>
 

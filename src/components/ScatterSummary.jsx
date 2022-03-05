@@ -1,10 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { Button } from 'react-bootstrap';
 import { Scatter } from 'react-chartjs-2';
 import { CSVLink } from 'react-csv';
-import { getRandomColor } from '../Utils';
+import { downloadPNG, getRandomColor } from '../Utils';
 
 export default function ScatterSummary({ data, labels, nameArr }) {
     const fileName = useMemo(() => nameArr.join("_"), [nameArr]);
+    const ref0 = useRef(null)
+    const ref1 = useRef(null)
+    const ref2 = useRef(null)
+    const ref = [ref0, ref1, ref2];
 
     const headers = useMemo(() => ([
         { label: "Turn", key: "x" },
@@ -32,14 +37,23 @@ export default function ScatterSummary({ data, labels, nameArr }) {
     function ScatterElement({ index }) {
         return (
             <div className="col-md-4">
-                <Scatter data={{
-                    datasets: [{
-                        label: labels[index],
-                        data: data[index],
-                        backgroundColor: getRandomColor(),
-                    }],
-                }} />
-                <CSVLink {...csvArr[index]}>Download CSV</CSVLink>
+                <Scatter
+                    ref={ref[index]}
+                    data={{
+                        datasets: [{
+                            label: labels[index],
+                            data: data[index],
+                            backgroundColor: getRandomColor(),
+                        }],
+                    }} />
+                <div className="d-flex justify-content-around">
+                    <Button
+                        onClick={(e => {
+                            e.preventDefault();
+                            downloadPNG(ref[index], csvArr[index].filename);
+                        })}><i className='bx bx-download'></i> Download PNG</Button>
+                    <CSVLink className='btn btn-primary' {...csvArr[index]}><i className='bx bx-download'></i> Download CSV</CSVLink>
+                </div>
             </div>
         )
     }
