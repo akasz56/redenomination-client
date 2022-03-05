@@ -32,7 +32,7 @@ export default function UnitProfit({ profits, budget, isSession = false }) {
                             />
                             <Form.Control disabled
                                 style={{ width: "12em" }}
-                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((item.profit / totalProfit) * budget) + 5000)}
+                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format((item.profit / totalProfit) * budget)}
                             />
                         </div>
                     ))}
@@ -48,7 +48,7 @@ export default function UnitProfit({ profits, budget, isSession = false }) {
                             />
                             <Form.Control disabled
                                 style={{ width: "12em" }}
-                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((item.profit / totalProfit) * budget) + 5000)}
+                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format((item.profit / totalProfit) * budget)}
                             />
                         </div>
                     ))}
@@ -84,7 +84,7 @@ export default function UnitProfit({ profits, budget, isSession = false }) {
                             />
                             <Form.Control disabled
                                 style={{ width: "12em" }}
-                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((item.profit / totalProfit) * budget) + 5000)}
+                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format((item.profit / totalProfit) * budget)}
                             />
                         </div>
                     ))}
@@ -99,7 +99,7 @@ export default function UnitProfit({ profits, budget, isSession = false }) {
                             />
                             <Form.Control disabled
                                 style={{ width: "12em" }}
-                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(((item.profit / totalProfit) * budget) + 5000)}
+                                defaultValue={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format((item.profit / totalProfit) * budget)}
                             />
                         </div>
                     ))}

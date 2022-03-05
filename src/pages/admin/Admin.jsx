@@ -122,8 +122,8 @@ export default function Admin() {
                                 <tr key={i} className='simulations' onClick={e => rowHandler(e, simulation.id)}>
                                     <td className='number'>{i + 1}</td>
                                     <td>
-                                        <h3>{capitalize(simulation.simulationType)}</h3>
-                                        <span>{simulation.goodsType} ({simulation.goodsName}), {simulation.inflationType}</span>
+                                        <h3>{capitalize(simulation.simulationType)}, {simulation.participantNumber} peserta</h3>
+                                        <span>{simulation.goodsType} ({simulation.goodsName}), {simulation.inflationType}, Pertumbuhan Ekonomi {simulation.growthType}</span>
                                     </td>
                                     <td>{dayjs(simulation.timeCreated).locale("id").format("dddd, D MMM YYYY")}</td>
                                 </tr>

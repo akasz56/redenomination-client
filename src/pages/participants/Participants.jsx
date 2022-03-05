@@ -22,6 +22,17 @@ export default function Participants() {
     const [stateData, setStateData] = useState(state);
     const [stateStage, setStateStage] = useState(participantStage.READY);
 
+    function retryLogin() {
+        socket.emit("loginToken", { "token": state.detail.loginToken.toUpperCase(), "username": state.detail.username });
+        function retryLoginHandler(res) {
+            if (res.status === 200 && res.data.isSessionRunning) {
+                setStateData(res.data);
+                socket.off("serverMessage", retryLoginHandler)
+            } else { alertUserSocket(res) }
+        }
+        socket.on("serverMessage", retryLoginHandler)
+    }
+
     useEffect(() => {
         function retryLogin() {
             socket.emit("loginToken", { "token": state.detail.loginToken.toUpperCase(), "username": state.detail.username });

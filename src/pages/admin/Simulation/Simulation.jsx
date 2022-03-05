@@ -32,6 +32,7 @@ export default function Simulation() {
 
         async function fetchSummary() {
             const res1 = await readSimulationSummary(urlParams.id)
+            console.log(res1);
             if (res1.status === 200) {
                 if (res1.data.sessionSummary.length >= 1) {
                     setDataSummary({
@@ -223,42 +224,34 @@ export default function Simulation() {
                                         }}
                                     />
                                     <CSVLink
-                                        filename={'Harga Kesepakatan Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
+                                        filename={'Rata-rata Harga Kesepakatan Transaksi ' + capitalize(dataGet.simulationType) + " " + dayjs(dataGet.timeCreated).locale("id").format("dddd, D MMM YYYY")}
                                         data={[
                                             ["Ulangan"].concat(dataSummary.price.labels),
                                             ...dataSummary.price.datasets.map(dataset => [dataset.label, ...dataset.data])
-                                        ]}>Download Harga Kesepakatan Transaksi</CSVLink>
+                                        ]}>Download Rata-rata Harga Kesepakatan Transaksi</CSVLink>
                                 </div>
                             </section>
                         </>
                         :
-                        <section style={{ marginTop: "5rem" }} className='row'>
-                            <h1 className="text-center">Peserta</h1>
-                            <hr />
-                            <div className="col-md-6">
-                                <p className="fw-bold text-center">Daftar Penjual</p>
-                                {dataGet.sellers.map((item, i) => (
-                                    <UnitPlayer
-                                        key={i + 1}
-                                        id={i + 1}
-                                        role="penjual"
-                                        item={item}
-                                    />
-                                ))}
-                            </div>
-                            <div className="col-md-6">
-                                <p className="fw-bold text-center">Daftar Pembeli</p>
-                                {dataGet.buyers.map((item, i) => (
-                                    <UnitPlayer
-                                        key={i + 1}
-                                        id={i + 1}
-                                        role="pembeli"
-                                        item={item}
-                                    />
-                                ))}
-                            </div>
-                        </section>
+                        <></>
                     }
+
+                    <section style={{ marginTop: "5rem" }} className='row'>
+                        <h1 className="text-center">Peserta</h1>
+                        <hr />
+                        <div className="col-md-6">
+                            <p className="fw-bold text-center">Daftar Penjual</p>
+                            {dataGet.sellers.map((item, i) => (
+                                <UnitPlayer key={i + 1} id={i + 1} role="penjual" item={item} />
+                            ))}
+                        </div>
+                        <div className="col-md-6">
+                            <p className="fw-bold text-center">Daftar Pembeli</p>
+                            {dataGet.buyers.map((item, i) => (
+                                <UnitPlayer key={i + 1} id={i + 1} role="pembeli" item={item} />
+                            ))}
+                        </div>
+                    </section>
 
                     <section style={{ marginTop: "5rem" }} className='info'>
                         <h1 className="text-center">Detail Simulasi</h1>
