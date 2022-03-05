@@ -4,7 +4,7 @@ import { Container, Form, Button } from 'react-bootstrap';
 import socket from '../adapters/SocketIO';
 import LoadingComponent from '../components/Loading';
 import './Home.css';
-import { alertUserSocket } from '../Utils';
+import { alertUserSocket, saveAuth } from '../Utils';
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
@@ -23,6 +23,7 @@ export default function Home() {
         socket.emit("loginToken", { "token": token.toUpperCase(), "username": username });
         function loginTokenHandlerHome(res) {
             if (res.status === 200 && res.data.isSessionRunning) {
+                saveAuth('participant', socket.id);
                 navigate('/participant', { state: res.data });
                 socket.off("serverMessage", loginTokenHandlerHome);
             } else {

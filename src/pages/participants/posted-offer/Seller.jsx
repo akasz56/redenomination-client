@@ -5,14 +5,26 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer'
-import { adjustPrice, capitalize, displayPrice, numberInputFormat } from '../../../Utils'
+import { adjustPrice, capitalize, displayPrice, isEmptyObject, numberInputFormat } from '../../../Utils'
 
 export function PostPriceScreen({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
     useEffect(() => {
-        if (timer <= 1 && !status) {
+        if (isEmptyObject(data.seller)) {
+            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
+        } else {
+            const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
+            if (exists !== -1) {
+                console.log(exists);
+                setStatus(true)
+            }
+        }
+    }, [data])
+
+    useEffect(() => {
+        if (timer <= 0 && !status) {
             socket.emit("po:inputSellerPrice", {
                 price: Number(data.detail.unitCost),
                 phaseId: data.currentPhase.id
@@ -73,6 +85,13 @@ export function PostPriceScreen({ data, timer }) {
 }
 
 export function SellerIdleScreen({ data, timer }) {
+
+    useEffect(() => {
+        if (isEmptyObject(data.seller)) {
+            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
+        }
+    }, [data])
+
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
@@ -80,16 +99,20 @@ export function SellerIdleScreen({ data, timer }) {
             <p className='mt-5'>menunggu...</p>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {data.seller.map((item, i) => (
-                    <Card
-                        key={i}
-                        variant={(item.status === "done") ? "done" : "wait"}
-                        className="mb-3"
-                        role={item.role}
-                    >
-                        {displayPrice(item.price, data.currentPhase.phaseType)}
-                    </Card>
-                ))}
+                {isEmptyObject(data.seller) ?
+                    <></>
+                    :
+                    data.seller.map((item, i) => (
+                        <Card
+                            key={i}
+                            variant={(item.status === "done") ? "done" : "wait"}
+                            className="mb-3"
+                            role={item.role}
+                        >
+                            {displayPrice(item.price, data.currentPhase.phaseType)}
+                        </Card>
+                    ))
+                }
             </section>
 
             <Label

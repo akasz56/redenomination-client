@@ -142,7 +142,7 @@ export function sessionProfitsToArray(sessions) {
 }
 
 export function alertUserSocket(res) {
-    printLog(res)
+    console.log("alertUserSocket", res);
     const msg = "(" + res.status + ") " + res.message;
     window.alert(msg);
 }
@@ -151,4 +151,8 @@ export function filterProfit(arr) {
     const sellers = arr.filter(item => item.unitCost);
     const buyers = arr.filter(item => item.unitValue);
     return [sumByUsername(sellers), sumByUsername(buyers)]
+}
+
+export function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0;
 }
