@@ -241,7 +241,7 @@ function POHandler({ data, dispatch }) {
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) { if (res) { setStage(postedOfferStages.FLASH_SALE); } }
+        function isDonePOHandler(res) { if (res) { setStage(postedOfferStages.FLASH_SALE); setTimer(10); } }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
@@ -249,7 +249,6 @@ function POHandler({ data, dispatch }) {
             socket.off("po:isDone", isDonePOHandler);
         }
     }, [])
-
 
     // startStage
     useEffect(() => { setStartTime(dayjs(data.sessionData.startTime).toDate()) }, [stage, data])
