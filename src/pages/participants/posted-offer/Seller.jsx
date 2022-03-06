@@ -29,7 +29,6 @@ export function PostPriceScreen({ data, timer }) {
                 price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType),
                 phaseId: data.currentPhase.id
             })
-            setStatus(true)
         }
     }, [data, timer, status])
 
@@ -41,7 +40,6 @@ export function PostPriceScreen({ data, timer }) {
                 price: Number(price),
                 phaseId: data.currentPhase.id
             })
-            setStatus(true);
         } else {
             alert("harga kurang dari unit cost anda!")
         }

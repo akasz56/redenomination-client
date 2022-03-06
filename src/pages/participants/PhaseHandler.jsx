@@ -263,13 +263,13 @@ function POHandler({ data, dispatch }) {
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
             if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                dispatch({ type: reducerActions.NEXT_PHASE });
-                setStage(postedOfferStages.POST_PRICE);
-                setCountSold(0);
                 setSellers({});
+                setCountSold(0);
+                setStage(postedOfferStages.POST_PRICE);
+                dispatch({ type: reducerActions.NEXT_PHASE });
             }
         }
-    }, [stage, timer, startTime, countSold, data, dispatch])
+    }, [stage, timer, countSold, data, dispatch])
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
