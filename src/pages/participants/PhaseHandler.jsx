@@ -241,7 +241,7 @@ function POHandler({ data, dispatch }) {
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) { if (res) { setStage(postedOfferStages.FLASH_SALE); setTimer(10); } }
+        function isDonePOHandler(res) { if (res) { setTimer(10); setStage(postedOfferStages.FLASH_SALE); } }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
@@ -263,11 +263,10 @@ function POHandler({ data, dispatch }) {
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
             if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                setCountSold(0);
-                setSellers({});
-                setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
                 dispatch({ type: reducerActions.NEXT_PHASE });
                 setStage(postedOfferStages.POST_PRICE);
+                setCountSold(0);
+                setSellers({});
             }
         }
     }, [stage, timer, startTime, countSold, data, dispatch])
