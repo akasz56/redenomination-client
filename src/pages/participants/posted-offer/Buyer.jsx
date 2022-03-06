@@ -32,31 +32,25 @@ export function FlashSaleScreen({ data, timer }) {
     const [hasBought, setHasBought] = useState(false);
 
     useEffect(() => {
-        if (isEmptyObject(data.seller)) {
-            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
-        } else {
+        if (isEmptyObject(data.seller)) { socket.emit("po:requestList", { phaseId: data.currentPhase.id }) }
+        else {
             const exists = data.seller.findIndex(item => item.buyerId === data.detail.id);
-            if (exists !== -1) {
-                console.log(exists);
-                setHasBought(true)
-            }
+            if (exists !== -1) { setHasBought(true) }
         }
     }, [data])
 
     function buyHandler(e, item) {
         e.preventDefault();
+
         if (item.price <= data.detail.unitValue) {
             if (window.confirm("yakin membeli?")) {
                 socket.emit("po:buy", { postedOfferId: item.postedOfferId, phaseId: data.currentPhase.id })
                 socket.once("serverMessage", (res) => {
-                    if (res.status === 200 && res.message === "Successfully buy transaction") {
-                        setHasBought(true)
-                    }
+                    if (res.status === 200 && res.message === "Successfully buy transaction") { setHasBought(true) }
                 })
             }
-        } else {
-            alert("harga melebihi unit value anda!")
         }
+        else { alert("harga melebihi unit value anda!") }
     }
 
     return (

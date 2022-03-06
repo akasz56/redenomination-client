@@ -12,23 +12,16 @@ export function PostPriceScreen({ data, timer }) {
     const [price, setPrice] = useState(false);
 
     useEffect(() => {
-        if (isEmptyObject(data.seller)) {
-            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
-        } else {
+        if (isEmptyObject(data.seller)) { socket.emit("po:requestList", { phaseId: data.currentPhase.id }) }
+        else {
             const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
-            if (exists !== -1) {
-                console.log(exists);
-                setStatus(true)
-            }
+            if (exists !== -1) { setStatus(true) }
         }
     }, [data])
 
     useEffect(() => {
         if (timer <= 1 && !status) {
-            socket.emit("po:inputSellerPrice", {
-                price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType),
-                phaseId: data.currentPhase.id
-            })
+            socket.emit("po:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id })
         }
     }, [data, timer, status])
 
@@ -36,13 +29,9 @@ export function PostPriceScreen({ data, timer }) {
         e.preventDefault()
 
         if (price >= adjustPrice(data.detail.unitCost, data.currentPhase.phaseType)) {
-            socket.emit("po:inputSellerPrice", {
-                price: Number(price),
-                phaseId: data.currentPhase.id
-            })
-        } else {
-            alert("harga kurang dari unit cost anda!")
+            socket.emit("po:inputSellerPrice", { price: Number(price), phaseId: data.currentPhase.id })
         }
+        else { alert("harga kurang dari unit cost anda!") }
     }
 
     return (

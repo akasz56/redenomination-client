@@ -4,7 +4,7 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { capitalize, displayPrice, downloadPNG, getRandomColor, printLog } from '../../../Utils';
+import { displayPrice, downloadPNG, getRandomColor, printLog } from '../../../Utils';
 import ScatterSummary from '../../../components/ScatterSummary';
 import UnitProfit from '../../../components/UnitProfit';
 import { CSVLink } from 'react-csv';

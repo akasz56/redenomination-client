@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react"
+import { useState, useEffect, useReducer, useCallback } from "react"
 import socket from "../../adapters/SocketIO"
 import { capitalize, isEmptyObject, printLog, sortPhases } from "../../Utils"
 import BlankScreen from "./BlankScreen"
@@ -64,11 +64,6 @@ export default function PhaseHandler({ data, setStateStage }) {
                 }
 
             case reducerActions.CONTINUE_PHASE:
-                console.log("continue phase", {
-                    ...prevState,
-                    currentPhase: { ...prevState.phases[action.payload], phaseName: phaseName[action.payload] },
-                    currentPhaseIndex: action.payload,
-                });
                 return {
                     ...prevState,
                     currentPhase: { ...prevState.phases[action.payload], phaseName: phaseName[action.payload] },
@@ -84,11 +79,8 @@ export default function PhaseHandler({ data, setStateStage }) {
 
     useEffect(() => {
         const indexExist = state.phases.findIndex(item => item.id === data.sessionData.phaseId);
-        if (indexExist !== -1) {
-            dispatch({ type: reducerActions.CONTINUE_PHASE, payload: indexExist });
-        } else {
-            dispatch({ type: reducerActions.INIT_PHASE });
-        }
+        if (indexExist !== -1) { dispatch({ type: reducerActions.CONTINUE_PHASE, payload: indexExist }); }
+        else { dispatch({ type: reducerActions.INIT_PHASE }); }
     }, [])
 
     switch (capitalize(data.simulationType)) {
@@ -224,24 +216,31 @@ function POHandler({ data, dispatch }) {
     // eventListeners
     useEffect(() => {
         function postedOfferListHandler(res) {
-            let count = 0;
-            const temp = res.map((item, i) => {
-                count = (item.isSold) ? (count + 1) : count;
-                return {
-                    sellerId: item.sellerId,
-                    buyerId: item.buyerId,
-                    role: "Penjual " + (i + 1),
-                    price: item.price,
-                    status: (item.isSold) ? "done" : "",
-                    postedOfferId: item.id
-                }
-            })
-            setSellers(temp)
-            setCountSold(count)
+            if (!isEmptyObject(res)) {
+                let count = 0;
+                const temp = res.map((item, i) => {
+                    count = (item.isSold) ? (count + 1) : count;
+                    return {
+                        sellerId: item.sellerId,
+                        buyerId: item.buyerId,
+                        role: "Penjual " + (i + 1),
+                        price: item.price,
+                        status: (item.isSold) ? "done" : "",
+                        postedOfferId: item.id
+                    }
+                });
+                setSellers(temp);
+                setCountSold(count);
+            }
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) { if (res) { setTimer(10); setStage(postedOfferStages.FLASH_SALE); } }
+        function isDonePOHandler(res) {
+            if (res) {
+                setTimer(10);
+                setStage(postedOfferStages.FLASH_SALE);
+            }
+        }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
@@ -251,25 +250,30 @@ function POHandler({ data, dispatch }) {
     }, [])
 
     // startStage
-    useEffect(() => { setStartTime(dayjs(data.sessionData.startTime).toDate()) }, [stage, data])
+    useEffect(() => {
+        setStartTime(dayjs(data.sessionData.startTime).toDate());
+    }, [stage, data])
 
     // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"),) } }, 1000);
+        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second")) } }, 1000);
         return () => { clearInterval(interval); }
     }, [timer, data.timer, startTime]);
+
+    const cleanup = useCallback(() => {
+        setSellers({});
+        setCountSold(0);
+        setStage(postedOfferStages.POST_PRICE);
+        dispatch({ type: reducerActions.NEXT_PHASE });
+    }, [dispatch])
 
     // cleanup before nextPhase
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
-            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                setSellers({});
-                setCountSold(0);
-                setStage(postedOfferStages.POST_PRICE);
-                dispatch({ type: reducerActions.NEXT_PHASE });
-            }
-        }
-    }, [stage, timer, countSold, data, dispatch])
+            if (countSold === parseInt(data.participantNumber / 2)) { cleanup() }
+            else if (timer <= 0) { cleanup() }
+        } else if (stage === postedOfferStages.POST_PRICE) { }
+    })
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:

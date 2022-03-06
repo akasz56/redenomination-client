@@ -34,7 +34,6 @@ export default function Simulation() {
 
         async function fetchSummary() {
             const res1 = await readSimulationSummary(urlParams.id)
-            console.log(res1);
             if (res1.status === 200) {
                 if (res1.data.sessionSummary.length >= 1) {
                     setDataSummary({
@@ -77,7 +76,7 @@ export default function Simulation() {
                 setDataPost({
                     "simulationID": res.data.id,
                     "sessionType": "Ulangan Kesekian",
-                    "timer": parseInt(2)
+                    "timer": parseInt(1)
                 });
                 fetchSummary();
                 setLoading(false)
