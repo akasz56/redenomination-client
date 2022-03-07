@@ -218,19 +218,6 @@ function POHandler({ data, dispatch }) {
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
     const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
 
-    const cleanupPhase = useCallback(() => {
-        setTimer(10);
-        setSellers({});
-        setCountSold(0);
-        setStage(postedOfferStages.POST_PRICE);
-        dispatch({ type: reducerActions.NEXT_PHASE });
-    }, [dispatch])
-
-    const cleanupStage = useCallback(() => {
-        setTimer(10);
-        setStage(postedOfferStages.FLASH_SALE);
-    }, [])
-
     // eventListeners
     useEffect(() => {
         function postedOfferListHandler(res) {
@@ -253,7 +240,7 @@ function POHandler({ data, dispatch }) {
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) { if (res) { cleanupStage(); } }
+        function isDonePOHandler(res) { if (res) { setTimer(10); setStage(postedOfferStages.FLASH_SALE); } }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
@@ -269,22 +256,35 @@ function POHandler({ data, dispatch }) {
 
     // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer > 0) { setTimer(dayjs(startTime).add(time / 5, "minute").diff(dayjs(), "second")) } }, 1000);
+        const interval = setInterval(() => { if (timer > 0) { setTimer(dayjs(startTime).add(time, "minute").diff(dayjs(), "second")) } }, 1000);
         return () => { clearInterval(interval); }
     }, [timer, startTime, time]);
 
     // cleanups
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
-            if (countSold === parseInt(data.participantNumber / 2)) { cleanupPhase(); }
-            else if (timer <= 0) { cleanupPhase(); }
+            if (countSold === parseInt(data.participantNumber / 2)) {
+                setTimer(10);
+                setSellers({});
+                setCountSold(0);
+                setStage(postedOfferStages.POST_PRICE);
+                dispatch({ type: reducerActions.NEXT_PHASE });
+            }
+            else if (timer <= 0) {
+                setTimer(10);
+                setSellers({});
+                setCountSold(0);
+                setStage(postedOfferStages.POST_PRICE);
+                dispatch({ type: reducerActions.NEXT_PHASE });
+            }
         } else if (stage === postedOfferStages.POST_PRICE) {
             if (timer <= 0) {
-                cleanupStage();
+                setTimer(10);
+                setStage(postedOfferStages.FLASH_SALE);
                 dispatch({ type: reducerActions.UPDATE_PHASE });
             }
         }
-    }, [stage, timer, countSold])
+    }, [stage, timer, countSold, data, dispatch])
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
