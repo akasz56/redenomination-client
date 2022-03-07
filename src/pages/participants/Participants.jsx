@@ -41,7 +41,6 @@ export default function Participants() {
             if (socketId !== null && socketId.role === 'participant') {
                 if (socketId !== socket.id) { retryLogin() }
             } else {
-                alertUserSocket({ status: "000", message: "Anda belum terdaftar, silahkan login dahulu" })
                 window.location.href = "/";
             }
         });
@@ -50,11 +49,11 @@ export default function Participants() {
             if (res.status === 401) { retryLogin() }
             else if (res.status === 403) { retryLogin() }
             else if (res.status >= 300) { alertUserSocket(res) }
-            else { console.log("serverMsg", res) }
         }
         socket.on("serverMessage", serverMessageHandler)
 
         function sessionDataUpdateHandler(res) {
+            console.log("sessionDataUpdateHandler", res)
             setStateData(prev => ({
                 ...prev,
                 sessionData: res,
@@ -70,7 +69,7 @@ export default function Participants() {
 
     switch (stateStage) {
         case participantStage.READY:
-            return <ReadyScreenHandler data={stateData} setStateStage={setStateStage} setStateData={setStateData} />
+            return <ReadyScreenHandler data={stateData} setStateStage={setStateStage} />
         case participantStage.SIMULATION:
             return <PhaseHandler data={stateData} setStateStage={setStateStage} />
         case participantStage.COMPLETE:

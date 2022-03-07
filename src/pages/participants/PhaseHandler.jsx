@@ -29,6 +29,7 @@ const reducerActions = {
     INIT_PHASE: "INIT_PHASE",
     NEXT_PHASE: "NEXT_PHASE",
     CONTINUE_PHASE: "CONTINUE_PHASE",
+    CHECK_PHASE: "CHECK_PHASE",
 }
 
 export default function PhaseHandler({ data, setStateStage }) {
@@ -63,12 +64,24 @@ export default function PhaseHandler({ data, setStateStage }) {
                     };
                 }
 
-            case reducerActions.CONTINUE_PHASE:
-                return {
-                    ...prevState,
-                    currentPhase: { ...prevState.phases[action.payload], phaseName: phaseName[action.payload] },
-                    currentPhaseIndex: action.payload,
-                };
+            case reducerActions.CHECK_PHASE:
+                const indexExist = prevState.phases.findIndex(item => item.id === data.sessionData.phaseId);
+                if (indexExist !== -1) {
+                    return {
+                        ...prevState,
+                        currentPhase: { ...prevState.phases[indexExist], phaseName: phaseName[indexExist] },
+                        currentPhaseIndex: indexExist,
+                    };
+                }
+                else {
+                    socket.emit("startPhase", { "phaseId": prevState.phases[0].id })
+                    return {
+                        ...prevState,
+                        currentPhase: { ...prevState.phases[0], phaseName: phaseName[0] },
+                        currentPhaseIndex: 0,
+                    };
+                }
+
 
             default:
                 printLog("unhandled phase reduce")
@@ -76,12 +89,7 @@ export default function PhaseHandler({ data, setStateStage }) {
         }
     }
     const [state, dispatch] = useReducer(reducer, initialState);
-
-    useEffect(() => {
-        const indexExist = state.phases.findIndex(item => item.id === data.sessionData.phaseId);
-        if (indexExist !== -1) { dispatch({ type: reducerActions.CONTINUE_PHASE, payload: indexExist }); }
-        else { dispatch({ type: reducerActions.INIT_PHASE }); }
-    }, [])
+    useEffect(() => { dispatch({ type: reducerActions.CHECK_PHASE }); }, [data.sessionData])
 
     switch (capitalize(data.simulationType)) {
         // case simulationType.DA:
@@ -261,6 +269,7 @@ function POHandler({ data, dispatch }) {
     }, [timer, data.timer, startTime]);
 
     const cleanup = useCallback(() => {
+        setTimer(10);
         setSellers({});
         setCountSold(0);
         setStage(postedOfferStages.POST_PRICE);
@@ -272,8 +281,10 @@ function POHandler({ data, dispatch }) {
         if (stage === postedOfferStages.FLASH_SALE) {
             if (countSold === parseInt(data.participantNumber / 2)) { cleanup() }
             else if (timer <= 0) { cleanup() }
-        } else if (stage === postedOfferStages.POST_PRICE) { }
-    })
+        } else if (stage === postedOfferStages.POST_PRICE) {
+            if (timer <= 0) { setStage(postedOfferStages.FLASH_SALE); }
+        }
+    }, [stage, timer, countSold])
 
     switch (stage) {
         case postedOfferStages.POST_PRICE:
