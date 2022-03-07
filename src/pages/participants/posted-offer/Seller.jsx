@@ -11,6 +11,8 @@ export function PostPriceScreen({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
+    useEffect(() => { return () => { if (!status) { socket.emit("po:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id }) } } }, [status])
+
     useEffect(() => {
         if (isEmptyObject(data.seller)) { socket.emit("po:requestList", { phaseId: data.currentPhase.id }) }
         else {
@@ -18,12 +20,6 @@ export function PostPriceScreen({ data, timer }) {
             if (exists !== -1) { setStatus(true) }
         }
     }, [data])
-
-    useEffect(() => {
-        if (timer <= 1 && !status) {
-            socket.emit("po:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id })
-        }
-    }, [data, timer, status])
 
     function submitHandler(e) {
         e.preventDefault()
@@ -74,9 +70,7 @@ export function PostPriceScreen({ data, timer }) {
 export function SellerIdleScreen({ data, timer }) {
 
     useEffect(() => {
-        if (isEmptyObject(data.seller)) {
-            socket.emit("po:requestList", { phaseId: data.currentPhase.id })
-        }
+        if (isEmptyObject(data.seller)) { socket.emit("po:requestList", { phaseId: data.currentPhase.id }) }
     }, [data])
 
     return (

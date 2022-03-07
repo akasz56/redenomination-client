@@ -73,7 +73,7 @@ export function adjustPrice(price, phaseType = "preRedenomPrice") {
             return parseFloat(price)
 
         case "postRedenomPrice":
-            return parseFloat(price) / 1000;
+            return parseFloat(price / 1000);
 
         default:
             break;

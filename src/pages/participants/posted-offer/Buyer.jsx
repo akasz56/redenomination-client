@@ -45,9 +45,6 @@ export function FlashSaleScreen({ data, timer }) {
         if (item.price <= data.detail.unitValue) {
             if (window.confirm("yakin membeli?")) {
                 socket.emit("po:buy", { postedOfferId: item.postedOfferId, phaseId: data.currentPhase.id })
-                socket.once("serverMessage", (res) => {
-                    if (res.status === 200 && res.message === "Successfully buy transaction") { setHasBought(true) }
-                })
             }
         }
         else { alert("harga melebihi unit value anda!") }

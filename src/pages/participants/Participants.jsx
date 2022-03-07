@@ -26,7 +26,6 @@ export default function Participants() {
         function retryLogin() {
             socket.emit("loginToken", { "token": state.detail.loginToken.toUpperCase(), "username": state.detail.username });
             function retryLoginHandler(res) {
-                console.log("retryLoginHandler")
                 if (res.status === 200 && res.data.isSessionRunning) {
                     setStateData(res.data);
                     saveAuth('participant', socket.id);
@@ -46,14 +45,13 @@ export default function Participants() {
         });
 
         function serverMessageHandler(res) {
-            if (res.status === 401) { retryLogin() }
-            else if (res.status === 403) { retryLogin() }
+            if (res.status === 401) { alert("terjadi kesalahan, coba lagi"); retryLogin() }
+            else if (res.status === 403) { alert("terjadi kesalahan, coba lagi"); retryLogin() }
             else if (res.status >= 300) { alertUserSocket(res) }
         }
         socket.on("serverMessage", serverMessageHandler)
 
         function sessionDataUpdateHandler(res) {
-            console.log("sessionDataUpdateHandler", res)
             setStateData(prev => ({
                 ...prev,
                 sessionData: res,

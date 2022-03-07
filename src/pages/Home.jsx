@@ -16,7 +16,7 @@ export default function Home() {
         document.title = "Redenomination Project App";
     }, []);
 
-    async function handleSubmit(e) {
+    function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
 

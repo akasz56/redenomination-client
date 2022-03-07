@@ -18,7 +18,7 @@ export default function CompleteScreenHandler({ data }) {
 
             <Label
                 className="mt-5 mx-auto"
-                complete={true}
+                complete="true"
                 phase={capitalize(data.simulationType) + " (" + data.detail.loginToken + ")"}
                 goods={data.goodsType + " (" + capitalize(data.goodsName) + ")"}
                 inflation={data.inflationType}

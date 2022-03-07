@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Label(props) {
     function Element() {
-        if (props.complete) {
+        if (props.complete === "true") {
             return (<>
                 <p className='fw-bolder'>{props.phase}</p>
                 <p>Jenis Barang: {props.goods}</p>
