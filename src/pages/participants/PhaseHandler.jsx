@@ -26,8 +26,8 @@ const phaseName = [
 ]
 
 const reducerActions = {
-    INIT_PHASE: "INIT_PHASE",
     NEXT_PHASE: "NEXT_PHASE",
+    UPDATE_PHASE: "UPDATE_PHASE",
     CONTINUE_PHASE: "CONTINUE_PHASE",
     CHECK_PHASE: "CHECK_PHASE",
 }
@@ -41,14 +41,6 @@ export default function PhaseHandler({ data, setStateStage }) {
 
     function reducer(prevState, action) {
         switch (action.type) {
-            case reducerActions.INIT_PHASE:
-                socket.emit("startPhase", { "phaseId": prevState.phases[0].id })
-                return {
-                    ...prevState,
-                    currentPhase: { ...prevState.phases[0], phaseName: phaseName[0] },
-                    currentPhaseIndex: 0,
-                };
-
             case reducerActions.NEXT_PHASE:
                 socket.emit("finishPhase", { "phaseId": prevState.currentPhase.id })
                 const nextIndex = prevState.currentPhaseIndex + 1;
@@ -63,6 +55,10 @@ export default function PhaseHandler({ data, setStateStage }) {
                         currentPhaseIndex: nextIndex,
                     };
                 }
+
+            case reducerActions.UPDATE_PHASE:
+                socket.emit("updatePhase", { "phaseId": prevState.currentPhase.id })
+                return prevState;
 
             case reducerActions.CHECK_PHASE:
                 const indexExist = prevState.phases.findIndex(item => item.id === data.sessionData.phaseId);
@@ -218,8 +214,22 @@ function POHandler({ data, dispatch }) {
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
-    const [timer, setTimer] = useState(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"));
+    const [time] = useState(data.timer);
+    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
     const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
+
+    const cleanupPhase = useCallback(() => {
+        setTimer(10);
+        setSellers({});
+        setCountSold(0);
+        setStage(postedOfferStages.POST_PRICE);
+        dispatch({ type: reducerActions.NEXT_PHASE });
+    }, [dispatch])
+
+    const cleanupStage = useCallback(() => {
+        setTimer(10);
+        setStage(postedOfferStages.FLASH_SALE);
+    }, [])
 
     // eventListeners
     useEffect(() => {
@@ -243,12 +253,7 @@ function POHandler({ data, dispatch }) {
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) {
-            if (res) {
-                setTimer(10);
-                setStage(postedOfferStages.FLASH_SALE);
-            }
-        }
+        function isDonePOHandler(res) { if (res) { cleanupStage(); } }
         socket.on("po:isDone", isDonePOHandler);
 
         return () => {
@@ -257,32 +262,27 @@ function POHandler({ data, dispatch }) {
         }
     }, [])
 
-    // startStage
+    // updateStartTime
     useEffect(() => {
         setStartTime(dayjs(data.sessionData.startTime).toDate());
-    }, [stage, data])
+    }, [data.sessionData.startTime])
 
     // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second")) } }, 1000);
+        const interval = setInterval(() => { if (timer > 0) { setTimer(dayjs(startTime).add(time / 5, "minute").diff(dayjs(), "second")) } }, 1000);
         return () => { clearInterval(interval); }
-    }, [timer, data.timer, startTime]);
+    }, [timer, startTime, time]);
 
-    const cleanup = useCallback(() => {
-        setTimer(10);
-        setSellers({});
-        setCountSold(0);
-        setStage(postedOfferStages.POST_PRICE);
-        dispatch({ type: reducerActions.NEXT_PHASE });
-    }, [dispatch])
-
-    // cleanup before nextPhase
+    // cleanups
     useEffect(() => {
         if (stage === postedOfferStages.FLASH_SALE) {
-            if (countSold === parseInt(data.participantNumber / 2)) { cleanup() }
-            else if (timer <= 0) { cleanup() }
+            if (countSold === parseInt(data.participantNumber / 2)) { cleanupPhase(); }
+            else if (timer <= 0) { cleanupPhase(); }
         } else if (stage === postedOfferStages.POST_PRICE) {
-            if (timer <= 0) { setStage(postedOfferStages.FLASH_SALE); }
+            if (timer <= 0) {
+                cleanupStage();
+                dispatch({ type: reducerActions.UPDATE_PHASE });
+            }
         }
     }, [stage, timer, countSold])
 
