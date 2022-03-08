@@ -286,6 +286,18 @@ function POHandler({ data, dispatch }) {
         }
     }, [stage, timer, countSold, data, dispatch])
 
+    useEffect(() => {
+        if (data.sessionData.stageCode === false) {
+            setTimer(10);
+            setSellers({});
+            setCountSold(0);
+            setStage(postedOfferStages.POST_PRICE);
+        } else if (data.sessionData.stageCode === true) {
+            setTimer(10);
+            setStage(postedOfferStages.FLASH_SALE);
+        }
+    }, [data.sessionData.stageCode])
+
     switch (stage) {
         case postedOfferStages.POST_PRICE:
             if (data.type === "seller") { return <PostPriceScreen data={{ ...data, seller: sellers }} timer={timer} /> }

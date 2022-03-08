@@ -20,7 +20,7 @@ export default function Participants() {
         window.location.href = "/";
     }
     const [stateData, setStateData] = useState(state);
-    const [stateStage, setStateStage] = useState(participantStage.READY);
+    const [stateStage, setStateStage] = useState((stateData.sessionData.phaseId === participantStage.READY) ? participantStage.READY : participantStage.SIMULATION);
 
     useEffect(() => {
         function retryLogin() {
