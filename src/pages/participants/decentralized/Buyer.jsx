@@ -42,6 +42,13 @@ export function ShopHandler({ data, timer }) {
         }
     }, [data])
 
+    useEffect(() => {
+        if (!isEmptyObject(data.seller) && isInside) {
+            const thisShop = data.seller.find(item => item.decentralizedId === isInside)
+            if (thisShop.status === true) { setIsInside(null) }
+        }
+    }, [data.seller, isInside])
+
     function clickHandler(item) { setIsInside(item.decentralizedId) }
 
     if (isInside) {
@@ -85,7 +92,6 @@ export function ShopHandler({ data, timer }) {
 
 function ShopView({ data, timer, setIsInside, setHasBought }) {
     useEffect(() => { document.title = data.shop.role + " - Decentralized"; }, [])
-    useEffect(() => { if (data.shop.isSold) { setIsInside(null) } }, [data])
 
     function clickBack() { setIsInside(null) }
 

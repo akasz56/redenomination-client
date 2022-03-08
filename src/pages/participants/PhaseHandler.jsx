@@ -313,16 +313,17 @@ const decentralizedStages = {
     FLASH_SALE: "FLASH_SALE",
 }
 function DSHandler({ data, dispatch }) {
+    const [time] = useState(data.timer);
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
-    const [time] = useState(data.timer);
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
     const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
 
     // eventListener
     useEffect(() => {
         function decentralizedListHandler(res) {
+            console.log("decentralizedListHandler", res)
             if (!isEmptyObject(res)) {
                 let count = 0;
                 const temp = res.map((item, i) => {
@@ -357,7 +358,6 @@ function DSHandler({ data, dispatch }) {
 
     // updateStageCode
     useEffect(() => {
-        console.log("stageCode", data.sessionData.stageCode);
         if (data.sessionData.stageCode === false) {
             setStage(decentralizedStages.POST_PRICE);
         } else if (data.sessionData.stageCode === true) {

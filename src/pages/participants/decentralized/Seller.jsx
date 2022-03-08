@@ -90,7 +90,7 @@ export function SellerIdleDS({ data, timer }) {
                     data.seller.map((item, i) => (
                         <Card
                             key={i}
-                            variant={(item.status === "done") ? "done" : "wait"}
+                            variant={(item.status === true) ? "done" : "wait"}
                             className="mb-3"
                             role={item.role}
                         >
