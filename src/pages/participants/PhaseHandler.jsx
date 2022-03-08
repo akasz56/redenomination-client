@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, useCallback } from "react"
+import { useState, useEffect, useReducer } from "react"
 import socket from "../../adapters/SocketIO"
 import { capitalize, isEmptyObject, printLog, sortPhases } from "../../Utils"
 import BlankScreen from "./BlankScreen"
@@ -78,7 +78,6 @@ export default function PhaseHandler({ data, setStateStage }) {
                     };
                 }
 
-
             default:
                 printLog("unhandled phase reduce")
                 return prevState;
@@ -92,8 +91,8 @@ export default function PhaseHandler({ data, setStateStage }) {
         //     return <DAHandler data={{ ...data, ...state }} dispatch={dispatch} />
         case simulationType.PO:
             return <POHandler data={{ ...data, ...state }} dispatch={dispatch} />
-        // case simulationType.DS:
-        //     return <DSHandler data={{ ...data, ...state }} dispatch={dispatch} />
+        case simulationType.DS:
+            return <DSHandler data={{ ...data, ...state }} dispatch={dispatch} />
 
         default:
             return <BlankScreen lineNumber="001" />
@@ -309,7 +308,6 @@ function POHandler({ data, dispatch }) {
     }
 }
 
-/*
 const decentralizedStages = {
     POST_PRICE: "POST_PRICE",
     FLASH_SALE: "FLASH_SALE",
@@ -317,32 +315,33 @@ const decentralizedStages = {
 function DSHandler({ data, dispatch }) {
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
-    const [stage, setStage] = useState(decentralizedStages.POST_PRICE);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
-    const [timer, setTimer] = useState(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"));
+    const [time] = useState(data.timer);
+    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
+    const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
 
     // eventListener
     useEffect(() => {
         function decentralizedListHandler(res) {
-            let count = 0;
-            const temp = res.map((item, i) => {
-                count = (item.isSold) ? (count + 1) : count;
-                return {
-                    sellerId: item.sellerId,
-                    role: "Penjual " + (i + 1),
-                    price: item.price,
-                    status: item.isSold,
-                    decentralizedId: item.id
-                }
-            })
-            setSellers(temp)
-            setCountSold(count)
+            if (!isEmptyObject(res)) {
+                let count = 0;
+                const temp = res.map((item, i) => {
+                    count = (item.isSold) ? (count + 1) : count;
+                    return {
+                        sellerId: item.sellerId,
+                        role: "Penjual " + (i + 1),
+                        price: item.price,
+                        status: item.isSold,
+                        decentralizedId: item.id
+                    }
+                })
+                setSellers(temp)
+                setCountSold(count)
+            }
         }
         socket.on("decentralizedList", decentralizedListHandler);
 
-        function isDoneDSHandler(res) {
-            if (res) { setStage(decentralizedStages.FLASH_SALE); }
-        }
+        function isDoneDSHandler(res) { if (res) { setTimer(60); setStage(decentralizedStages.FLASH_SALE); } }
         socket.on("ds:isDone", isDoneDSHandler);
 
         return () => {
@@ -351,30 +350,50 @@ function DSHandler({ data, dispatch }) {
         }
     }, [])
 
-    // startStage
+    // updateStartTime
     useEffect(() => {
-        setStartTime(dayjs(data.sessionData.startTime).toDate())
-    }, [stage, data.timer])
+        setStartTime(dayjs(data.sessionData.startTime).toDate());
+    }, [data.sessionData.startTime])
+
+    // updateStageCode
+    useEffect(() => {
+        console.log("stageCode", data.sessionData.stageCode);
+        if (data.sessionData.stageCode === false) {
+            setStage(decentralizedStages.POST_PRICE);
+        } else if (data.sessionData.stageCode === true) {
+            setStage(decentralizedStages.FLASH_SALE);
+        }
+    }, [data.sessionData.stageCode])
 
     // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"),) } }, 1000);
+        const interval = setInterval(() => { if (timer > 0) { setTimer(dayjs(startTime).add(time, "minute").diff(dayjs(), "second")) } }, 1000);
+        return () => { clearInterval(interval); }
+    }, [timer, startTime, time]);
 
-        return () => {
-            clearInterval(interval);
-        }
-    }, [timer, data.timer, startTime]);
-
+    // cleanups
     useEffect(() => {
-        if (stage === decentralizedStages.FLASH_SALE) {
-            if (timer <= 0 || (countSold === parseInt(data.participantNumber / 2))) {
-                setCountSold(0);
-                setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
-                dispatch({ type: reducerActions.NEXT_PHASE });
-                setStage(decentralizedStages.POST_PRICE);
-            }
+        function phaseCleanup() {
+            setTimer(60);
+            setSellers({});
+            setCountSold(0);
+            setStage(decentralizedStages.POST_PRICE);
+            dispatch({ type: reducerActions.NEXT_PHASE });
         }
-    }, [stage, timer, countSold, data.participantNumber, data.timer, dispatch])
+
+        function stageCleanup() {
+            setTimer(60);
+            setStage(decentralizedStages.FLASH_SALE);
+            dispatch({ type: reducerActions.UPDATE_PHASE });
+        }
+
+        if (stage === decentralizedStages.FLASH_SALE) {
+            if (countSold === parseInt(data.participantNumber / 2)) { phaseCleanup() }
+            else if (timer <= 0) { phaseCleanup() }
+        } else if (stage === decentralizedStages.POST_PRICE) {
+            if (timer <= 0) { stageCleanup() }
+        }
+    }, [stage, timer, countSold, data, dispatch])
 
     switch (stage) {
         case decentralizedStages.POST_PRICE:
@@ -421,4 +440,3 @@ function NotificationModal({ showModal, setShowModal }) {
         </Modal>
     )
 }
-*/

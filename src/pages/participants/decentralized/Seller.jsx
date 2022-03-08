@@ -5,34 +5,27 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { adjustPrice, capitalize, displayPrice, numberInputFormat } from '../../../Utils';
+import { adjustPrice, capitalize, displayPrice, isEmptyObject, numberInputFormat } from '../../../Utils';
 
 export function PostPriceDS({ data, timer }) {
     const [status, setStatus] = useState(false);
     const [price, setPrice] = useState(false);
 
     useEffect(() => {
-        if (timer <= 1 && !status) {
-            socket.emit("ds:inputSellerPrice", {
-                price: Number(data.detail.unitCost),
-                phaseId: data.currentPhase.id
-            })
-            setStatus(true)
+        if (isEmptyObject(data.seller)) { socket.emit("ds:requestList", { phaseId: data.currentPhase.id }) }
+        else {
+            const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
+            if (exists !== -1) { setStatus(true) }
         }
-    }, [data, timer, status])
+    }, [data])
 
     function submitHandler(e) {
         e.preventDefault()
 
         if (price >= adjustPrice(data.detail.unitCost, data.currentPhase.phaseType)) {
-            socket.emit("ds:inputSellerPrice", {
-                price: Number(price),
-                phaseId: data.currentPhase.id
-            })
-            setStatus(true);
-        } else {
-            alert("harga kurang dari unit cost anda!")
+            socket.emit("ds:inputSellerPrice", { price: Number(price), phaseId: data.currentPhase.id })
         }
+        else { alert("harga kurang dari unit cost anda!") }
     }
 
     return (
@@ -73,6 +66,17 @@ export function PostPriceDS({ data, timer }) {
 }
 
 export function SellerIdleDS({ data, timer }) {
+
+    useEffect(() => {
+        if (isEmptyObject(data.seller)) {
+            socket.emit("ds:requestList", { phaseId: data.currentPhase.id })
+            socket.emit("ds:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id })
+        } else {
+            const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
+            if (exists === -1) { socket.emit("ds:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id }) }
+        }
+    }, [data])
+
     return (
         <Container className='text-center d-flex flex-column'>
             <Timer minutes={timer} />
@@ -80,16 +84,20 @@ export function SellerIdleDS({ data, timer }) {
             <p className='mt-5'>menunggu...</p>
 
             <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                {data.seller.map((item, i) => (
-                    <Card
-                        key={i}
-                        variant={(item.status === "done") ? "done" : "wait"}
-                        className="mb-3"
-                        role={item.role}
-                    >
-                        {displayPrice(item.price, data.currentPhase.phaseType)}
-                    </Card>
-                ))}
+                {isEmptyObject(data.seller) ?
+                    <></>
+                    :
+                    data.seller.map((item, i) => (
+                        <Card
+                            key={i}
+                            variant={(item.status === "done") ? "done" : "wait"}
+                            className="mb-3"
+                            role={item.role}
+                        >
+                            {displayPrice(item.price, data.currentPhase.phaseType)}
+                        </Card>
+                    ))
+                }
             </section>
 
             <Label

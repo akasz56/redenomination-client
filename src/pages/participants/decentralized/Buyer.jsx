@@ -5,7 +5,7 @@ import { imgURL } from '../../../adapters/serverURL'
 import Card from '../../../components/Card'
 import Label from '../../../components/Label'
 import Timer from '../../../components/Timer';
-import { capitalize, displayPrice } from '../../../Utils';
+import { capitalize, displayPrice, isEmptyObject } from '../../../Utils';
 
 export function BuyerIdleDS({ data, timer }) {
     return (
@@ -32,13 +32,17 @@ export function ShopHandler({ data, timer }) {
     const [isInside, setIsInside] = useState(null);
     const [hasBought, setHasBought] = useState(false);
 
-    useEffect(() => {
-        document.title = "Decentralized";
-    }, [isInside])
+    useEffect(() => { document.title = "Decentralized"; }, [isInside])
 
-    function clickHandler(item) {
-        setIsInside(item.decentralizedId)
-    }
+    useEffect(() => {
+        if (isEmptyObject(data.seller)) { socket.emit("ds:requestList", { phaseId: data.currentPhase.id }) }
+        else {
+            const exists = data.seller.findIndex(item => item.buyerId === data.detail.id);
+            if (exists !== -1) { setHasBought(true); setIsInside(null); }
+        }
+    }, [data])
+
+    function clickHandler(item) { setIsInside(item.decentralizedId) }
 
     if (isInside) {
         return <ShopView
@@ -52,15 +56,19 @@ export function ShopHandler({ data, timer }) {
                 <Timer minutes={timer} />
                 <h3 className='mt-5'>Silahkan <span className='fw-bold'>Pilih Penjual</span> untuk melihat Harga</h3>
                 <section className='mt-5 d-flex justify-content-between flex-wrap'>
-                    {data.seller.map((item, i) => (
-                        <Card
-                            key={i}
-                            variant={(item.status) ? "done" : (hasBought ? "wait" : "decentralized")}
-                            className="mb-3"
-                            role={item.role}
-                            onBtnClick={(e) => { clickHandler(item) }}
-                        />
-                    ))}
+                    {isEmptyObject(data.seller) ?
+                        <></>
+                        :
+                        data.seller.map((item, i) => (
+                            <Card
+                                key={i}
+                                variant={(item.status) ? "done" : (hasBought ? "wait" : "decentralized")}
+                                className="mb-3"
+                                role={item.role}
+                                onBtnClick={(e) => { clickHandler(item) }}
+                            />
+                        ))
+                    }
                 </section>
 
                 <Label
@@ -76,24 +84,16 @@ export function ShopHandler({ data, timer }) {
 }
 
 function ShopView({ data, timer, setIsInside, setHasBought }) {
-    useEffect(() => {
-        document.title = data.shop.role + " - Decentralized";
-    }, [])
+    useEffect(() => { document.title = data.shop.role + " - Decentralized"; }, [])
+    useEffect(() => { if (data.shop.isSold) { setIsInside(null) } }, [data])
 
-    useEffect(() => {
-        if (data.shop.isSold) { setIsInside(null) }
-    }, [data])
+    function clickBack() { setIsInside(null) }
 
-    function clickBack() {
-        setIsInside(null)
-    }
+    function clickBuy(e) {
+        e.preventDefault();
 
-    function clickBuy() {
         if (window.confirm("yakin membeli?")) {
-            socket.emit("ds:buy", {
-                decentralizedId: data.shop.decentralizedId,
-                phaseId: data.currentPhase.id
-            })
+            socket.emit("ds:buy", { decentralizedId: data.shop.decentralizedId, phaseId: data.currentPhase.id })
             setHasBought(true)
         }
     }
