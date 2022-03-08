@@ -289,8 +289,6 @@ function POHandler({ data, dispatch }) {
     useEffect(() => {
         if (data.sessionData.stageCode === false) {
             setTimer(10);
-            setSellers({});
-            setCountSold(0);
             setStage(postedOfferStages.POST_PRICE);
         } else if (data.sessionData.stageCode === true) {
             setTimer(10);
