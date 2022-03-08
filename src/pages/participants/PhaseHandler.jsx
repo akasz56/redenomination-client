@@ -210,10 +210,10 @@ const postedOfferStages = {
     FLASH_SALE: "FLASH_SALE",
 }
 function POHandler({ data, dispatch }) {
+    const [time] = useState(data.timer);
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
-    const [time] = useState(data.timer);
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
     const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
 

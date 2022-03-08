@@ -16,6 +16,7 @@ export function PostPriceScreen({ data, timer }) {
         else {
             const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
             if (exists !== -1) { setStatus(true) }
+            else { setStatus(false) }
         }
     }, [data])
 
