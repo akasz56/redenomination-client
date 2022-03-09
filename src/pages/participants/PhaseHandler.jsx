@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react"
+import { useState, useEffect, useReducer, useMemo } from "react"
 import socket from "../../adapters/SocketIO"
 import { capitalize, isEmptyObject, printLog, sortPhases } from "../../Utils"
 import BlankScreen from "./BlankScreen"
@@ -210,19 +210,28 @@ const postedOfferStages = {
     FLASH_SALE: "FLASH_SALE",
 }
 function POHandler({ data, dispatch }) {
-    const [time] = useState(data.timer);
+    const time = useMemo(() => data.timer, [data.timer]);
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
-    const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
+    const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
+
+    // phaseCleanup
+    const phaseId = useMemo(() => {
+        setTimer(60);
+        setSellers({});
+        setCountSold(0);
+        setStage(postedOfferStages.POST_PRICE);
+        return data.currentPhase.id
+    }, [data.currentPhase.id]);
 
     // eventListeners
     useEffect(() => {
         function postedOfferListHandler(res) {
             if (!isEmptyObject(res)) {
                 let count = 0;
-                const temp = res.map((item, i) => {
+                setSellers(res.map((item, i) => {
                     count = (item.isSold) ? (count + 1) : count;
                     return {
                         sellerId: item.sellerId,
@@ -232,35 +241,26 @@ function POHandler({ data, dispatch }) {
                         status: (item.isSold) ? "done" : "",
                         postedOfferId: item.id
                     }
-                });
-                setSellers(temp);
+                }));
                 setCountSold(count);
             }
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        function isDonePOHandler(res) { if (res) { setTimer(60); setStage(postedOfferStages.FLASH_SALE); } }
-        socket.on("po:isDone", isDonePOHandler);
-
         return () => {
             socket.off("postedOfferList", postedOfferListHandler);
-            socket.off("po:isDone", isDonePOHandler);
         }
     }, [])
 
-    // updateStartTime
+    // updateSessionData
     useEffect(() => {
-        setStartTime(dayjs(data.sessionData.startTime).toDate());
-    }, [data.sessionData.startTime])
-
-    // updateStageCode
-    useEffect(() => {
-        if (data.sessionData.stageCode === false) {
-            setStage(postedOfferStages.POST_PRICE);
-        } else if (data.sessionData.stageCode === true) {
-            setStage(postedOfferStages.FLASH_SALE);
-        }
-    }, [data.sessionData.stageCode])
+        setStartTime((prevState) => {
+            if (prevState === data.sessionData.startTime) { return prevState }
+            else { return data.sessionData.startTime }
+        });
+        if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
+        else { setStage(postedOfferStages.FLASH_SALE); }
+    }, [data.sessionData])
 
     // timer
     useEffect(() => {
@@ -268,27 +268,16 @@ function POHandler({ data, dispatch }) {
         return () => { clearInterval(interval); }
     }, [timer, startTime, time]);
 
-    // cleanups
     useEffect(() => {
-        function phaseCleanup() {
-            setTimer(60);
-            setSellers({});
-            setCountSold(0);
-            setStage(postedOfferStages.POST_PRICE);
-            dispatch({ type: reducerActions.NEXT_PHASE });
-        }
-
-        function stageCleanup() {
-            setTimer(60);
-            setStage(postedOfferStages.FLASH_SALE);
-            dispatch({ type: reducerActions.UPDATE_PHASE });
-        }
-
         if (stage === postedOfferStages.FLASH_SALE) {
-            if (countSold === parseInt(data.participantNumber / 2)) { phaseCleanup() }
-            else if (timer <= 0) { phaseCleanup() }
+            if (countSold === parseInt(data.participantNumber / 2)) { dispatch({ type: reducerActions.NEXT_PHASE }); }
+            else if (timer <= 0) { dispatch({ type: reducerActions.NEXT_PHASE }); }
         } else if (stage === postedOfferStages.POST_PRICE) {
-            if (timer <= 0) { stageCleanup() }
+            if (timer <= 0) {
+                dispatch({ type: reducerActions.UPDATE_PHASE });
+                setTimer(60);
+                setStage(postedOfferStages.FLASH_SALE);
+            }
         }
     }, [stage, timer, countSold, data, dispatch])
 
@@ -313,20 +302,28 @@ const decentralizedStages = {
     FLASH_SALE: "FLASH_SALE",
 }
 function DSHandler({ data, dispatch }) {
-    const [time] = useState(data.timer);
+    const time = useMemo(() => data.timer, [data.timer]);
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
     const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
-    const [stage, setStage] = useState((data.sessionData.stageCode) ? postedOfferStages.FLASH_SALE : postedOfferStages.POST_PRICE);
+    const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
+
+    // phaseCleanup
+    const phaseId = useMemo(() => {
+        setTimer(60);
+        setSellers({});
+        setCountSold(0);
+        setStage(decentralizedStages.POST_PRICE);
+        return data.currentPhase.id
+    }, [data.currentPhase.id]);
 
     // eventListener
     useEffect(() => {
         function decentralizedListHandler(res) {
-            console.log("decentralizedListHandler", res)
             if (!isEmptyObject(res)) {
                 let count = 0;
-                const temp = res.map((item, i) => {
+                setSellers(res.map((item, i) => {
                     count = (item.isSold) ? (count + 1) : count;
                     return {
                         sellerId: item.sellerId,
@@ -335,35 +332,26 @@ function DSHandler({ data, dispatch }) {
                         status: item.isSold,
                         decentralizedId: item.id
                     }
-                })
-                setSellers(temp)
+                }))
                 setCountSold(count)
             }
         }
         socket.on("decentralizedList", decentralizedListHandler);
 
-        function isDoneDSHandler(res) { if (res) { setTimer(60); setStage(decentralizedStages.FLASH_SALE); } }
-        socket.on("ds:isDone", isDoneDSHandler);
-
         return () => {
             socket.off("decentralizedList", decentralizedListHandler);
-            socket.off("ds:isDone", isDoneDSHandler);
         }
     }, [])
 
-    // updateStartTime
+    // updateSessionData
     useEffect(() => {
-        setStartTime(dayjs(data.sessionData.startTime).toDate());
-    }, [data.sessionData.startTime])
-
-    // updateStageCode
-    useEffect(() => {
-        if (data.sessionData.stageCode === false) {
-            setStage(decentralizedStages.POST_PRICE);
-        } else if (data.sessionData.stageCode === true) {
-            setStage(decentralizedStages.FLASH_SALE);
-        }
-    }, [data.sessionData.stageCode])
+        setStartTime((prevState) => {
+            if (prevState === data.sessionData.startTime) { return prevState }
+            else { return data.sessionData.startTime }
+        });
+        if (data.sessionData.stageCode === false) { setStage(decentralizedStages.POST_PRICE); }
+        else { setStage(decentralizedStages.FLASH_SALE); }
+    }, [data.sessionData])
 
     // timer
     useEffect(() => {
@@ -371,27 +359,16 @@ function DSHandler({ data, dispatch }) {
         return () => { clearInterval(interval); }
     }, [timer, startTime, time]);
 
-    // cleanups
     useEffect(() => {
-        function phaseCleanup() {
-            setTimer(60);
-            setSellers({});
-            setCountSold(0);
-            setStage(decentralizedStages.POST_PRICE);
-            dispatch({ type: reducerActions.NEXT_PHASE });
-        }
-
-        function stageCleanup() {
-            setTimer(60);
-            setStage(decentralizedStages.FLASH_SALE);
-            dispatch({ type: reducerActions.UPDATE_PHASE });
-        }
-
         if (stage === decentralizedStages.FLASH_SALE) {
-            if (countSold === parseInt(data.participantNumber / 2)) { phaseCleanup() }
-            else if (timer <= 0) { phaseCleanup() }
+            if (countSold === parseInt(data.participantNumber / 2)) { dispatch({ type: reducerActions.NEXT_PHASE }); }
+            else if (timer <= 0) { dispatch({ type: reducerActions.NEXT_PHASE }); }
         } else if (stage === decentralizedStages.POST_PRICE) {
-            if (timer <= 0) { stageCleanup() }
+            if (timer <= 0) {
+                dispatch({ type: reducerActions.UPDATE_PHASE });
+                setStage(decentralizedStages.FLASH_SALE);
+                setTimer(60);
+            }
         }
     }, [stage, timer, countSold, data, dispatch])
 
