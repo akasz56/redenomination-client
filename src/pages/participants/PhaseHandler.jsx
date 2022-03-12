@@ -213,12 +213,22 @@ function POHandler({ data, dispatch }) {
     const time = useMemo(() => data.timer, [data.timer]);
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
-    const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
-    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
     const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
+
+    // const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
+    // updateSessionData
+    const startTime = useMemo(() => {
+        console.log("updateSessionData")
+        if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
+        else { setStage(postedOfferStages.FLASH_SALE); }
+        return data.sessionData.startTime
+    }, [data.sessionData])
+
+    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
 
     // phaseCleanup
     const phaseId = useMemo(() => {
+        console.log("phaseCleanup")
         setTimer(60);
         setSellers({});
         setCountSold(0);
@@ -247,20 +257,8 @@ function POHandler({ data, dispatch }) {
         }
         socket.on("postedOfferList", postedOfferListHandler);
 
-        return () => {
-            socket.off("postedOfferList", postedOfferListHandler);
-        }
+        return () => { socket.off("postedOfferList", postedOfferListHandler); }
     }, [])
-
-    // updateSessionData
-    useEffect(() => {
-        setStartTime((prevState) => {
-            if (prevState === data.sessionData.startTime) { return prevState }
-            else { return data.sessionData.startTime }
-        });
-        if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
-        else { setStage(postedOfferStages.FLASH_SALE); }
-    }, [data.sessionData])
 
     // timer
     useEffect(() => {
@@ -269,6 +267,7 @@ function POHandler({ data, dispatch }) {
     }, [timer, startTime, time]);
 
     useEffect(() => {
+        console.log("dispatch useEffect")
         if (stage === postedOfferStages.FLASH_SALE) {
             if (countSold === parseInt(data.participantNumber / 2)) { dispatch({ type: reducerActions.NEXT_PHASE }); }
             else if (timer <= 0) { dispatch({ type: reducerActions.NEXT_PHASE }); }
@@ -305,9 +304,17 @@ function DSHandler({ data, dispatch }) {
     const time = useMemo(() => data.timer, [data.timer]);
     const [sellers, setSellers] = useState({});
     const [countSold, setCountSold] = useState(0);
-    const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
+    const [stage, setStage] = useState(decentralizedStages.POST_PRICE);
+
+    // const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
+    // updateSessionData
+    const startTime = useMemo(() => {
+        if (data.sessionData.stageCode === false) { setStage(decentralizedStages.POST_PRICE); }
+        else { setStage(decentralizedStages.FLASH_SALE); }
+        return data.sessionData.startTime
+    }, [data.sessionData])
+
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
-    const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
 
     // phaseCleanup
     const phaseId = useMemo(() => {
@@ -338,20 +345,8 @@ function DSHandler({ data, dispatch }) {
         }
         socket.on("decentralizedList", decentralizedListHandler);
 
-        return () => {
-            socket.off("decentralizedList", decentralizedListHandler);
-        }
+        return () => { socket.off("decentralizedList", decentralizedListHandler); }
     }, [])
-
-    // updateSessionData
-    useEffect(() => {
-        setStartTime((prevState) => {
-            if (prevState === data.sessionData.startTime) { return prevState }
-            else { return data.sessionData.startTime }
-        });
-        if (data.sessionData.stageCode === false) { setStage(decentralizedStages.POST_PRICE); }
-        else { setStage(decentralizedStages.FLASH_SALE); }
-    }, [data.sessionData])
 
     // timer
     useEffect(() => {

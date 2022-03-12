@@ -1,5 +1,4 @@
 import { apiURL } from "./serverURL";
-// IpB_b3rc4nd4
 
 export async function connectAsAdmin(password) {
     return await fetch(apiURL + "sessions/admins", {
@@ -8,9 +7,6 @@ export async function connectAsAdmin(password) {
             "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        body:
-            JSON.stringify({
-                "password": password
-            })
+        body: JSON.stringify({ "password": password })
     }).then(response => response.json());
 }
