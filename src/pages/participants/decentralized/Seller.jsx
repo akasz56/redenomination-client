@@ -70,7 +70,6 @@ export function SellerIdleDS({ data, timer }) {
     useEffect(() => {
         if (isEmptyObject(data.seller)) {
             socket.emit("ds:requestList", { phaseId: data.currentPhase.id })
-            socket.emit("ds:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id })
         } else {
             const exists = data.seller.findIndex(item => item.sellerId === data.detail.id);
             if (exists === -1) { socket.emit("ds:inputSellerPrice", { price: adjustPrice(data.detail.unitCost, data.currentPhase.phaseType), phaseId: data.currentPhase.id }) }
