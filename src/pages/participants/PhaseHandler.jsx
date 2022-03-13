@@ -218,7 +218,7 @@ function POHandler({ data, dispatch }) {
     // const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
     // updateSessionData
     const startTime = useMemo(() => {
-        // console.log("updateSessionData", data.sessionData)
+        console.log("updateSessionData")
         if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
         else { setStage(postedOfferStages.FLASH_SALE); }
         return data.sessionData.startTime
@@ -228,7 +228,7 @@ function POHandler({ data, dispatch }) {
 
     // phaseCleanup
     const phaseId = useMemo(() => {
-        // console.log("phaseCleanup")
+        console.log("phaseCleanup")
         setTimer(60);
         setSellers({});
         setCountSold(0);
@@ -267,18 +267,12 @@ function POHandler({ data, dispatch }) {
     }, [timer, startTime, time]);
 
     useEffect(() => {
+        console.log("dispatch useEffect")
         if (stage === postedOfferStages.FLASH_SALE) {
-            if (countSold === parseInt(data.participantNumber / 2)) {
-                console.log("dispatch FLASH_SALE useEffect")
-                dispatch({ type: reducerActions.NEXT_PHASE });
-            }
-            else if (timer <= 0) {
-                console.log("dispatch FLASH_SALE useEffect")
-                dispatch({ type: reducerActions.NEXT_PHASE });
-            }
+            if (countSold === parseInt(data.participantNumber / 2)) { dispatch({ type: reducerActions.NEXT_PHASE }); }
+            else if (timer <= 0) { dispatch({ type: reducerActions.NEXT_PHASE }); }
         } else if (stage === postedOfferStages.POST_PRICE) {
             if (timer <= 0) {
-                console.log("dispatch POST_PRICE useEffect")
                 dispatch({ type: reducerActions.UPDATE_PHASE });
                 setTimer(60);
                 setStage(postedOfferStages.FLASH_SALE);

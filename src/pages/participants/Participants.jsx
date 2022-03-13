@@ -4,7 +4,7 @@ import socket from "../../adapters/SocketIO";
 import ReadyScreenHandler from "./ReadyScreenHandler";
 import CompleteScreenHandler from "./CompleteScreenHandler";
 import BlankScreen from "./BlankScreen";
-import { alertUserSocket, logout, saveAuth } from "../../Utils";
+import { alertUserSocket, saveAuth } from "../../Utils";
 import PhaseHandler from "./PhaseHandler";
 
 export const participantStage = {
@@ -35,22 +35,6 @@ export default function Participants() {
             socket.on("serverMessage", retryLoginHandler)
         }
 
-        function reLogin() {
-            const tokenTemp = state.detail.loginToken;
-            const usernameTemp = state.detail.username;
-            logout()
-            window.location.reload();
-            socket.emit("loginToken", { "token": tokenTemp.toUpperCase(), "username": usernameTemp });
-            function retryLoginHandler(res) {
-                if (res.status === 200 && res.data.isSessionRunning) {
-                    setStateData(res.data);
-                    saveAuth('participant', socket.id);
-                    socket.off("serverMessage", retryLoginHandler)
-                }
-            }
-            socket.on("serverMessage", retryLoginHandler)
-        }
-
         socket.on("connect", () => {
             const socketId = JSON.parse(localStorage.getItem('auth'));
             if (socketId !== null && socketId.role === 'participant') {
@@ -61,8 +45,8 @@ export default function Participants() {
         });
 
         function serverMessageHandler(res) {
-            if (res.status === 401) { retryLogin(); alert("terjadi kesalahan, coba lagi"); }
-            else if (res.status === 405) { reLogin(); alert("terjadi kesalahan, coba lagi"); }
+            if (res.status === 401) { alert("terjadi kesalahan, coba lagi"); retryLogin() }
+            else if (res.status === 403) { alert("terjadi kesalahan, coba lagi"); retryLogin() }
             else if (res.status >= 300) { alertUserSocket(res) }
         }
         socket.on("serverMessage", serverMessageHandler)
