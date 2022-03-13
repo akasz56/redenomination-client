@@ -4,7 +4,7 @@ import { Container, Button, Table } from 'react-bootstrap'
 import { CSVLink } from 'react-csv';
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { purgeShortlived, readAllSimulations, readAnovaCSV } from '../../adapters/Simulations';
+import { readAllSimulations, readAnovaCSV } from '../../adapters/Simulations';
 import LoadingComponent from '../../components/Loading';
 import { capitalize, logout, printLog } from '../../Utils';
 import './Admin.css'
@@ -83,23 +83,6 @@ export default function Admin() {
         }
     }
 
-    async function clearBtn(e) {
-        e.preventDefault();
-
-        setLoading(true)
-        const res = await purgeShortlived();
-        if (res.status === 200) {
-            alert("Data berhasil dibersihkan");
-        } else if (res.status === 401) {
-            printLog(res);
-            window.alert("Tidak diizinkan mengakses");
-        } else {
-            printLog(res);
-            alert("Terjadi Kesalahan, mohon coba lagi");
-        }
-        setLoading(false)
-    }
-
     return (
         <Container>
             <section className="mt-5 header">
@@ -108,15 +91,13 @@ export default function Admin() {
             </section>
 
             {summary ?
-                <>
-                    <CSVLink filename={"Output Struktur Data hasil eksperimen " + dayjs().locale("id").format("dddd, D MMM YYYY")} data={summary} className="btn btn-primary">
-                        <i className='bx bx-download'></i> Download Struktur Data hasil eksperimen
-                    </CSVLink>
-                    <Button variant='danger' className='d-block mt-3' onClick={clearBtn}> <i className='bx bx-trash'></i> Bersihkan Data</Button>
-                </>
+                <CSVLink filename={"Output Struktur Data hasil eksperimen " + dayjs().locale("id").format("dddd, D MMM YYYY")} data={summary} className="btn btn-primary">
+                    <i className='bx bx-download'></i> Download Struktur Data hasil eksperimen
+                </CSVLink>
                 :
                 <></>
             }
+
             <Table responsive hover className="mt-3">
                 <thead>
                     <tr>
