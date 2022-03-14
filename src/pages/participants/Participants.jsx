@@ -28,6 +28,7 @@ export default function Participants() {
             function retryLoginHandler(res) {
                 if (res.status === 200 && res.data.isSessionRunning) {
                     setStateData(res.data);
+                    setStateStage((res.data.sessionData.phaseId === participantStage.READY) ? participantStage.READY : participantStage.SIMULATION);
                     saveAuth('participant', socket.id);
                     socket.off("serverMessage", retryLoginHandler)
                 }

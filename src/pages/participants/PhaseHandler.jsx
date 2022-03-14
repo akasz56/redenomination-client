@@ -215,20 +215,17 @@ function POHandler({ data, dispatch }) {
     const [countSold, setCountSold] = useState(0);
     const [stage, setStage] = useState(postedOfferStages.POST_PRICE);
 
-    // const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
     // updateSessionData
-    const startTime = useMemo(() => {
-        console.log("updateSessionData")
-        if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
-        else { setStage(postedOfferStages.FLASH_SALE); }
-        return data.sessionData.startTime
-    }, [data.sessionData])
-
+    const startTime = useMemo(() => data.sessionData.startTime, [data.sessionData.startTime])
     const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
+
+    useEffect(() => {
+        if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
+        else if (data.sessionData.stageCode === true) { setStage(postedOfferStages.FLASH_SALE); }
+    })
 
     // phaseCleanup
     const phaseId = useMemo(() => {
-        console.log("phaseCleanup")
         setTimer(60);
         setSellers({});
         setCountSold(0);
@@ -267,7 +264,6 @@ function POHandler({ data, dispatch }) {
     }, [timer, startTime, time]);
 
     useEffect(() => {
-        console.log("dispatch useEffect")
         if (stage === postedOfferStages.FLASH_SALE) {
             if (countSold === parseInt(data.participantNumber / 2)) { dispatch({ type: reducerActions.NEXT_PHASE }); }
             else if (timer <= 0) { dispatch({ type: reducerActions.NEXT_PHASE }); }
