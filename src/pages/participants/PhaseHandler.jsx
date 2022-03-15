@@ -87,8 +87,8 @@ export default function PhaseHandler({ data, setStateStage }) {
     useEffect(() => { dispatch({ type: reducerActions.CHECK_PHASE }); }, [data.sessionData])
 
     switch (capitalize(data.simulationType)) {
-        // case simulationType.DA:
-        //     return <DAHandler data={{ ...data, ...state }} dispatch={dispatch} />
+        case simulationType.DA:
+            return <DAHandler data={{ ...data, ...state }} dispatch={dispatch} />
         case simulationType.PO:
             return <POHandler data={{ ...data, ...state }} dispatch={dispatch} />
         case simulationType.DS:
@@ -99,18 +99,34 @@ export default function PhaseHandler({ data, setStateStage }) {
     }
 }
 
-/*
 const doubleAuctionStages = {
     AUCTION: "AUCTION",
     BREAK: "BREAK",
 }
 function DAHandler({ data, dispatch }) {
+    const time = useMemo(() => data.timer, [data.timer]);
     const [matched, setMatched] = useState(false);
     const [socketData, setSocketData] = useState({ bid: 0, offer: 0 });
     const [stage, setStage] = useState(doubleAuctionStages.AUCTION);
-    const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
-    const [timer, setTimer] = useState(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"));
     const [showModal, setShowModal] = useState(false);
+
+    // updateSessionData
+    const startTime = useMemo(() => data.sessionData.startTime, [data.sessionData.startTime])
+    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
+
+    useEffect(() => {
+        if (data.sessionData.stageCode === false) { setStage(doubleAuctionStages.AUCTION); }
+        else if (data.sessionData.stageCode === true) { setStage(doubleAuctionStages.BREAK); }
+    }, [data.sessionData.stageCode])
+
+    // phaseCleanup
+    const phaseId = useMemo(() => {
+        setTimer(60);
+        setMatched(false);
+        setSocketData({ bid: 0, offer: 0 });
+        setStage(doubleAuctionStages.AUCTION);
+        return data.currentPhase.id
+    }, [data.currentPhase.id]);
 
     // eventListener
     useEffect(() => {
@@ -139,38 +155,33 @@ function DAHandler({ data, dispatch }) {
 
     // startStage
     useEffect(() => {
-        setStartTime(dayjs(data.sessionData.startTime).toDate())
-
         if (stage === doubleAuctionStages.BREAK) {
             const breakTimeout = setTimeout(() => {
                 dispatch({ type: reducerActions.NEXT_PHASE });
-                setStage(doubleAuctionStages.AUCTION);
-                setSocketData({ bid: 0, offer: 0 });
-                setMatched(false);
                 clearTimeout(breakTimeout);
             }, 5000);
         }
-    }, [stage, data.timer, dispatch])
+    }, [stage, dispatch])
 
-    // Timer
+    // timer
     useEffect(() => {
-        const interval = setInterval(() => { if (timer) { setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second")) } }, 1000);
+        const interval = setInterval(() => { if (timer > 0) { setTimer(dayjs(startTime).add(time, "minute").diff(dayjs(), "second")) } }, 1000);
+        return () => { clearInterval(interval); }
+    }, [timer, startTime, time]);
 
+    useEffect(() => {
         if (timer <= 0) {
-            setTimer(dayjs(startTime).add(data.timer, "minute").diff(dayjs(), "second"))
+            dispatch({ type: reducerActions.UPDATE_PHASE });
+            setTimer(60);
             setStage(doubleAuctionStages.BREAK);
         }
-
-        return () => {
-            clearInterval(interval);
-        }
-    }, [timer, data.timer, startTime]);
+    }, [timer, dispatch]);
 
     // notification Modal
     useEffect(() => {
         if (showModal) {
             const notifTimeout = setTimeout(() => {
-                setShowModal(false)
+                setShowModal(false);
                 clearTimeout(notifTimeout);
             }, 3000);
         }
@@ -203,7 +214,6 @@ function DAHandler({ data, dispatch }) {
             return <BlankScreen lineNumber="010" />
     }
 }
-*/
 
 const postedOfferStages = {
     POST_PRICE: "POST_PRICE",
@@ -222,7 +232,7 @@ function POHandler({ data, dispatch }) {
     useEffect(() => {
         if (data.sessionData.stageCode === false) { setStage(postedOfferStages.POST_PRICE); }
         else if (data.sessionData.stageCode === true) { setStage(postedOfferStages.FLASH_SALE); }
-    })
+    }, [data.sessionData.stageCode])
 
     // phaseCleanup
     const phaseId = useMemo(() => {
@@ -308,8 +318,8 @@ function DSHandler({ data, dispatch }) {
 
     useEffect(() => {
         if (data.sessionData.stageCode === false) { setStage(decentralizedStages.POST_PRICE); }
-        else { setStage(decentralizedStages.FLASH_SALE); }
-    })
+        else if (data.sessionData.stageCode === true) { setStage(decentralizedStages.FLASH_SALE); }
+    }, [data.sessionData.stageCode])
 
     // phaseCleanup
     const phaseId = useMemo(() => {

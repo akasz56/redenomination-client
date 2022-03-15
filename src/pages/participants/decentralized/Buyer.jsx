@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Container, Image } from 'react-bootstrap'
 import socket from "../../../adapters/SocketIO";
 import { imgURL } from '../../../adapters/serverURL'
@@ -91,7 +91,7 @@ export function ShopHandler({ data, timer }) {
 }
 
 function ShopView({ data, timer, setIsInside, setHasBought }) {
-    useEffect(() => { document.title = data.shop.role + " - Decentralized"; }, [])
+    useEffect(() => { document.title = data.shop.role + " - Decentralized"; }, [data.shop.role])
 
     function clickBack() { setIsInside(null) }
 

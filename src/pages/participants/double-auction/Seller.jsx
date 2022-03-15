@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 export default function SellerAuctionScreen({ data, timer }) {
     const [inputPrice, setInputPrice] = useState(0);
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [showSuccess] = useState(false);
 
     function submitHandler(e) {
         e.preventDefault();
@@ -18,9 +18,8 @@ export default function SellerAuctionScreen({ data, timer }) {
                 sellerBargain: Number(inputPrice),
                 phaseId: data.currentPhase.id
             });
-        } else {
-            alert("harga kurang dari unit cost anda!")
         }
+        else { alert("harga kurang dari unit cost anda!") }
     }
 
     return (
