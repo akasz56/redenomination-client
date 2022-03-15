@@ -302,15 +302,14 @@ function DSHandler({ data, dispatch }) {
     const [countSold, setCountSold] = useState(0);
     const [stage, setStage] = useState(decentralizedStages.POST_PRICE);
 
-    // const [startTime, setStartTime] = useState(dayjs(data.sessionData.startTime).toDate());
     // updateSessionData
-    const startTime = useMemo(() => {
+    const startTime = useMemo(() => data.sessionData.startTime, [data.sessionData])
+    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
+
+    useEffect(() => {
         if (data.sessionData.stageCode === false) { setStage(decentralizedStages.POST_PRICE); }
         else { setStage(decentralizedStages.FLASH_SALE); }
-        return data.sessionData.startTime
-    }, [data.sessionData])
-
-    const [timer, setTimer] = useState(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
+    })
 
     // phaseCleanup
     const phaseId = useMemo(() => {
@@ -357,8 +356,8 @@ function DSHandler({ data, dispatch }) {
         } else if (stage === decentralizedStages.POST_PRICE) {
             if (timer <= 0) {
                 dispatch({ type: reducerActions.UPDATE_PHASE });
-                setStage(decentralizedStages.FLASH_SALE);
                 setTimer(60);
+                setStage(decentralizedStages.FLASH_SALE);
             }
         }
     }, [stage, timer, countSold, data, dispatch])
