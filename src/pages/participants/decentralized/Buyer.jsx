@@ -71,7 +71,8 @@ export function ShopHandler({ data, timer }) {
     }
   }, [data.seller, isInside]);
 
-  function clickHandler(item) {
+  function clickHandler(e, item) {
+    e.preventDefault();
     setIsInside(item.decentralizedId);
   }
 
@@ -109,7 +110,7 @@ export function ShopHandler({ data, timer }) {
                 className="mb-3"
                 role={item.role}
                 onBtnClick={(e) => {
-                  clickHandler(item);
+                  clickHandler(e, item);
                 }}
               />
             ))

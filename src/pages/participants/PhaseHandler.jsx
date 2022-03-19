@@ -433,7 +433,7 @@ function DSHandler({ data, dispatch }) {
     return data.currentPhase.id;
   }, [data.currentPhase.id]);
 
-  // eventListener
+  // eventListeners
   useEffect(() => {
     function decentralizedListHandler(res) {
       if (!isEmptyObject(res)) {
@@ -443,6 +443,7 @@ function DSHandler({ data, dispatch }) {
             count = item.isSold ? count + 1 : count;
             return {
               sellerId: item.sellerId,
+              buyerId: item.buyerId,
               role: "Penjual " + (i + 1),
               price: item.price,
               status: item.isSold,

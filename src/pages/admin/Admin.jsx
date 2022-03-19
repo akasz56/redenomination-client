@@ -4,7 +4,11 @@ import { Container, Button, Table } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { readAllSimulations, readAnovaCSV } from "../../adapters/Simulations";
+import {
+  purgeShortlived,
+  readAllSimulations,
+  readAnovaCSV,
+} from "../../adapters/Simulations";
 import LoadingComponent from "../../components/Loading";
 import { capitalize, logout, printLog } from "../../Utils";
 import "./Admin.css";
