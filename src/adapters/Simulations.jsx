@@ -99,3 +99,11 @@ export async function readAnovaCSV() {
     },
   }).then((response) => response.json());
 }
+
+export async function purgeShortlived() {
+  return await fetch(apiURL + "clear-shortlived", {
+    headers: {
+      Authorization: myToken(),
+    },
+  }).then((response) => response.json());
+}

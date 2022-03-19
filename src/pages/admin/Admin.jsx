@@ -66,6 +66,23 @@ export default function Admin() {
     }
   }, [simulations]);
 
+  async function clearBtn(e) {
+    e.preventDefault();
+
+    setLoading(true);
+    const res = await purgeShortlived();
+    if (res.status === 200) {
+      alert("Data berhasil dibersihkan");
+    } else if (res.status === 401) {
+      printLog(res);
+      window.alert("Tidak diizinkan mengakses");
+    } else {
+      printLog(res);
+      alert("Terjadi Kesalahan, mohon coba lagi");
+    }
+    setLoading(false);
+  }
+
   function addBtnHandler(e) {
     e.preventDefault();
     navigate("/simulations/create");
@@ -93,17 +110,22 @@ export default function Admin() {
       </section>
 
       {summary ? (
-        <CSVLink
-          filename={
-            "Output Struktur Data hasil eksperimen " +
-            dayjs().locale("id").format("dddd, D MMM YYYY")
-          }
-          data={summary}
-          className="btn btn-primary"
-        >
-          <i className="bx bx-download"></i> Download Struktur Data hasil
-          eksperimen
-        </CSVLink>
+        <>
+          <CSVLink
+            filename={
+              "Output Struktur Data hasil eksperimen " +
+              dayjs().locale("id").format("dddd, D MMM YYYY")
+            }
+            data={summary}
+            className="btn btn-primary"
+          >
+            <i className="bx bx-download"></i> Download Struktur Data hasil
+            eksperimen
+          </CSVLink>
+          <Button variant="danger" className="d-block mt-3" onClick={clearBtn}>
+            <i className="bx bx-trash"></i> Bersihkan Data cache
+          </Button>
+        </>
       ) : (
         <></>
       )}
