@@ -140,12 +140,12 @@ function DAHandler({ data, dispatch }) {
 
   // phaseCleanup
   const phaseId = useMemo(() => {
-    console.log("phaseCleanup", data.currentPhase.id);
+    console.log("phaseCleanup", data.sessionData.phaseId);
     setTimer(60);
     setMatched(false);
     setSocketData(false);
-    return data.currentPhase.id;
-  }, [data.currentPhase.id]);
+    return data.sessionData.phaseId;
+  }, [data.sessionData.phaseId]);
 
   // eventListener
   useEffect(() => {
@@ -190,13 +190,11 @@ function DAHandler({ data, dispatch }) {
     }
 
     function isDoneDAHandler(res) {
-      console.log("isDoneDAHandler", res);
       updatePhase();
     }
     socket.on("da:isDone", isDoneDAHandler);
 
     if (timer <= 0) {
-      console.log("updatePhase timer 0");
       setTimer(60);
       updatePhase();
     }
