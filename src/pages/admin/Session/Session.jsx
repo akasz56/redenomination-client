@@ -189,7 +189,6 @@ export default function Session() {
       socket.on("admin:activePlayers", activePlayersListener);
 
       function isSessionDoneListener(res) {
-        console.log(res);
         window.location.reload();
       }
       socket.on("admin:isSessionDone", isSessionDoneListener);

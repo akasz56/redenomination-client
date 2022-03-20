@@ -140,7 +140,6 @@ function DAHandler({ data, dispatch }) {
 
   // phaseCleanup
   const phaseId = useMemo(() => {
-    console.log("phaseCleanup", data.sessionData.phaseId);
     setTimer(60);
     setMatched(false);
     setSocketData(false);
