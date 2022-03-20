@@ -140,37 +140,21 @@ function DAHandler({ data, dispatch }) {
 
   // phaseCleanup
   const phaseId = useMemo(() => {
+    console.log("phaseCleanup", data.currentPhase.id);
     setTimer(60);
     setMatched(false);
     setSocketData(false);
-    setStage(doubleAuctionStages.AUCTION);
     return data.currentPhase.id;
   }, [data.currentPhase.id]);
 
   // eventListener
   useEffect(() => {
     function doubleAuctionListHandler(res) {
-      console.log("doubleAuctionListHandler", res);
-      setSocketData({
-        bid: isNaN(res.bid) ? 0 : res.bid,
-        offer: isNaN(res.offer) ? 0 : res.offer,
-      });
+      setSocketData({ bid: res.bid, offer: res.offer });
     }
     socket.on("doubleAuctionList", doubleAuctionListHandler);
 
-    function isDoneDAHandler(res) {
-      console.log("isDoneDAHandler", res);
-      dispatch({ type: reducerActions.UPDATE_PHASE });
-      setStage(doubleAuctionStages.BREAK);
-      const breakTimeout = setTimeout(() => {
-        dispatch({ type: reducerActions.NEXT_PHASE });
-        clearTimeout(breakTimeout);
-      }, 5000);
-    }
-    socket.on("da:isDone", isDoneDAHandler);
-
     function bidMatchHandler(res) {
-      console.log("bidMatchHandler", res);
       setShowModal(true);
       setMatched(true);
     }
@@ -178,7 +162,6 @@ function DAHandler({ data, dispatch }) {
 
     return () => {
       socket.off("doubleAuctionList", doubleAuctionListHandler);
-      socket.off("da:isDone", isDoneDAHandler);
       socket.off("bidMatch", bidMatchHandler);
     };
   }, []);
@@ -195,17 +178,32 @@ function DAHandler({ data, dispatch }) {
     };
   }, [timer, startTime, time]);
 
-  // updatePhase;
+  // updatePhase
   useEffect(() => {
-    if (timer <= 0) {
-      setTimer(60);
-      dispatch({ type: reducerActions.UPDATE_PHASE });
+    function updatePhase() {
+      dispatch({ type: reducerActions.NEXT_PHASE });
       setStage(doubleAuctionStages.BREAK);
       const breakTimeout = setTimeout(() => {
-        dispatch({ type: reducerActions.NEXT_PHASE });
+        setStage(doubleAuctionStages.AUCTION);
         clearTimeout(breakTimeout);
       }, 5000);
     }
+
+    function isDoneDAHandler(res) {
+      console.log("isDoneDAHandler", res);
+      updatePhase();
+    }
+    socket.on("da:isDone", isDoneDAHandler);
+
+    if (timer <= 0) {
+      console.log("updatePhase timer 0");
+      setTimer(60);
+      updatePhase();
+    }
+
+    return () => {
+      socket.off("da:isDone", isDoneDAHandler);
+    };
   }, [timer, dispatch]);
 
   // notification Modal
