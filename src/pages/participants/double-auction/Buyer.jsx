@@ -52,27 +52,27 @@ export default function BuyerAuctionScreen({ data, timer }) {
       <section className="row my-5 py-5 border rounded-pill">
         <div className="col-md-4">
           <p>Bid (Penawaran pembeli)</p>
-          <h1 className="text-primary fw-bolder">
+          <h4 className="text-primary fw-bolder">
             {data.socketData.bid
               ? displayPrice(data.socketData.bid, data.currentPhase.phaseType)
               : 0}
-          </h1>
+          </h4>
         </div>
         <div className="col-md-4">
           <p>
             <span className="fw-bolder">Unit Value</span> anda
           </p>
-          <h1 className="text-primary fw-bolder">
+          <h4 className="text-primary fw-bolder">
             {displayPrice(data.detail.unitValue, data.currentPhase.phaseType)}
-          </h1>
+          </h4>
         </div>
         <div className="col-md-4">
           <p>Offer (Penawaran penjual)</p>
-          <h1 className="text-primary fw-bolder">
+          <h4 className="text-primary fw-bolder">
             {data.socketData.offer
               ? displayPrice(data.socketData.offer, data.currentPhase.phaseType)
               : 0}
-          </h1>
+          </h4>
         </div>
       </section>
 

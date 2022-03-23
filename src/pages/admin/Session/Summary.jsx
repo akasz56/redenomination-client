@@ -59,18 +59,8 @@ export default function Summary(props) {
               },
             ],
           },
-          bargainList: res.data.phaseSummary.map((phase) => {
-            return phase.bargainList.map((bargain, idx) => ({
-              x: idx + 1,
-              y: parseInt(bargain.price),
-            }));
-          }),
-          trxList: res.data.phaseSummary.map((phase) => {
-            return phase.transactionList.map((trx, idx) => ({
-              x: idx + 1,
-              y: parseInt(trx.price),
-            }));
-          }),
+          bargainList: res.data.phaseSummary.map((phase) => phase.bargainList),
+          trxList: res.data.phaseSummary.map((phase) => phase.transactionList),
         });
       } else {
         printLog(res);
@@ -199,15 +189,16 @@ export default function Summary(props) {
             <section className="mt-5">
               <ScatterSummary
                 data={dataSummary.bargainList}
-                labels={dataSummary.price.labels}
+                title={dataSummary.price.labels}
                 nameArr={nameArr}
+                isDoubleAuction={true}
               />
             </section>
           ) : (
             <section className="mt-5">
               <ScatterSummary
                 data={dataSummary.trxList}
-                labels={dataSummary.price.labels}
+                title={dataSummary.price.labels}
                 nameArr={nameArr}
               />
             </section>
