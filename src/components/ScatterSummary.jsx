@@ -97,7 +97,7 @@ export default function ScatterSummary({
         filename: fileName + "_" + title[2] + ".csv",
       },
     ],
-    [data, title, fileName]
+    [data, title, fileName, isDoubleAuction]
   );
 
   function ScatterElement({ index }) {
@@ -151,7 +151,7 @@ export default function ScatterSummary({
           x: index + 1,
           y: parseInt(item.price),
         }));
-    }, [data, index]);
+    }, [index]);
 
     const sellerBargain = useMemo(() => {
       return data[index]
@@ -160,7 +160,7 @@ export default function ScatterSummary({
           x: index + 1,
           y: parseInt(item.price),
         }));
-    }, [data, index]);
+    }, [index]);
 
     return (
       <div className="col-md-4">
