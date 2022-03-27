@@ -30,6 +30,7 @@ const reducerActions = {
   UPDATE_PHASE: "UPDATE_PHASE",
   CONTINUE_PHASE: "CONTINUE_PHASE",
   CHECK_PHASE: "CHECK_PHASE",
+  CLIENT_DONE: "CLIENT_DONE",
 };
 
 export default function PhaseHandler({ data, setStateStage }) {
@@ -87,6 +88,13 @@ export default function PhaseHandler({ data, setStateStage }) {
           };
         }
 
+      case reducerActions.CLIENT_DONE:
+        socket.emit("clientDone", {
+          phaseId: prevState.currentPhase.id,
+          clientId: data.detail.id,
+        });
+        return prevState;
+
       default:
         printLog("unhandled phase reduce");
         return prevState;
@@ -136,7 +144,7 @@ function DAHandler({ data, dispatch }) {
     } else if (data.sessionData.stageCode === true) {
       setStage(doubleAuctionStages.BREAK);
     }
-  }, [data.sessionData.stageCode, timer]);
+  }, [data.sessionData.stageCode]);
 
   // phaseCleanup
   const phaseId = useMemo(() => {

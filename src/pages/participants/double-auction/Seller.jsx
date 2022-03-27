@@ -10,6 +10,7 @@ import {
   numberInputFormat,
 } from "../../../Utils";
 import { useEffect, useState } from "react";
+import { NotificationManager } from "react-notifications";
 
 export default function SellerAuctionScreen({ data, timer }) {
   const [inputPrice, setInputPrice] = useState(0);
@@ -32,6 +33,7 @@ export default function SellerAuctionScreen({ data, timer }) {
         sellerBargain: Number(inputPrice),
         phaseId: data.currentPhase.id,
       });
+      NotificationManager.success("Harga berhasil terinput", "Success");
     } else {
       alert("harga kurang dari unit cost anda!");
     }

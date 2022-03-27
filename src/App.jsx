@@ -16,6 +16,8 @@ import Participants from "./pages/participants/Participants";
 
 import Error404 from "./pages/errors/Error404";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { NotificationContainer } from "react-notifications";
+import "react-notifications/lib/notifications.css";
 
 export default function App() {
   return (
@@ -52,6 +54,7 @@ export default function App() {
         <Route path="*" element={<Error404 />} />
       </Routes>
       <Footer />
+      <NotificationContainer />
     </>
   );
 }
