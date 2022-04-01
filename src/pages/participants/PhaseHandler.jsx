@@ -179,7 +179,7 @@ function DAHandler({ data, dispatch }) {
       if (timer > 0) {
         setTimer(dayjs(startTime).add(time, "minute").diff(dayjs(), "second"));
       }
-    }, 1000);
+    }, 250);
     return () => {
       clearInterval(interval);
     };

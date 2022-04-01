@@ -11,6 +11,7 @@ import {
   printLog,
 } from "../../../Utils";
 import ScatterSummary from "../../../components/ScatterSummary";
+import ScatterSummaryDA from "../../../components/ScatterSummaryDA";
 import UnitProfit from "../../../components/UnitProfit";
 import { CSVLink } from "react-csv";
 import { Button } from "react-bootstrap";
@@ -187,11 +188,11 @@ export default function Summary(props) {
           <hr />
           {data.simulation.simulationType === "double auction" ? (
             <section className="mt-5">
-              <ScatterSummary
-                data={dataSummary.bargainList}
+              <ScatterSummaryDA
+                bargain={dataSummary.bargainList}
+                trx={dataSummary.trxList}
                 title={dataSummary.price.labels}
                 nameArr={nameArr}
-                isDoubleAuction={true}
               />
             </section>
           ) : (

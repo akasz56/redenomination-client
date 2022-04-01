@@ -4,7 +4,33 @@ import { Scatter } from "react-chartjs-2";
 import { CSVLink } from "react-csv";
 import { downloadPNG, getRandomColor } from "../Utils";
 
-export default function ScatterSummary({ data, title, nameArr }) {
+import dayjs from "dayjs";
+
+export default function ScatterSummaryDA({ bargain, trx, title, nameArr }) {
+  const data = useMemo(() => {
+    let session = [
+      bargain[0]
+        .concat(trx[0])
+        .sort((a, b) => dayjs(a.timeCreated).diff(dayjs(b.timeCreated))),
+      bargain[1]
+        .concat(trx[1])
+        .sort((a, b) => dayjs(a.timeCreated).diff(dayjs(b.timeCreated))),
+      bargain[2]
+        .concat(trx[2])
+        .sort((a, b) => dayjs(a.timeCreated).diff(dayjs(b.timeCreated))),
+    ];
+
+    session.forEach((phase) => {
+      phase.forEach((item, index) => {
+        if (item.postedBy === undefined) {
+          phase.splice(index - 1, 1);
+          item.postedBy = "transaction";
+        }
+      });
+    });
+
+    return session;
+  }, [bargain, trx]);
   const fileName = useMemo(() => nameArr.join("_"), [nameArr]);
   const ref0 = useRef(null);
   const ref1 = useRef(null);
@@ -15,6 +41,7 @@ export default function ScatterSummary({ data, title, nameArr }) {
     () => [
       { label: "Turn", key: "x" },
       { label: "Price", key: "y" },
+      { label: "Role", key: "z" },
     ],
     []
   );
@@ -25,6 +52,7 @@ export default function ScatterSummary({ data, title, nameArr }) {
         data: data[0].map((item, index) => ({
           x: index + 1,
           y: parseInt(item.price),
+          z: item.postedBy,
         })),
         headers: headers,
         filename: fileName + "_" + title[0] + ".csv",
@@ -49,7 +77,30 @@ export default function ScatterSummary({ data, title, nameArr }) {
     [data, title, headers, fileName]
   );
 
-  function ScatterElement({ index }) {
+  function ScatterElementDA({ index }) {
+    const buyerBargain = useMemo(() => {
+      return data[index]
+        .filter(
+          (item) => item.postedBy === "buyer" || item.postedBy === "transaction"
+        )
+        .map((item, index) => ({
+          x: index + 1,
+          y: parseInt(item.price),
+        }));
+    }, [index]);
+
+    const sellerBargain = useMemo(() => {
+      return data[index]
+        .filter(
+          (item) =>
+            item.postedBy === "seller" || item.postedBy === "transaction"
+        )
+        .map((item, index) => ({
+          x: index + 1,
+          y: parseInt(item.price),
+        }));
+    }, [index]);
+
     return (
       <div className="col-md-4">
         <Scatter
@@ -58,10 +109,17 @@ export default function ScatterSummary({ data, title, nameArr }) {
             datasets: [
               {
                 label: "Penjual",
-                data: data[index].map((item, index) => ({
-                  x: index + 1,
-                  y: parseInt(item.price),
-                })),
+                data: sellerBargain,
+                pointStyle: "crossRot",
+                radius: 5,
+                borderWidth: 2,
+                borderColor: getRandomColor(),
+              },
+              {
+                label: "Pembeli",
+                data: buyerBargain,
+                pointStyle: "circle",
+                radius: 5,
                 backgroundColor: getRandomColor(),
               },
             ],
@@ -95,9 +153,9 @@ export default function ScatterSummary({ data, title, nameArr }) {
   return (
     <section className="row">
       <>
-        <ScatterElement index={0} />
-        <ScatterElement index={1} />
-        <ScatterElement index={2} />
+        <ScatterElementDA index={0} />
+        <ScatterElementDA index={1} />
+        <ScatterElementDA index={2} />
       </>
     </section>
   );
