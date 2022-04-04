@@ -61,6 +61,7 @@ export default function ScatterSummaryDA({ bargain, trx, title, nameArr }) {
         data: data[1].map((item, index) => ({
           x: index + 1,
           y: parseInt(item.price),
+          z: item.postedBy,
         })),
         headers: headers,
         filename: fileName + "_" + title[1] + ".csv",
@@ -69,6 +70,7 @@ export default function ScatterSummaryDA({ bargain, trx, title, nameArr }) {
         data: data[2].map((item, index) => ({
           x: index + 1,
           y: parseInt(item.price),
+          z: item.postedBy,
         })),
         headers: headers,
         filename: fileName + "_" + title[2] + ".csv",
