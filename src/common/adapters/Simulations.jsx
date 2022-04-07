@@ -1,5 +1,5 @@
 import { apiURL } from "./serverURL";
-import { myToken } from "../Utils";
+import { myToken } from "../utils/Utils";
 
 export async function createSimulation(body, additionalPlayer) {
   body.simulationType = body.simulationType.toLowerCase();
