@@ -27,7 +27,7 @@ export default function App() {
           <Route path="simulations">
             <Route index element={<Navigate to="/admin" />} />
             <Route path="create" element={<Create />} />
-            <Route path=":id">
+            <Route path=":simulationID">
               <Route index element={<Simulation />} />
               <Route path="edit" element={<Edit />} />
             </Route>
