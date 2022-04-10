@@ -10,6 +10,11 @@ export const getAuth = () => {
   return auth ? JSON.parse(auth) : null;
 };
 
+export const getToken = () => {
+  const auth = getAuth();
+  return auth ? auth.token : undefined;
+};
+
 export const setAuth = (role: ROLE, token: string) => {
   window.localStorage.setItem(
     KEY,
