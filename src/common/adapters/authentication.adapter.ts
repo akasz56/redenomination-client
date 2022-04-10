@@ -5,7 +5,7 @@ import {
 } from "../utils/responseHandler";
 
 export function connectAdmin(password: string) {
-  return fetch(mainURL + "/login", {
+  return fetch(mainURL + "admin/login/", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -13,6 +13,6 @@ export function connectAdmin(password: string) {
     },
     body: JSON.stringify({ password: password }),
   })
-    .then((res) => responseSuccessHandler(res.json()))
+    .then((res) => responseSuccessHandler(res))
     .catch((err) => responseErrorHandler(err));
 }
