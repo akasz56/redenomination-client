@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { connectAdmin } from "../../common/adapters/authentication.adapter";
 import { ROLE, setAuth } from "../../common/utils/authHandler";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export default function Login() {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -28,7 +29,7 @@ export default function Login() {
   }
 
   if (loading) {
-    return <h1>LOADING...</h1>;
+    return <LoadingScreen className="child" />;
   } else
     return (
       <Container>
