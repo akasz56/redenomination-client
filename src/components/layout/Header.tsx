@@ -3,7 +3,6 @@ import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import {
   clearAuth,
-  getAuth,
   getCurrentRole,
   ROLE,
 } from "../../common/utils/authHandler";
@@ -14,10 +13,6 @@ export default function Header() {
     clearAuth();
     window.location.reload();
   }
-
-  React.useEffect(() => {
-    console.log(getAuth());
-  });
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
