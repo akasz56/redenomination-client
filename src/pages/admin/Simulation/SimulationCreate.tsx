@@ -6,7 +6,7 @@ import {
 } from "../../../common/adapters/simulation.adapter";
 import { inputNumber } from "../../../common/utils/others";
 import { responseErrorHandler } from "../../../common/utils/responseHandler";
-import UnitInput from "../../../components/admin/UnitInput";
+import UnitInput from "../../../components/admin/units/UnitInput";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 export default function SimulationCreate() {

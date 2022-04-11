@@ -9,12 +9,12 @@ export default function AddSessionBtn(props: any) {
   const [showModal, setshowModal] = React.useState<boolean>(false);
   const [formData, setFormData] = React.useState<any>({
     simulationID: simulationID,
-    sessionType: "Ulangan Kesekian",
-    timer: 1,
+    sessionName: "Ulangan Kesekian",
+    duration: 1,
   });
 
   const styles = StyleSheet.create({
-    timer: {
+    duration: {
       width: "3.8em",
       display: "inline",
     },
@@ -29,7 +29,7 @@ export default function AddSessionBtn(props: any) {
     toggleModal();
 
     await createSession(formData).then((res: any) => {
-      window.location.href = "/sessions/" + res.data.id;
+      window.location.href = "/sessions/" + res.id;
     });
   }
 
@@ -44,29 +44,29 @@ export default function AddSessionBtn(props: any) {
             <Modal.Title>Tambah Ulangan Simulasi</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Group controlId="sessionType">
+            <Form.Group controlId="sessionName">
               <Form.Label className="required">Nama Sesi</Form.Label>
               <Form.Control
                 type="text"
-                defaultValue={formData.sessionType}
+                defaultValue={formData.sessionName}
                 required
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({ ...formData, sessionType: e.target.value });
+                  setFormData({ ...formData, sessionName: e.target.value });
                 }}
               />
             </Form.Group>
-            <Form.Group controlId="timer" className="mt-3">
-              <Form.Label className="required">Timer</Form.Label>
+            <Form.Group controlId="duration" className="mt-3">
+              <Form.Label className="required">duration</Form.Label>
               <br />
               <Form.Control
                 type="number"
-                className={css(styles.timer)}
+                className={css(styles.duration)}
                 required
                 min={0}
                 step={1}
-                defaultValue={formData.timer}
+                defaultValue={formData.duration}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({ ...formData, timer: e.target.value });
+                  setFormData({ ...formData, duration: e.target.value });
                 }}
               />
               &nbsp;Menit

@@ -1,6 +1,6 @@
 import React from "react";
 import { css, StyleSheet } from "aphrodite";
-import UnitShow from "./UnitShow";
+import UnitShow from "./units/UnitShow";
 import { displayPrice } from "../../common/utils/others";
 
 export default function SimulationUnitCostValueList(props: any) {

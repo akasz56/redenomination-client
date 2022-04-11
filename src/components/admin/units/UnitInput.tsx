@@ -1,6 +1,6 @@
 import { Form } from "react-bootstrap";
 import { css, StyleSheet } from "aphrodite";
-import { capitalize } from "../../common/utils/others";
+import { capitalize } from "../../../common/utils/others";
 
 export default function UnitInput(props: any) {
   const { disabled, required, role, id, className } = props;

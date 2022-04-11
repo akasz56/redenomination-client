@@ -11,6 +11,7 @@ import Admin from "./pages/admin/Admin";
 import Simulation from "./pages/admin/Simulation/Simulation";
 import SimulationCreate from "./pages/admin/Simulation/SimulationCreate";
 import Edit from "./pages/admin/Simulation/Edit";
+import Session from "./pages/admin/Session/Session";
 
 export default function App() {
   return (
@@ -34,9 +35,9 @@ export default function App() {
           </Route>
           <Route path="sessions">
             <Route index element={<Navigate to="/admin" />} />
-            {/* <Route path=":id">
+            <Route path=":sessionID">
               <Route index element={<Session />} />
-            </Route> */}
+            </Route>
           </Route>
         </Route>
 
