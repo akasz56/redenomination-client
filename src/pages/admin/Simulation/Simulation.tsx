@@ -22,7 +22,6 @@ export default function Simulation() {
       await readSimulation(simulationID)
         .then((res: any) => {
           setSimulation(res);
-          console.log(res);
           document.title = "Simulasi " + simulationID;
         })
         .finally(() => {

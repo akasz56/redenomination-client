@@ -86,7 +86,7 @@ export default function SimulationSummary() {
               />
               <div className="d-flex justify-content-around">
                 <Button
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     downloadPNG(
                       trxOccurrence,
@@ -128,7 +128,7 @@ export default function SimulationSummary() {
               />
               <div className="d-flex justify-content-around">
                 <Button
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     downloadPNG(
                       trxPrice,

@@ -43,7 +43,7 @@ export default function AdminTable(props: any) {
     fetchData();
   });
 
-  function rowHandler(e: React.FormEvent, id: string) {
+  function rowHandler(e: React.MouseEvent, id: string) {
     e.preventDefault();
     navigate("/simulations/" + id);
   }
@@ -73,7 +73,7 @@ export default function AdminTable(props: any) {
             <tr
               key={i}
               className={css(styles.simulations)}
-              onClick={(e: React.FormEvent) => rowHandler(e, simulation.id)}
+              onClick={(e: React.MouseEvent) => rowHandler(e, simulation.id)}
             >
               <td>
                 <h3 className={css(styles.simulationH3)}>{simulation.token}</h3>

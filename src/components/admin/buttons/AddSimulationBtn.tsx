@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 export default function AddSimulationBtn(props: any) {
   const navigate = useNavigate();
 
-  function addBtnHandler(e: React.FormEvent) {
+  function addBtnHandler(e: React.MouseEvent) {
     e.preventDefault();
     navigate("/simulations/create");
   }

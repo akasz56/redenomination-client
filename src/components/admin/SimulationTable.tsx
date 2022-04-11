@@ -23,7 +23,7 @@ export default function SimulationTable(props: any) {
     },
   });
 
-  function rowHandler(e: React.FormEvent, id: string) {
+  function rowHandler(e: React.MouseEvent, id: string) {
     e.preventDefault();
     navigate("/sessions/" + id);
   }
@@ -44,7 +44,7 @@ export default function SimulationTable(props: any) {
             <tr
               key={i}
               className={css(styles.sessionList)}
-              onClick={(e) => rowHandler(e, item.id)}
+              onClick={(e: React.MouseEvent) => rowHandler(e, item.id)}
             >
               <td className={css(styles.sessionNumber)}>{i + 1}</td>
               <td className="fw-bold">{capitalize(item.sessionName)}</td>

@@ -28,7 +28,7 @@ export default function Home() {
             placeholder="Token"
             style={{ textTransform: "uppercase" }}
             // value={token}
-            // onChange={(e) => setToken(e.target.value)}
+            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => setToken(e.target.value)}
           />
         </Form.Group>
         <Form.Group controlId="username" className="col-md-6">
@@ -41,7 +41,7 @@ export default function Home() {
             placeholder="Username"
             style={{ textTransform: "uppercase" }}
             // value={username}
-            // onChange={(e) => setUsername(e.target.value)}
+            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
           />
         </Form.Group>
         <div className="position-relative mt-3 w-100">

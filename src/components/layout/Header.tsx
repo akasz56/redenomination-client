@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { getCurrentRole, logout, ROLE } from "../../common/utils/authHandler";
 
 export default function Header() {
-  function handlerLogout(e: React.FormEvent) {
+  function handlerLogout(e: React.MouseEvent) {
     e.preventDefault();
     logout();
   }

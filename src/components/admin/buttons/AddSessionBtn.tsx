@@ -50,7 +50,7 @@ export default function AddSessionBtn(props: any) {
                 type="text"
                 defaultValue={formData.sessionType}
                 required
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setFormData({ ...formData, sessionType: e.target.value });
                 }}
               />
@@ -65,7 +65,7 @@ export default function AddSessionBtn(props: any) {
                 min={0}
                 step={1}
                 defaultValue={formData.timer}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setFormData({ ...formData, timer: e.target.value });
                 }}
               />

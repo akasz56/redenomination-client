@@ -21,7 +21,7 @@ export default function Admin() {
     document.title = "Halaman Admin";
   }, []);
 
-  function logoutBtnHandler(e: React.FormEvent) {
+  function logoutBtnHandler(e: React.MouseEvent) {
     e.preventDefault();
     if (window.confirm("Yakin ingin keluar?")) {
       logout();
