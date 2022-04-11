@@ -11,10 +11,14 @@ import LoadingScreen from "../../../components/LoadingScreen";
 
 export default function SimulationCreate() {
   const [loading, setLoading] = React.useState<boolean>(false);
+
+  const [togglePlayer, setTogglePlayer] = React.useState<boolean>(true);
+  const [participantNumber, setParticipantNumber] = React.useState<number>(20);
+
   const [fileSend, setFileSend] = React.useState<Blob | string>("");
   const [unitValues, setUnitValues] = React.useState<Array<number>>([]);
   const [unitCosts, setUnitCosts] = React.useState<Array<number>>([]);
-  const [participantNumber, setParticipantNumber] = React.useState<number>(20);
+
   const [formData, setFormData] = React.useState<any>({
     simulationType: "Posted Offer",
     goodsType: "Inelastis",
@@ -27,16 +31,6 @@ export default function SimulationCreate() {
   React.useEffect(() => {
     document.title = "Buat Simulasi baru";
   }, []);
-
-  function budgetHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = inputNumber(e, e.target.value);
-    setFormData({ ...formData, simulationBudget: value });
-  }
-
-  function fileHandler(e: any) {
-    e.preventDefault();
-    setFileSend(e.target.files[0]);
-  }
 
   async function submitForm(e: React.FormEvent) {
     e.preventDefault();
@@ -61,7 +55,7 @@ export default function SimulationCreate() {
   async function submitPic(id: string) {
     let pic = new FormData();
     pic.append("file", fileSend);
-    await uploadPicture(id, pic).catch((err) => {
+    await uploadPicture(id, pic).catch(() => {
       responseErrorHandler("Foto gagal diupload");
     });
   }
@@ -164,7 +158,10 @@ export default function SimulationCreate() {
                   type="file"
                   accept="image/*"
                   required
-                  onChange={fileHandler}
+                  onChange={(e: any) => {
+                    e.preventDefault();
+                    setFileSend(e.target.files[0]);
+                  }}
                 />
               </Form.Group>
             </div>
@@ -193,7 +190,10 @@ export default function SimulationCreate() {
                 <Form.Control
                   defaultValue={formData.simulationBudget}
                   required
-                  onChange={budgetHandler}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = inputNumber(e, e.target.value);
+                    setFormData({ ...formData, simulationBudget: value });
+                  }}
                 />
               </Form.Group>
             </div>
@@ -217,6 +217,38 @@ export default function SimulationCreate() {
                   }}
                 />
               ))}
+              {participantNumber % 2 ? (
+                togglePlayer ? (
+                  <UnitInput
+                    key={participantNumber / 2 + 0.5}
+                    id={participantNumber / 2 + 0.5}
+                    required
+                    role="penjual"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const value = inputNumber(e, e.target.value);
+                      setUnitCosts({
+                        ...unitCosts,
+                        0: value,
+                      });
+                    }}
+                  />
+                ) : (
+                  <div className="d-flex">
+                    <Button
+                      className="mx-auto"
+                      variant="primary"
+                      onClick={(e: React.MouseEvent) => {
+                        e.preventDefault();
+                        setTogglePlayer((prev) => !prev);
+                      }}
+                    >
+                      Lebihkkan penjual
+                    </Button>
+                  </div>
+                )
+              ) : (
+                ""
+              )}
             </div>
             <div className="col-md-6">
               <p className="fw-bold text-center">Unit Value</p>
@@ -235,6 +267,38 @@ export default function SimulationCreate() {
                   }}
                 />
               ))}
+              {participantNumber % 2 ? (
+                !togglePlayer ? (
+                  <UnitInput
+                    key={participantNumber / 2 + 0.5}
+                    id={participantNumber / 2 + 0.5}
+                    required
+                    role="pembeli"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const value = inputNumber(e, e.target.value);
+                      setUnitValues({
+                        ...unitValues,
+                        0: value,
+                      });
+                    }}
+                  />
+                ) : (
+                  <div className="d-flex">
+                    <Button
+                      className="mx-auto"
+                      variant="primary"
+                      onClick={(e: React.MouseEvent) => {
+                        e.preventDefault();
+                        setTogglePlayer((prev) => !prev);
+                      }}
+                    >
+                      Lebihkkan pembeli
+                    </Button>
+                  </div>
+                )
+              ) : (
+                ""
+              )}
             </div>
           </section>
 
