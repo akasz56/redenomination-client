@@ -33,3 +33,8 @@ export const getCurrentRole = () => {
   const auth = getAuth();
   return auth ? auth.role : null;
 };
+
+export const logout = () => {
+  clearAuth();
+  window.location.href = "/";
+};

@@ -1,11 +1,11 @@
-import { mainURL } from "../config";
+import { apiURL } from "../config";
 import {
   responseErrorHandler,
   responseSuccessHandler,
 } from "../utils/responseHandler";
 
 export function connectAdmin(password: string) {
-  return fetch(mainURL + "admin/login/", {
+  return fetch(apiURL + "admin/login/", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -13,6 +13,15 @@ export function connectAdmin(password: string) {
     },
     body: JSON.stringify({ password: password }),
   })
-    .then((res) => responseSuccessHandler(res))
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.status < 300) {
+        return responseSuccessHandler(res);
+      } else if (res.status === 401) {
+        throw new Error("Password Salah");
+      }
+      console.log(res);
+      throw new Error("Terjadi kesalahan");
+    })
     .catch((err) => responseErrorHandler(err));
 }

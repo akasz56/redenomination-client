@@ -6,10 +6,22 @@ import {
 } from "../utils/responseHandler";
 const token = getToken();
 
-export function createSimulation(body: any) {}
+export async function createSession(body: any) {
+  return await fetch(apiURL + "sessions/", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    body: JSON.stringify(body),
+  })
+    .then((res) => fetchResponseHandler(res))
+    .catch((err) => responseErrorHandler(err));
+}
 
-export function readAllSimulations() {
-  return fetch(apiURL + "simulations/", {
+export async function readSession(id: string) {
+  return await fetch(apiURL + "sessions/" + id, {
     headers: {
       Authorization: token,
     },
@@ -18,18 +30,8 @@ export function readAllSimulations() {
     .catch((err) => responseErrorHandler(err));
 }
 
-export function readSimulation(id: string) {
-  return fetch(apiURL + "simulations/" + id, {
-    headers: {
-      Authorization: token,
-    },
-  })
-    .then((res) => fetchResponseHandler(res))
-    .catch((err) => responseErrorHandler(err));
-}
-
-export function updateSimulation(id: string, body: object) {
-  return fetch(apiURL + "simulations/" + id, {
+export async function updateSession(id: string, body: object) {
+  return await fetch(apiURL + "sessions/" + id, {
     method: "PUT",
     headers: {
       Accept: "application/json",
@@ -42,8 +44,8 @@ export function updateSimulation(id: string, body: object) {
     .catch((err) => responseErrorHandler(err));
 }
 
-export function deleteSimulation(id: string) {
-  return fetch(apiURL + "simulations/" + id, {
+export async function deleteSession(id: string) {
+  return await fetch(apiURL + "sessions/" + id, {
     method: "DELETE",
     headers: {
       Authorization: token,
@@ -53,13 +55,23 @@ export function deleteSimulation(id: string) {
     .catch((err) => responseErrorHandler(err));
 }
 
-export function uploadPicture(id: string, formData: FormData) {
-  return fetch(apiURL + "simulations/" + id + "/pictures", {
+export async function runSession(id: string) {
+  return await fetch(apiURL + "sessions/" + id + "/runs", {
     method: "POST",
     headers: {
       Authorization: token,
     },
-    body: formData,
+  })
+    .then((res) => fetchResponseHandler(res))
+    .catch((err) => responseErrorHandler(err));
+}
+
+export async function finishSession(id: string) {
+  return await fetch(apiURL + "sessions/" + id + "/finishes", {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
   })
     .then((res) => fetchResponseHandler(res))
     .catch((err) => responseErrorHandler(err));
