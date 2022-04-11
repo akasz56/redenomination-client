@@ -17,8 +17,8 @@ export default function App() {
     <>
       <Header />
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route index element={<HomeRoute />} />
+        <Route path="login" element={<Login />} />
 
         <Route element={<AdminProtectedRoute />}>
           <Route path="admin">
@@ -47,6 +47,10 @@ export default function App() {
       <Footer />
     </>
   );
+}
+
+function HomeRoute() {
+  return getCurrentRole() === ROLE.ADMIN ? <Navigate to="/admin" /> : <Home />;
 }
 
 function AdminProtectedRoute(props: any) {
