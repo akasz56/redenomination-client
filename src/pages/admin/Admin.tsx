@@ -3,15 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Container, Button, Table } from "react-bootstrap";
 import { css, StyleSheet } from "aphrodite";
 import { readAllSimulations } from "../../common/adapters/simulation.adapter";
-import AddSimulationBtn from "../../components/admin/AddSimulationBtn";
+import AddSimulationBtn from "../../components/admin/buttons/AddSimulationBtn";
 import LoadingScreen from "../../components/LoadingScreen";
-import dayjs from "dayjs";
-import "dayjs/locale/id";
+import { logout } from "../../common/utils/authHandler";
 
 export default function Admin() {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [simulations, setSimulations] = React.useState<Array<any>>([]);
-  // const [summary, setSummary] = React.useState(null);
 
   const styles = StyleSheet.create({
     header: {
@@ -43,7 +41,7 @@ export default function Admin() {
   function logoutBtnHandler(e: React.FormEvent) {
     e.preventDefault();
     if (window.confirm("Yakin ingin keluar?")) {
-      // logout((window.location.href = "/"));
+      logout();
     }
   }
 
@@ -90,24 +88,19 @@ export default function Admin() {
               className={css(styles.simulations)}
               onClick={(e: React.FormEvent) => rowHandler(e, simulation.id)}
             >
-              <td className={css(styles.simulationTD, styles.simulationNumber)}>
-                {i + 1}
-              </td>
-              <td className={css(styles.simulationTD)}>
-                <h3 className={css(styles.simulationH3)}>
-                  {simulation.token}, {simulation.simulationType},{" "}
-                  {simulation.participants.length} peserta
-                </h3>
+              <td>
+                <h3 className={css(styles.simulationH3)}>{simulation.token}</h3>
                 <span>
-                  {simulation.goodsType} ({simulation.goodsName}),{" "}
-                  {simulation.inflationType}, Pertumbuhan Ekonomi{" "}
-                  {simulation.growthType}
+                  {simulation.goodsType} ({simulation.goodsName}){" "}
+                  {simulation.inflationType}
+                  <br />
+                  Pertumbuhan Ekonomi {simulation.growthType}
                 </span>
               </td>
-              <td className={css(styles.simulationTD)}>
-                {dayjs(simulation.timeCreated)
-                  .locale("id")
-                  .format("dddd, D MMM YYYY")}
+              <td>
+                {simulation.simulationType}
+                <br />
+                {simulation.participants.length + " peserta"}
               </td>
             </tr>
           ))}
@@ -126,9 +119,8 @@ export default function Admin() {
       <Table responsive hover className="mt-3">
         <thead>
           <tr>
-            <th data-width="50">No</th>
-            <th data-width="60%">Jenis Simulasi</th>
-            <th>Tanggal Dibuat</th>
+            <th>Detail Simulasi</th>
+            <th>Jenis Simulasi</th>
           </tr>
         </thead>
         <tbody>
