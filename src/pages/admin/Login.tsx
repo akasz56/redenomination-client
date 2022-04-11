@@ -14,18 +14,21 @@ export default function Login() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    setLoading(true);
-    await connectAdmin(password)
-      .then((res) => {
-        if (res !== undefined) {
-          setAuth(ROLE.ADMIN, res.token);
-          window.location.href = "/";
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (password !== "") {
+      setLoading(true);
+      await connectAdmin(password)
+        .then((res) => {
+          if (res !== undefined) {
+            setAuth(ROLE.ADMIN, res.token);
+            window.location.href = "/";
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      alert("Silahkan isi password");
+    }
   }
 
   if (loading) {
