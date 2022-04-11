@@ -9,7 +9,7 @@ import Error404 from "./pages/errors/Error404";
 import Login from "./pages/admin/Login";
 import Admin from "./pages/admin/Admin";
 import Simulation from "./pages/admin/Simulation/Simulation";
-import Create from "./pages/admin/Simulation/Create";
+import SimulationCreate from "./pages/admin/Simulation/SimulationCreate";
 import Edit from "./pages/admin/Simulation/Edit";
 
 export default function App() {
@@ -26,7 +26,7 @@ export default function App() {
           </Route>
           <Route path="simulations">
             <Route index element={<Navigate to="/admin" />} />
-            <Route path="create" element={<Create />} />
+            <Route path="create" element={<SimulationCreate />} />
             <Route path=":simulationID">
               <Route index element={<Simulation />} />
               <Route path="edit" element={<Edit />} />

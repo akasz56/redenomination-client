@@ -40,7 +40,7 @@ export function displayPrice(
 
 export function priceMask(num: number) {
   if (isNaN(num)) {
-    return 0;
+    return "0";
   } else {
     let [part1, part2] = num.toString().split(".", 2);
     return part2 !== undefined
@@ -59,5 +59,15 @@ export function priceUnMask(str: string) {
   unformatted = unformatted.split(parts[0]).join("");
   unformatted = unformatted.split(parts[1]).join(".");
 
-  return unformatted;
+  return parseFloat(unformatted);
+}
+
+export function inputNumber(
+  e: React.ChangeEvent<HTMLInputElement>,
+  str: string
+) {
+  const value = priceUnMask(str);
+  const maskedValue = priceMask(value);
+  e.target.value = maskedValue;
+  return value;
 }

@@ -6,7 +6,19 @@ import {
 } from "../utils/responseHandler";
 const token = getToken();
 
-export function createSimulation(body: any) {}
+export function createSimulation(body: any) {
+  return fetch(apiURL + "simulations/", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    body: JSON.stringify(body),
+  })
+    .then((res) => fetchResponseHandler(res))
+    .catch((err) => responseErrorHandler(err));
+}
 
 export function readAllSimulations() {
   return fetch(apiURL + "simulations/", {
@@ -15,7 +27,7 @@ export function readAllSimulations() {
     },
   })
     .then((res) => fetchResponseHandler(res))
-    .catch((err) => responseErrorHandler(err));
+    .catch((err) => responseErrorHandler(err, true));
 }
 
 export function readSimulation(id: string) {

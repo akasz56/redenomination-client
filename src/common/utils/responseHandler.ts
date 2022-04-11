@@ -25,7 +25,9 @@ export function responseSuccessHandler(res: any) {
   throw new Error("Error occurred during fetching");
 }
 
-export function responseErrorHandler(reason: string) {
+export function responseErrorHandler(reason: string, skipAlert = false) {
   console.error(reason);
-  alert(reason);
+  if (!skipAlert) {
+    alert(reason);
+  }
 }

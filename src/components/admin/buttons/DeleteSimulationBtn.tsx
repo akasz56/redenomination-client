@@ -1,12 +1,15 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { css, StyleSheet } from "aphrodite";
 import { capitalize } from "../../../common/utils/others";
 import { Button, Form, Modal } from "react-bootstrap";
+import { deleteSimulation } from "../../../common/adapters/simulation.adapter";
 
 export default function DeleteSimulationBtn(props: any) {
   const simulationType = props.type ? capitalize(props.type) : "simulationType";
-  const [showModal, setshowModal] = React.useState(false);
-  // const { simulationID } = useParams();
+  const [showModal, setshowModal] = React.useState<boolean>(false);
+  const [keyword, setkeyword] = React.useState<string>("");
+  const { simulationID } = useParams();
 
   const styles = StyleSheet.create({
     section: { marginTop: "5rem" },
@@ -16,27 +19,16 @@ export default function DeleteSimulationBtn(props: any) {
     setshowModal((prev) => !prev);
   }
 
-  async function submitDelete(e: any) {
+  async function submitDelete(e: React.FormEvent) {
     e.preventDefault();
     setshowModal((prev) => !prev);
-    alert("yes");
-    // if (e.target.elements.confirm.value === simulationType) {
-    //   await deleteSimulation(simulationID)
-    //   .then()
-    //   if (res.status === 200) {
-    //     window.location.href = "/admin";
-    //   } else if (res.status === 401) {
-    //     printLog(res);
-    //     window.alert("Tidak diizinkan mengakses");
-    //     setLoading(false);
-    //   } else {
-    //     printLog(res);
-    //     alert("Terjadi Kesalahan, mohon coba lagi");
-    //     setLoading(false);
-    //   }
-    // } else {
-    //   alert("Simulasi gagal dihapus");
-    // }
+    if (keyword === simulationType && simulationID) {
+      await deleteSimulation(simulationID).then(() => {
+        window.location.href = "/admin";
+      });
+    } else {
+      alert("Keyword yang dimasukkan salah, Simulasi gagal dihapus");
+    }
   }
   return (
     <>
@@ -62,7 +54,9 @@ export default function DeleteSimulationBtn(props: any) {
               <Form.Control
                 required
                 placeholder={simulationType}
-                name="confirm"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setkeyword(e.target.value);
+                }}
               />
             </Form.Group>
           </Modal.Body>
