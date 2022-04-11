@@ -1,17 +1,12 @@
 import React from "react";
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {
-  clearAuth,
-  getCurrentRole,
-  ROLE,
-} from "../../common/utils/authHandler";
+import { getCurrentRole, logout, ROLE } from "../../common/utils/authHandler";
 
 export default function Header() {
   function handlerLogout(e: React.FormEvent) {
     e.preventDefault();
-    clearAuth();
-    window.location.reload();
+    logout();
   }
 
   return (
