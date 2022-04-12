@@ -2,16 +2,20 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { getCurrentRole, ROLE } from "./common/utils/authHandler";
+
 import Home from "./pages/Home";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import Error404 from "./pages/errors/Error404";
 import Login from "./pages/admin/Login";
 import Admin from "./pages/admin/Admin";
+
 import Simulation from "./pages/admin/Simulation/Simulation";
+import SimulationEdit from "./pages/admin/Simulation/SimulationEdit";
 import SimulationCreate from "./pages/admin/Simulation/SimulationCreate";
-import Edit from "./pages/admin/Simulation/Edit";
+
 import Session from "./pages/admin/Session/Session";
+
+import Error404 from "./pages/errors/Error404";
 
 export default function App() {
   return (
@@ -30,7 +34,7 @@ export default function App() {
             <Route path="create" element={<SimulationCreate />} />
             <Route path=":simulationID">
               <Route index element={<Simulation />} />
-              <Route path="edit" element={<Edit />} />
+              <Route path="edit" element={<SimulationEdit />} />
             </Route>
           </Route>
           <Route path="sessions">
