@@ -4,15 +4,16 @@ import {
   responseErrorHandler,
   fetchResponseHandler,
 } from "../utils/responseHandler";
-const token = getToken();
+const JWToken = getToken();
+const simulationURL = apiURL + "simulations/";
 
 export function createSimulation(body: any) {
-  return fetch(apiURL + "simulations/", {
+  return fetch(simulationURL, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: token,
+      Authorization: JWToken,
     },
     body: JSON.stringify(body),
   })
@@ -21,9 +22,9 @@ export function createSimulation(body: any) {
 }
 
 export function readAllSimulations() {
-  return fetch(apiURL + "simulations/", {
+  return fetch(simulationURL, {
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))
@@ -31,9 +32,19 @@ export function readAllSimulations() {
 }
 
 export function readSimulation(id: string) {
-  return fetch(apiURL + "simulations/" + id, {
+  return fetch(simulationURL + id, {
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
+    },
+  })
+    .then((res) => fetchResponseHandler(res))
+    .catch((err) => responseErrorHandler(err));
+}
+
+export function readSimulationByToken(token: string) {
+  return fetch(simulationURL + "token/" + token, {
+    headers: {
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))
@@ -41,12 +52,12 @@ export function readSimulation(id: string) {
 }
 
 export function updateSimulation(id: string, body: object) {
-  return fetch(apiURL + "simulations/" + id, {
+  return fetch(simulationURL + id, {
     method: "PUT",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: token,
+      Authorization: JWToken,
     },
     body: JSON.stringify(body),
   })
@@ -55,10 +66,10 @@ export function updateSimulation(id: string, body: object) {
 }
 
 export function deleteSimulation(id: string) {
-  return fetch(apiURL + "simulations/" + id, {
+  return fetch(simulationURL + id, {
     method: "DELETE",
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))
@@ -66,10 +77,10 @@ export function deleteSimulation(id: string) {
 }
 
 export function uploadPicture(id: string, formData: FormData) {
-  return fetch(apiURL + "simulations/" + id + "/pictures", {
+  return fetch(simulationURL + id + "/pictures", {
     method: "POST",
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
     body: formData,
   })

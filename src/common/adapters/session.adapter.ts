@@ -4,15 +4,16 @@ import {
   responseErrorHandler,
   fetchResponseHandler,
 } from "../utils/responseHandler";
-const token = getToken();
+const JWToken = getToken();
+const sessionURL = apiURL + "sessions/";
 
 export async function createSession(body: any) {
-  return await fetch(apiURL + "sessions/", {
+  return await fetch(sessionURL, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: token,
+      Authorization: JWToken,
     },
     body: JSON.stringify(body),
   })
@@ -21,9 +22,9 @@ export async function createSession(body: any) {
 }
 
 export async function readSession(id: string) {
-  return await fetch(apiURL + "sessions/" + id, {
+  return await fetch(sessionURL + id, {
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))
@@ -31,12 +32,12 @@ export async function readSession(id: string) {
 }
 
 export async function updateSession(id: string, body: object) {
-  return await fetch(apiURL + "sessions/" + id, {
+  return await fetch(sessionURL + id, {
     method: "PUT",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: token,
+      Authorization: JWToken,
     },
     body: JSON.stringify(body),
   })
@@ -45,32 +46,30 @@ export async function updateSession(id: string, body: object) {
 }
 
 export async function deleteSession(id: string) {
-  return await fetch(apiURL + "sessions/" + id, {
+  return await fetch(sessionURL + id, {
     method: "DELETE",
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))
     .catch((err) => responseErrorHandler(err));
 }
 
-export async function runSession(id: string) {
-  return await fetch(apiURL + "sessions/" + id + "/runs", {
-    method: "POST",
+export async function startSession(id: string) {
+  return await fetch(sessionURL + id + "/start", {
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))
     .catch((err) => responseErrorHandler(err));
 }
 
-export async function finishSession(id: string) {
-  return await fetch(apiURL + "sessions/" + id + "/finishes", {
-    method: "POST",
+export async function stopSession(id: string) {
+  return await fetch(sessionURL + id + "/stop", {
     headers: {
-      Authorization: token,
+      Authorization: JWToken,
     },
   })
     .then((res) => fetchResponseHandler(res))

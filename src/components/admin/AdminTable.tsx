@@ -78,7 +78,8 @@ export default function AdminTable(props: any) {
               <td>
                 <h3 className={css(styles.simulationH3)}>{simulation.token}</h3>
                 <span>
-                  {simulation.goodsType} ({simulation.goodsName}){" "}
+                  {simulation.goodsType} ({simulation.goodsName})
+                  <br />
                   {simulation.inflationType}
                   <br />
                   Pertumbuhan Ekonomi {simulation.growthType}
