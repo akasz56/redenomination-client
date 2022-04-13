@@ -1,37 +1,58 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { finishSession } from "../../../common/adapters/session.adapter";
+import { css, StyleSheet } from "aphrodite";
+import { Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { stopSession } from "../../../common/adapters/session.adapter";
+import { readSimulationByToken } from "../../../common/adapters/simulation.adapter";
 import UnitPlayer from "../units/UnitPlayer";
 
 export default function StopSessionBtn(props: any) {
-  const { token, sellers, buyers } = props;
+  const { token } = props;
   const { sessionID } = useParams();
+  const [participants, setParticipants] = React.useState<Array<any>>([]);
 
-  // React.useEffect(() => {
-  //   socket.emit("adminLoginToken", { token: data.simulation.token });
+  const styles = StyleSheet.create({
+    section: {
+      marginTop: "5rem",
+    },
+  });
 
-  //   function activePlayersListener(res) {
-  //     setParticipant({
-  //       sellers: res.sellers,
-  //       buyers: res.buyers,
-  //     });
-  //   }
-  //   socket.on("admin:activePlayers", activePlayersListener);
+  React.useEffect(() => {
+    async function fetchData(token: string) {
+      await readSimulationByToken(token).then((res) => {
+        setParticipants(res.participants);
+      });
+    }
 
-  //   function isSessionDoneListener(res) {
-  //     window.location.reload();
-  //   }
-  //   socket.on("admin:isSessionDone", isSessionDoneListener);
+    if (token) {
+      fetchData(token);
+    }
+    //   socket.emit("adminLoginToken", { token: data.simulation.token });
 
-  //   return () => {
-  //     socket.off("admin:activePlayers", activePlayersListener);
-  //     socket.off("admin:isSessionDone", isSessionDoneListener);
-  //   };
-  // }, []);
+    //   function activePlayersListener(res) {
+    //     setParticipant({
+    //       sellers: res.sellers,
+    //       buyers: res.buyers,
+    //     });
+    //   }
+    //   socket.on("admin:activePlayers", activePlayersListener);
 
-  async function stopSession(e: React.MouseEvent) {
+    //   function isSessionDoneListener(res) {
+    //     window.location.reload();
+    //   }
+    //   socket.on("admin:isSessionDone", isSessionDoneListener);
+
+    //   return () => {
+    //     socket.off("admin:activePlayers", activePlayersListener);
+    //     socket.off("admin:isSessionDone", isSessionDoneListener);
+    //   };
+  }, [token]);
+
+  async function submitStopSession(e: React.MouseEvent) {
+    e.preventDefault();
+
     if (window.confirm("Yakin ingin menghentikan sesi?") && sessionID) {
-      await finishSession(sessionID).then(() => {
+      await stopSession(sessionID).then(() => {
         window.location.reload();
       });
     }
@@ -45,26 +66,32 @@ export default function StopSessionBtn(props: any) {
           <p>Token Partisipan:</p>
           <p className="fw-bold text-primary fs-3">{token}</p>
         </div>
-        <Link to="#" className="btn btn-danger w-100 p-4" onClick={stopSession}>
+        <Button
+          variant="danger"
+          className="w-100 p-4"
+          onClick={submitStopSession}
+        >
           Hentikan Ulangan
-        </Link>
+        </Button>
         <hr />
       </section>
 
-      <section style={{ marginTop: "5rem" }} className="row">
-        <h1>Peserta</h1>
+      <section className={css(styles.section) + " row"}>
+        <h1 className="text-center">Status Peserta</h1>
         <hr />
         <div className="col-md-6">
-          <p className="fw-bold text-center">Daftar Penjual</p>
-          {sellers.map((item: any, i: number) => (
-            <UnitPlayer key={i + 1} id={i + 1} role="penjual" item={item} />
-          ))}
+          {participants
+            .slice(0, participants.length / 2)
+            .map((item: any, i: number) => (
+              <UnitPlayer key={i + 1} item={item} />
+            ))}
         </div>
         <div className="col-md-6">
-          <p className="fw-bold text-center">Daftar Pembeli</p>
-          {buyers.map((item: any, i: number) => (
-            <UnitPlayer key={i + 1} id={i + 1} role="pembeli" item={item} />
-          ))}
+          {participants
+            .slice(participants.length / 2)
+            .map((item: any, i: number) => (
+              <UnitPlayer key={i + 1} item={item} />
+            ))}
         </div>
       </section>
     </>

@@ -1,16 +1,19 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { runSession } from "../../../common/adapters/session.adapter";
+import { Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { startSession } from "../../../common/adapters/session.adapter";
 
 export default function StartSessionBtn(props: any) {
   const { token } = props;
   const { sessionID } = useParams();
 
-  async function startSession(e: React.MouseEvent) {
+  async function submitStartSession(e: React.MouseEvent) {
     e.preventDefault();
 
     if (window.confirm("Jalankan sesi sekarang?") && sessionID) {
-      await runSession(sessionID);
+      await startSession(sessionID).then(() => {
+        window.location.reload();
+      });
     }
   }
 
@@ -22,13 +25,9 @@ export default function StartSessionBtn(props: any) {
           <p>Token Partisipan:</p>
           <p className="fw-bold text-primary fs-3">{token}</p>
         </div>
-        <Link
-          to="#"
-          className="btn btn-primary w-100 p-4"
-          onClick={startSession}
-        >
+        <Button className="w-100 p-4" onClick={submitStartSession}>
           Jalankan Ulangan
-        </Link>
+        </Button>
         <hr />
       </section>
     </>

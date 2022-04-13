@@ -5,7 +5,6 @@ import { readSession } from "../../../common/adapters/session.adapter";
 import DeleteSessionBtn from "../../../components/admin/buttons/DeleteSessionBtn";
 import SessionHeader from "../../../components/admin/SessionHeader";
 import SessionStatusView from "../../../components/admin/SessionStatusView";
-import SessionTimer from "../../../components/admin/SessionTimer";
 import LoadingScreen from "../../../components/LoadingScreen";
 import Error404 from "../../errors/Error404";
 
@@ -18,11 +17,14 @@ export default function Session() {
     document.title = "Tidak ada Data";
 
     async function fetchData(sessionID: string) {
-      await readSession(sessionID).then((res: any) => {
-        setData(res);
-        setLoading(false);
-        document.title = "Ulangan " + res.id;
-      });
+      await readSession(sessionID)
+        .then((res: any) => {
+          setData(res);
+          document.title = "Ulangan " + res.id;
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
 
     if (sessionID) {
@@ -36,7 +38,6 @@ export default function Session() {
       return (
         <Container>
           <SessionHeader session={data} />
-          <SessionTimer duration={data.duration} />
           <SessionStatusView session={data} />
           <DeleteSessionBtn
             simulationID={data.simulation.id}
