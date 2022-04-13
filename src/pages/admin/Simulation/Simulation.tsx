@@ -5,6 +5,7 @@ import { readSimulation } from "../../../common/adapters/simulation.adapter";
 import DeleteSimulationBtn from "../../../components/admin/buttons/DeleteSimulationBtn";
 import SimulationDetail from "../../../components/admin/SimulationDetail";
 import SimulationHeader from "../../../components/admin/SimulationHeader";
+import SimulationPlayerList from "../../../components/admin/SimulationPlayerList";
 import SimulationTable from "../../../components/admin/SimulationTable";
 import SimulationUnitCostValueList from "../../../components/admin/SimulationUnitCostValueList";
 import LoadingScreen from "../../../components/LoadingScreen";
@@ -45,12 +46,13 @@ export default function Simulation() {
             time={simulation.timeCreated}
           />
           <SimulationTable sessions={simulation.sessions} />
+          <SimulationPlayerList participants={simulation.participants} />
           {/* <SimulationSummary /> */}
+          <SimulationDetail simulation={simulation} />
           <SimulationUnitCostValueList
             sellers={simulation.sellers}
             buyers={simulation.buyers}
           />
-          <SimulationDetail simulation={simulation} />
           <DeleteSimulationBtn type={simulation.simulationType} />
         </Container>
       );

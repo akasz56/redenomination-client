@@ -178,17 +178,7 @@ export default function SimulationEdit() {
             </section>
 
             <section className="row mb-3">
-              <div className="col-md-6">
-                <Form.Group>
-                  <Form.Label className="d-block">Jumlah responden</Form.Label>
-                  <Form.Control
-                    type="number"
-                    style={{ width: "5em", display: "inline" }}
-                    disabled
-                    value={data.participantNumber}
-                  />
-                </Form.Group>
-              </div>
+              <div className="col-md-6" />
               <div className="col-md-6">
                 <Form.Group controlId="simulationBudget">
                   <Form.Label className="required">

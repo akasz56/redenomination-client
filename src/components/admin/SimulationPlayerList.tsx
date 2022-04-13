@@ -3,7 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import UnitPlayer from "./units/UnitPlayer";
 
 export default function SimulationPlayerList(props: any) {
-  const { sellers, buyers } = props;
+  const { participants } = props;
 
   const styles = StyleSheet.create({
     section: {
@@ -13,19 +13,21 @@ export default function SimulationPlayerList(props: any) {
 
   return (
     <section className={css(styles.section) + " row"}>
-      <h1 className="text-center">Peserta</h1>
+      <h1 className="text-center">Status Peserta</h1>
       <hr />
       <div className="col-md-6">
-        <p className="fw-bold text-center">Daftar Penjual</p>
-        {sellers.map((item: any, i: number) => (
-          <UnitPlayer key={i + 1} id={i + 1} role="penjual" item={item} />
-        ))}
+        {participants
+          .slice(0, participants.length / 2)
+          .map((item: any, i: number) => (
+            <UnitPlayer key={i + 1} item={item} />
+          ))}
       </div>
       <div className="col-md-6">
-        <p className="fw-bold text-center">Daftar Pembeli</p>
-        {buyers.map((item: any, i: number) => (
-          <UnitPlayer key={i + 1} id={i + 1} role="pembeli" item={item} />
-        ))}
+        {participants
+          .slice(participants.length / 2)
+          .map((item: any, i: number) => (
+            <UnitPlayer key={i + 1} item={item} />
+          ))}
       </div>
     </section>
   );
