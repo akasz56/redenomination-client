@@ -47,9 +47,28 @@ export function Header() {
 
 export function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer text-muted fw-bold">
       <hr />
-      <p className="text-center text-muted fw-bold">© 2022 Codepanda.id</p>
+      <Container>
+        <section className="row mb-3">
+          <div className="col-md-6">
+            Created By :
+            <br />
+            Prof. Dr. Ir. Bambang Juanda, MS
+            <br />
+            Habib Furqony Andrianus
+            <br />
+            Akaasyah Nurfath
+          </div>
+          <div className="col-md-6">
+            <p>
+              Sponsored By :
+              <br />
+              Bank Indonesia
+            </p>
+          </div>
+        </section>
+      </Container>
     </footer>
   );
 }
